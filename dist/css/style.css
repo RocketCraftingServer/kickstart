@@ -263,11 +263,13 @@
 @font-face {
   font-family: Accuratist;
   src: url(../assets/fonts/Accuratist.ttf);
+  font-display: swap;
 }
 
 @font-face {
   font-family: Closeness;
   src: url(../assets/fonts/Closeness.ttf);
+  font-display: swap;
 }
 
 *,
@@ -347,24 +349,18 @@ div {
   font-family: "Accuratist";
   color: #023e66;
   background-color: transparent;
-  -webkit-box-shadow: inset 0px 0px 1px 1px #49d8ff14;
-  box-shadow: inset 0px 0px 1px 1px #49d8ff14;
 }
 
 .theme-dark div {
   font-family: "Accuratist";
   color: white;
   background-color: #535353;
-  -webkit-box-shadow: inset 0px 0px 1px 1px #ff000014;
-  box-shadow: inset 0px 0px 1px 1px #ff000014;
 }
 
 .theme-orange div {
   font-family: "Accuratist";
   color: #ff2600;
   background-color: black;
-  -webkit-box-shadow: inset 0px 0px 1px 1px #ff000014;
-  box-shadow: inset 0px 0px 1px 1px #ff000014;
 }
 
 span {

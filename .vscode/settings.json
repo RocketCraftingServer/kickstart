@@ -2,12 +2,9 @@
   "liveSassCompile.settings.formats": [{
     "format": "expanded",
     "extensionName": ".css",
-    // "savePath": "/safir/dist/css/"
-    "savePath": "/safir/test/dist/css/"
+    "savePath": "/dist/css/"
   }],
   "liveSassCompile.settings.excludeList": [
-    // "safir/test/**",
-    "safir/hello/**",
     "**/node_modules/**",
     ".vscode/**",
     "./dist/**"
