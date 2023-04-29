@@ -1,11 +1,13 @@
 @font-face {
   font-family: Accuratist;
   src: url(../assets/fonts/Accuratist.ttf);
+  font-display: swap;
 }
 
 @font-face {
   font-family: Closeness;
   src: url(../assets/fonts/Closeness.ttf);
+  font-display: swap;
 }
 
 *,
@@ -55,9 +57,9 @@ div {
     font-family: themed('fontFamily');
     color: themed('textColor');
     background-color: themed('backgroundColor');
-    -webkit-box-shadow: inset 0px 0px 1px 1px themed('divShadowColor');
-    -moz-box-shadow: inset 0px 0px 1px 1px themed('divShadowColor');
-    box-shadow: inset 0px 0px 1px 1px themed('divShadowColor');
+    // -webkit-box-shadow: inset 0px 0px 1px 1px themed('divShadowColor');
+    // -moz-box-shadow: inset 0px 0px 1px 1px themed('divShadowColor');
+    // box-shadow: inset 0px 0px 1px 1px themed('divShadowColor');
   }
 
   width: inherit;
