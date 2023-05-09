@@ -7,8 +7,9 @@ echo -e "$(tput bold) . $(tput sgr0)";
 mkdir -p dist/assets;
 mkdir -p dist/css;
 mkdir -p dist/vanilla-components;
-yes | cp -Rf hello/assets/* dist/assets;
-cp -Rf hello/vanilla-components/* dist/vanilla-components;
+# yes | cp -Rf hello/assets/* dist/assets;
+yes | cp -Rf rocket-craft-safir/assets/* dist/assets;
+cp -Rf rocket-craft-safir/vanilla-components/* dist/vanilla-components;
 cp index.html dist/index.html;
 echo
 echo -e "$(tput bold) Safir assets bulder $(tput sgr0)";

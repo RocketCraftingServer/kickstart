@@ -1,4 +1,4 @@
-import {BaseComponent, On, JSON_HEADER, byID, getComp, LocalSessionMemory} from "safir";
+import {BaseComponent, On, emit, JSON_HEADER, byID, getComp, LocalSessionMemory, SafirBuildInPlugins} from "safir";
 import SimpleBtn from "../components/simple-btn";
 import {Avatar} from "../direct-render/imageProfile";
 
@@ -9,6 +9,9 @@ export default class RocketCraftingLayout extends BaseComponent {
   apiDomain = '';
   loginBtn = new SimpleBtn({text: 'Login', id: 'loginBtn'}, 'w30');
   registerBtn = new SimpleBtn({text: 'Register', id: 'registerBtn'}, 'w30');
+
+  // NOTE SAFIRSLOT NEED RENDER DOM IN MOMENT OF INSTANCING
+  testSafirSlot = new SafirBuildInPlugins.SafirSlot({id : 'userPoints', rootDom: 'userPoints'}, 'fit');
 
   nickname = null;
   email = null;
@@ -101,16 +104,24 @@ export default class RocketCraftingLayout extends BaseComponent {
           color = 'color:red;text-shadow: 0px 0px 1px #52f2ff, 1px 1px 1px #11ffff;';
           byID('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]}</div>`;
         } else if(res[key] == 'USER_LOGGED') {
-          byID('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]} 👨‍🚀</div>`;
+          // byID('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]} 👨‍🚀</div>`;
         }
       }
     }
+
     // how to use sub rerender
-    console.log(" TEST #######")
+    // console.log(" TEST #######")
     // simple override
     this.render = this.accountRender;
     getComp(this.id).innerHTML = this.render();
+
+    // NOTE SAFIRSLOT NEED RENDER DOM IN MOMENT OF INSTANCING
+    this.testSafirSlot = new SafirBuildInPlugins.SafirSlot({id : 'userPoints', rootDom: 'userPoints'}, 'fit');
+
+    emit('app.trans.update', { f:'f'})
+
     this.accountData(res);
+    
   }
 
   // Best way - intergalactic
@@ -132,14 +143,18 @@ export default class RocketCraftingLayout extends BaseComponent {
             byID('apiResponse').innerHTML += `<button type="file" id="uploadAvatar">CHANGE AVATAR</button>`;
             byID('avatar').addEventListener('change', this.handleFileUpload, {passive: true});
             byID('uploadAvatar').addEventListener('click', this.handleAvatarUpload, {passive: true});
-          } else {
+          } else if (key1== 'points') {
+            this.setPropById(key1, res[key][key1], 1);
+            byID('apiResponse').innerHTML += `<div style='${color}' >${key1} : ${res[key][key1]} </div>`;
+            this.testSafirSlot.setByTime(parseFloat(res[key][key1]));
+          }else {
             this.setPropById(key1, res[key][key1], 1);
             byID('apiResponse').innerHTML += `<div style='${color}' >${key1} : ${res[key][key1]} </div>`;
           }
         }
       } else {
         if(res[key] == 'USER_LOGGED') {
-          byID('apiResponse').innerHTML += `<div style='${color}' >${res[key]} : ${res[key]} 👨‍🚀</div>`;
+          byID('apiResponse').innerHTML += `<div style='${color}'> 👨‍🚀</div>`;
         }
       }
     }
@@ -161,8 +176,9 @@ export default class RocketCraftingLayout extends BaseComponent {
 
   accountRender = () => `
     <div class='midWrapper bg-transparent'>
-      <div  class='middle'>
+      <div class='middle'>
         <h2>Welcome, <h2 id='nickname'>${this.nickname}</h2></h2>
+        <span style="margin-right:50px;">${this.testSafirSlot.renderId()}</span>
       </div>
       <span id="apiResponse"></span>
       <div class='midWrapper bg-transparent'>
@@ -173,12 +189,9 @@ export default class RocketCraftingLayout extends BaseComponent {
 
   render = () => `
     <div class="paddingtop20 animate-jello2 bg-transparent textCenter">
-      <h2 class='blackText' >Safir extreme simple networking 🌍</h2>
-      <p class="textColorWhite">Account login/register/confirmation</p>
-      <p class="textColorWhite">Safir can be used for any web api server.</p>
-      <p class="textColorWhite">In this example safir use <a href="https://github.com/RocketCraftingServer/rocket-craft-server" >rocketCraftingServer</a></p>
-      <p class="textColorWhite">RocketCraftingServer is simple REST/HTTP server. It is used also in ue4 
-     <a href="https://github.com/RocketCraftingServer/rocket-craft">rocketCraft</a> project.</p>
+      <h2 class='blackText'>RocketCraft Server 🌍</h2>
+       ${this.testSafirSlot.renderId()}
+      <p class="textColorWhite">Backend based on <a href="https://github.com/RocketCraftingServer/rocket-craft-server" >rocketCraftingServer</a></p>
 
     </div>
     <div class="midWrapper animate-jello2 bg-transparent">

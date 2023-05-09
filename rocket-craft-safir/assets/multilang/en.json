@@ -1,8 +1,10 @@
 {
   "changeTheme": "Change Theme",
+  "gotoLeaderboard": "Leaderboard",
   "yes": "Yes",
   "no": "No",
   "destroyer": "Safir",
   "welcome":"Welcome",
-  "textAlert": "This is modal ! Why not !"
+  "textAlert": "No emit",
+  "userPointsSlotTitle": "POINTS"
 }

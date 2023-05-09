@@ -1,262 +1,4 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-var _safir = require("safir");
-class SimpleBtn extends _safir.BaseComponent {
-  id = '';
-  text = '';
-  ready = () => {};
-  constructor(arg, arg2 = '') {
-    super(arg);
-    this.initial(arg, arg2);
-  }
-  onClick = this.clickBind;
-  render = () => `
-    <button class="fill bg-transparent" onclick="(${this.onClick})('${this.id}')">
-      ${this.text}
-    </button>
-  `;
-}
-exports.default = SimpleBtn;
-
-},{"safir":5}],2:[function(require,module,exports){
-"use strict";
-
-var _safir = require("safir");
-var _rocketCraftingAccount = _interopRequireDefault(require("./layouts/rocket-crafting-account"));
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-let app = new _safir.Safir();
-(0, _safir.On)("app.ready", () => {
-  /**
-   * @description
-   * If you put http://localhost then you 
-   * need to run rocketCreftingServer on local mashine.
-   * You can use also `http://maximumroulette.com`
-   */
-  let apiDomain = 'https://maximumroulette.com';
-  // let apiDomain = 'http://localhost';
-  app.loadComponent(new _rocketCraftingAccount.default(apiDomain), 'bg-transparent');
-  document.body.classList.add('funnyBg2');
-});
-window.app = app;
-
-},{"./layouts/rocket-crafting-account":4,"safir":5}],3:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Avatar = void 0;
-let Avatar = arg => `
-  <img class="avatarProfile" alt="${arg.key1}" src="${arg.apiDomain}/storage${arg.res[arg.key][arg.key1]}" />;
-`;
-exports.Avatar = Avatar;
-
-},{}],4:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-var _safir = require("safir");
-var _simpleBtn = _interopRequireDefault(require("../components/simple-btn"));
-var _imageProfile = require("../direct-render/imageProfile");
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-class RocketCraftingLayout extends _safir.BaseComponent {
-  id = 'my-body';
-  apiDomain = '';
-  loginBtn = new _simpleBtn.default({
-    text: 'Login',
-    id: 'loginBtn'
-  }, 'w30');
-  registerBtn = new _simpleBtn.default({
-    text: 'Register',
-    id: 'registerBtn'
-  }, 'w30');
-  nickname = null;
-  email = null;
-  token = null;
-  photo = null;
-  constructor(arg) {
-    super(arg);
-    console.info('[RC ARGS]:', arg);
-    this.apiDomain = arg;
-    (0, _safir.On)('loginBtn', data => {
-      console.info('[login] Trigger Btn', data.detail);
-      this.runApiCall('login');
-    });
-    (0, _safir.On)('registerBtn', data => {
-      console.info('[register] Trigger Btn', data.detail);
-      this.runApiCall('register');
-    });
-  }
-  ready = () => {
-    console.log('RocketCrafting Login form ready.');
-    console.log('RocketCrafting FAST Login form ready. try this', this.email);
-    if (sessionStorage.getItem('my-body-email') != null && sessionStorage.getItem('my-body-token') != null) {
-      this.runApiFastLogin();
-    }
-  };
-  async runApiCall(apiCallFlag) {
-    let route = this.apiDomain || location.origin;
-    const args = {
-      emailField: (0, _safir.byID)('arg-username').value,
-      passwordField: (0, _safir.byID)('arg-password').value
-    };
-    const rawResponse = await fetch(route + '/rocket/' + apiCallFlag, {
-      method: 'POST',
-      headers: _safir.JSON_HEADER,
-      body: JSON.stringify(args)
-    });
-    var response = await rawResponse.json();
-    this.exploreResponse(response);
-  }
-  async runApiFastLogin() {
-    // must be fixed this.email at this moment
-    let route = this.apiDomain || location.origin;
-    const args = {
-      email: _safir.LocalSessionMemory.load('my-body-email'),
-      token: _safir.LocalSessionMemory.load('my-body-token')
-    };
-    const rawResponse = await fetch(route + '/rocket/fast-login', {
-      method: 'POST',
-      headers: _safir.JSON_HEADER,
-      body: JSON.stringify(args)
-    });
-    var response = await rawResponse.json();
-    this.exploreResponse(response);
-  }
-  async runUploadAvatar(apiCallFlag) {
-    let route = this.apiDomain || location.origin;
-    const args = {
-      email: this.email,
-      token: this.token,
-      photo: this.photo
-    };
-    const rawResponse = await fetch(route + '/rocket/' + apiCallFlag, {
-      method: 'POST',
-      headers: _safir.JSON_HEADER,
-      body: JSON.stringify(args)
-    });
-    var response = await rawResponse.json();
-    this.exploreResponse(response);
-  }
-
-  // Best way - intergalactic
-  exploreResponse(res) {
-    (0, _safir.byID)('apiResponse').innerHTML = '';
-    for (let key in res) {
-      let color = 'white';
-      if (typeof res[key] == 'object') {
-        for (let key1 in res[key]) {
-          color = 'color:indigo;text-shadow: 0px 0px 1px #52f2ff, 1px 1px 1px #11ffff;';
-          (0, _safir.byID)('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key][key1]} </div>`;
-        }
-      } else {
-        if (key == 'message' && res[key] == 'Wrong Password') {
-          color = 'color:red;text-shadow: 0px 0px 1px #52f2ff, 1px 1px 1px #11ffff;';
-          (0, _safir.byID)('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]}</div>`;
-        } else if (res[key] == 'USER_LOGGED') {
-          (0, _safir.byID)('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]} 👨‍🚀</div>`;
-        }
-      }
-    }
-    // how to use sub rerender
-    console.log(" TEST #######");
-    // simple override
-    this.render = this.accountRender;
-    (0, _safir.getComp)(this.id).innerHTML = this.render();
-    this.accountData(res);
-  }
-
-  // Best way - intergalactic
-  accountData(res) {
-    (0, _safir.byID)('apiResponse').innerHTML = '';
-    for (let key in res) {
-      let color = 'white';
-      if (typeof res[key] == 'object') {
-        for (let key1 in res[key]) {
-          if (key1 == 'profileImage') {
-            (0, _safir.byID)('apiResponse').innerHTML += (0, _imageProfile.Avatar)({
-              key,
-              key1,
-              res,
-              apiDomain: this.apiDomain
-            });
-            // hot to use in runtime attaching:
-            (0, _safir.byID)('apiResponse').innerHTML += `<input type="file" id="avatar" />`;
-            (0, _safir.byID)('apiResponse').innerHTML += `<button type="file" id="uploadAvatar">CHANGE AVATAR</button>`;
-            (0, _safir.byID)('avatar').addEventListener('change', this.handleFileUpload, {
-              passive: true
-            });
-            (0, _safir.byID)('uploadAvatar').addEventListener('click', this.handleAvatarUpload, {
-              passive: true
-            });
-          } else {
-            this.setPropById(key1, res[key][key1], 1);
-            (0, _safir.byID)('apiResponse').innerHTML += `<div style='${color}' >${key1} : ${res[key][key1]} </div>`;
-          }
-        }
-      } else {
-        if (res[key] == 'USER_LOGGED') {
-          (0, _safir.byID)('apiResponse').innerHTML += `<div style='${color}' >${res[key]} : ${res[key]} 👨‍🚀</div>`;
-        }
-      }
-    }
-  }
-  handleAvatarUpload = e => {
-    this.runUploadAvatar('profile/upload');
-  };
-  handleFileUpload = e => {
-    const reader = new FileReader();
-    let rawImg;
-    reader.onloadend = () => {
-      rawImg = reader.result;
-      this.setPropById('photo', rawImg);
-    };
-    reader.readAsDataURL(e.target.files[0]);
-  };
-  accountRender = () => `
-    <div class='midWrapper bg-transparent'>
-      <div  class='middle'>
-        <h2>Welcome, <h2 id='nickname'>${this.nickname}</h2></h2>
-      </div>
-      <span id="apiResponse"></span>
-      <div class='midWrapper bg-transparent'>
-       <h2> Safir Vanilla Virtual DOM</h2>
-      </div>
-    </div>
-  `;
-  render = () => `
-    <div class="paddingtop20 animate-jello2 bg-transparent textCenter">
-      <h2 class='blackText' >Safir extreme simple networking 🌍</h2>
-      <p class="textColorWhite">Account login/register/confirmation</p>
-      <p class="textColorWhite">Safir can be used for any web api server.</p>
-      <p class="textColorWhite">In this example safir use <a href="https://github.com/RocketCraftingServer/rocket-craft-server" >rocketCraftingServer</a></p>
-      <p class="textColorWhite">RocketCraftingServer is simple REST/HTTP server. It is used also in ue4 
-     <a href="https://github.com/RocketCraftingServer/rocket-craft">rocketCraft</a> project.</p>
-
-    </div>
-    <div class="midWrapper animate-jello2 bg-transparent">
-        <input class="w30" id='arg-username' type='text' value='zlatnaspirala@gmail.com' />
-        <input class="w30" id='arg-password' type='password' value='12345678' />
-        ${this.loginBtn.renderId()}
-        ${this.registerBtn.renderId()}
-    </div>
-
-    <div class='midWrapper bg-transparent' >
-      <span id="apiResponse"></span>
-    </div>
-  `;
-}
-exports.default = RocketCraftingLayout;
-
-},{"../components/simple-btn":1,"../direct-render/imageProfile":3,"safir":5}],5:[function(require,module,exports){
 'use strict';
 
 /**
@@ -314,16 +56,35 @@ Object.defineProperty(exports, "Safir", {
     return _root.Safir;
   }
 });
+exports.SafirBuildInPlugins = void 0;
 Object.defineProperty(exports, "T", {
   enumerable: true,
   get: function () {
     return _root.T;
   }
 });
+Object.defineProperty(exports, "byClass", {
+  enumerable: true,
+  get: function () {
+    return _utils.byClass;
+  }
+});
 Object.defineProperty(exports, "byID", {
   enumerable: true,
   get: function () {
     return _utils.byID;
+  }
+});
+Object.defineProperty(exports, "byTag", {
+  enumerable: true,
+  get: function () {
+    return _utils.byTag;
+  }
+});
+Object.defineProperty(exports, "emit", {
+  enumerable: true,
+  get: function () {
+    return _utils.emit;
   }
 });
 Object.defineProperty(exports, "getComp", {
@@ -336,8 +97,330 @@ var _root = require("./src/core/root");
 var _comp = require("./src/core/comp");
 var _modifier = require("./src/core/modifier");
 var _utils = require("./src/core/utils");
+var _safirSlot = require("./src/controls/safir-slot");
+let SafirBuildInPlugins = {
+  SafirSlot: _safirSlot.SafirSlot
+};
+exports.SafirBuildInPlugins = SafirBuildInPlugins;
 
-},{"./src/core/comp":6,"./src/core/modifier":8,"./src/core/root":9,"./src/core/utils":10}],6:[function(require,module,exports){
+},{"./src/controls/safir-slot":2,"./src/core/comp":3,"./src/core/modifier":5,"./src/core/root":6,"./src/core/utils":7}],2:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.SingleCounter = exports.SafirSlot = void 0;
+var _index = require("../../index");
+class SingleCounter extends _index.BaseComponent {
+  refFunc = [];
+  ready = () => {
+    this.id = this.id;
+    let slot = document.createElement('div');
+    slot.id = `${this.rootDom}slot${this.id}`;
+    slot.classList.add('slot');
+    console.log("ROOT DOM", this.rootDom);
+    (0, _index.byID)(this.rootDom + '-holder').append(slot);
+    if (this.id.indexOf('D') != -1) {
+      slot.innerHTML = ',';
+      slot.style.margin = '1px';
+      slot.style.padding = '1px';
+      slot.style.fontSize = 'xxx-large';
+      slot.style.background = 'transparent';
+      return;
+    }
+    slot.innerHTML = this.render(this.id);
+    this.myAnim(this.id);
+  };
+  constructor(arg) {
+    super(arg);
+    this.content = arg.content;
+    console.log('slot layout ready ', this.content);
+    if (this.content.length == 0) {
+      this.content = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+      console.log('slot layout ready ', this.content);
+    }
+    this.initial(arg);
+    this.rootDom = arg.rootDom;
+  }
+  calcAnim(ring) {
+    const nums = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+    nums.forEach((num, i) => {
+      this.refFunc.push(() => {
+        const numAngle = 36 * i;
+        const currentAngle = ring.style.getPropertyValue("--deg").replace(/\D/g, "");
+        let nextAngle = numAngle;
+        while (nextAngle < currentAngle) {
+          nextAngle += 360;
+        }
+        if (nextAngle > 360) nextAngle -= 360;
+        // console.log('nextAngle', nextAngle);
+        ring.style.setProperty("--deg", `-${nextAngle}deg`);
+        ring.setAttribute('data-slot', i);
+      });
+    });
+  }
+  myAnim = function (id) {
+    const $ = (str, dom = document) => [...dom.querySelectorAll(str)];
+    const panels = $(`[data-root-${this.rootDom}-${id}]`);
+    panels.forEach((panel, i) => {
+      panel.style.setProperty("--angle", `${360 / panels.length * i}deg`);
+    });
+    const ring0 = $(`.ring-${this.rootDom}-${id}`)[0];
+    this.calcAnim(ring0);
+  };
+  setNumber = function (num) {
+    this.refFunc[num]();
+  };
+  render = arg => {
+    return `
+    <div class="ring-${this.rootDom}-${arg} ring${arg}" data-slot="0" data-root="${this.rootDom}">
+      <div class="panel${arg} ring${arg}" data-root-${this.rootDom}-${arg}="" >${this.content[0]}</div>
+      <div class="panel${arg} ring${arg}" data-root-${this.rootDom}-${arg}="" >${this.content[1]}</div>
+      <div class="panel${arg} ring${arg}" data-root-${this.rootDom}-${arg}="" >${this.content[2]}</div>
+      <div class="panel${arg} ring${arg}" data-root-${this.rootDom}-${arg}="" >${this.content[3]}</div>
+      <div class="panel${arg} ring${arg}" data-root-${this.rootDom}-${arg}="" >${this.content[4]}</div>
+      <div class="panel${arg} ring${arg}" data-root-${this.rootDom}-${arg}="" >${this.content[5]}</div>
+      <div class="panel${arg} ring${arg}" data-root-${this.rootDom}-${arg}="" >${this.content[6]}</div>
+      <div class="panel${arg} ring${arg}" data-root-${this.rootDom}-${arg}="" >${this.content[7]}</div>
+      <div class="panel${arg} ring${arg}" data-root-${this.rootDom}-${arg}="" >${this.content[8]}</div>
+      <div class="panel${arg} ring${arg}" data-root-${this.rootDom}-${arg}="" >${this.content[9]}</div>
+    </div>
+    `;
+  };
+}
+exports.SingleCounter = SingleCounter;
+class SafirSlot extends _index.BaseComponent {
+  VALUE = 0;
+  speed = 100;
+  editBtns = false;
+  myConstruct(arg) {
+    if (typeof arg.editBtns !== 'undefined') {
+      this.editBtns = arg.editBtns;
+    }
+    if (typeof arg.content !== 'undefined') {
+      this.content = arg.content;
+    } else {
+      this.content = [];
+    }
+    this.field0 = new SingleCounter({
+      id: '0',
+      rootDom: this.rootDom,
+      content: this.content
+    });
+    this.field1 = new SingleCounter({
+      id: '1',
+      rootDom: this.rootDom,
+      content: this.content
+    });
+    this.field2 = new SingleCounter({
+      id: '2',
+      rootDom: this.rootDom,
+      content: this.content
+    });
+    this.field3 = new SingleCounter({
+      id: '3',
+      rootDom: this.rootDom,
+      content: this.content
+    });
+    this.field4 = new SingleCounter({
+      id: '4',
+      rootDom: this.rootDom,
+      content: this.content
+    });
+    this.field5 = new SingleCounter({
+      id: '5',
+      rootDom: this.rootDom,
+      content: this.content
+    });
+    this.field6 = new SingleCounter({
+      id: '6',
+      rootDom: this.rootDom,
+      content: this.content
+    });
+    this.field7 = new SingleCounter({
+      id: '7',
+      rootDom: this.rootDom,
+      content: this.content
+    });
+    this.dot = new SingleCounter({
+      id: 'D',
+      rootDom: this.rootDom,
+      content: this.content
+    });
+    this.field8 = new SingleCounter({
+      id: '8',
+      rootDom: this.rootDom,
+      content: this.content
+    });
+    this.field9 = new SingleCounter({
+      id: '9',
+      rootDom: this.rootDom,
+      content: this.content
+    });
+    (0, _index.On)(`${this.rootDom}-plus`, e => {
+      this.setSum(this.getCurrentSum() + 1);
+    });
+    (0, _index.On)(`${this.rootDom}-minus`, e => {
+      this.setSum(this.getCurrentSum() - 1);
+    });
+
+    // setTimeout(() => {
+    //   dispatchEvent(new CustomEvent(`${this.rootDom}`, {
+    //     bubbles: true,
+    //     detail: {
+    //       rootDom: this.rootDom,
+    //     }
+    //   }));
+    // }, 1)
+  }
+
+  constructor(arg, classArg) {
+    super();
+    this.initial(arg, classArg);
+    console.log('ARG classArg', classArg);
+    this.rootDom = arg.rootDom;
+    this.myConstruct(arg);
+  }
+  setSlotClass(c) {
+    let setByIndex = (i, c) => {
+      let l0 = document.querySelectorAll(`[data-root-${this.rootDom.toLowerCase()}-${i}]`);
+      for (var x = 0; x < l0.length; x++) {
+        l0[x].classList.add(c);
+      }
+    };
+    for (var x = 0; x < 10; x++) {
+      setByIndex(x, c);
+    }
+    (0, _index.byID)(this.id).classList.add(c);
+  }
+  setSlotColor(c) {
+    const setByIndex = (i, c) => {
+      let l0 = document.querySelectorAll(`[data-root-${this.rootDom.toLowerCase()}-${i}]`);
+      for (var x = 0; x < l0.length; x++) {
+        l0[x].style.background = c;
+      }
+    };
+    for (var x = 0; x < 10; x++) {
+      setByIndex(x, c);
+    }
+    (0, _index.byID)(this.id).style.background = c;
+  }
+  setSum(num) {
+    num = parseFloat(num.toFixed(2));
+    var str = String(num);
+    if (str.indexOf('.') == -1) {
+      str = str + ".00";
+    }
+    if (str.indexOf('.') != -1) {
+      // console.log('Theres decimals intro number str.length;', str.length);
+      (0, _index.byID)(`${this.rootDom}slotD`).style.display = 'block';
+      let delta = 0;
+      if (str.length < 11) {
+        let howMany = 11 - str.length;
+        if (str.split('.')[1].length < 2) howMany--;
+        for (var y = 0; y < howMany; y++) {
+          str = "0" + str;
+          if (str.split('.')[1].length < 2) {
+            console.log('TEST STRRIGHT LINGTH = ', str.split('.')[1].length);
+            str = str + "0";
+            delta = -1;
+          }
+        }
+      }
+      var locHandler = false;
+      for (var x = 10; x >= 0; x--) {
+        if (str[x] != '.') {
+          if (locHandler == true) {
+            this[`field${x}`].setNumber(str[x]);
+          } else {
+            if (x == 11) {
+              this[`field${x - 2}`].setNumber(str[x]);
+            } else {
+              this[`field${x - 1}`].setNumber(str[x]);
+            }
+          }
+        } else {
+          locHandler = true;
+          // console.log('DECIMAL CHAR DETECTED ', str[x])
+        }
+      }
+    }
+
+    this.VALUE = str;
+  }
+  getCurrentSum() {
+    return parseFloat(parseFloat(this.VALUE).toFixed(2));
+  }
+  getNumByPosition(n) {
+    let C = (0, _index.byClass)(`ring-${this.rootDom}-${n}`);
+    console.log('Get individual index value: ', C[x].getAttribute('data-slot'));
+    return C[x].getAttribute('data-slot');
+  }
+  myX = 0;
+  setByTime(newValue, speed) {
+    if (typeof speed !== 'undefined') this.speed = speed;
+    if (newValue.toString().indexOf('.') !== -1 && newValue.toString().split('.')[1].length < 2) {
+      newValue = newValue + "0";
+    }
+    let test = parseFloat((newValue - this.getCurrentSum()).toFixed(2));
+    let X = x => {
+      var CO = 1;
+      if (test < 0) {
+        CO = -1;
+      }
+      if (CO == 1) {
+        if (test < 0.5) {
+          this.setSum(this.getCurrentSum() + 0.01 * CO);
+        } else if (test < 1) {
+          this.setSum(this.getCurrentSum() + 0.10 * CO);
+        } else if (test < 100) {
+          this.setSum(this.getCurrentSum() + 2.12 * CO);
+        } else if (test < 500) {
+          this.setSum(this.getCurrentSum() + 112.12 * CO);
+        } else {
+          this.setSum(this.getCurrentSum() + 212.12 * CO);
+        }
+      } else {
+        if (test > -0.5) {
+          this.setSum(this.getCurrentSum() + 0.01 * CO);
+        } else if (test > -1) {
+          this.setSum(this.getCurrentSum() + 0.10 * CO);
+        } else if (test > -100) {
+          this.setSum(this.getCurrentSum() + 2.12 * CO);
+        } else if (test > -500) {
+          this.setSum(this.getCurrentSum() + 112.12 * CO);
+        } else {
+          this.setSum(this.getCurrentSum() + 212.12 * CO);
+        }
+      }
+    };
+    if (this.getCurrentSum() < newValue && test > 0) {
+      this.myX++;
+      setTimeout(x => {
+        X(x);
+        this.setByTime(newValue);
+      }, this.speed, this.myX);
+    } else if (this.getCurrentSum() > newValue && test < 0) {
+      this.myX++;
+      setTimeout(x => {
+        X(x);
+        this.setByTime(newValue);
+      }, this.speed, this.myX);
+    }
+  }
+  inc = this.clickBind;
+  render = () => {
+    return `
+      <h2 data-label="${this.rootDom}SlotTitle">Safir-Slot-UI-Component</h2>
+      <div id="${this.rootDom}-holder" class="horCenter numAnimHolder" style="background-color:transparent"></div>
+      ${this.editBtns == true ? `<button id="${this.rootDom}-minus" onclick="(${this.inc})('${this.rootDom + "-minus"}')" >-</button>
+         <button id="${this.rootDom}-plus" onclick="(${this.inc})('${this.rootDom + "-plus"}')" >+</button>` : ""}
+    `;
+  };
+}
+exports.SafirSlot = SafirSlot;
+
+},{"../../index":1}],3:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -355,18 +438,14 @@ class BaseComponent {
     setTimeout(() => {
       this.checkProps(arg);
     }, 1);
-    // this.checkProps(arg);
   }
-
   checkProps(arg) {
-    // i not sure but for now it is good.
-    // console.log('Test Base comp [arg]: ', arg)
     for (let key in this) {
       if (testKeys.indexOf(key) === -1) {
-        // console.info('Checking for props: ', key, ' for id:', this.id);
         this.getPropById(key);
       }
     }
+    this.ready();
   }
   ready() {
     console.log(`${this.id} is ready.`);
@@ -377,7 +456,6 @@ class BaseComponent {
       this.text = arg;
       this.id = arg;
     } else if (typeof arg === 'object') {
-      // console.warn('Arg is object! this.id  ', arg.id );
       this.id = arg.id;
       this.text = arg.text || '';
       this.type = arg.type;
@@ -388,17 +466,8 @@ class BaseComponent {
     } else {
       this.rootStyle = "";
     }
-
-    // setTimeout(() => {this.ready();}, 1)
-    this.ready();
   }
   set(arg, newValue, extraData) {
-    // const local = 'data-' + arg;
-    // console.log('test id ', this.id);
-    // const localRoot = getComp(this.id);
-    // // Double care!
-    // localRoot.setAttribute(local, newValue);
-    // localStorage.setItem(arg, newValue);
     let root = this;
     root[arg] = newValue;
     this.update(root, arg, extraData);
@@ -425,6 +494,11 @@ class BaseComponent {
   }
   getPropById(id) {
     let name = this.id + '-' + id;
+    // console.log(
+    //   `%c Safir TEST id='${id}' '${name}' > . %c ☑ [any-props]`,
+    //   colorLog1, colorLog2
+    // );
+
     let testSessionLevel = _utils.LocalSessionMemory.load(name);
     if (testSessionLevel !== false) {
       // no need to exist always REF DOM BY ID.
@@ -443,7 +517,7 @@ class BaseComponent {
       }
       if (typeof this[id] !== 'undefined' && this[id] != testSessionLevel) {
         this[id] = testSessionLevel;
-        console.log(`%c Safir set class prop this.${this[id]} vs ${testSessionLevel} %c ☑ [session-props]`, _utils.colorLog1, _utils.colorLog2);
+        console.log(`%c Safir set class prop ${id}  ${this[id]} vs ${testSessionLevel} %c ☑ [session-props]`, _utils.colorLog1, _utils.colorLog2);
       }
     }
     let testLocalLevel = _utils.LocalStorageMemory.load(name);
@@ -551,7 +625,7 @@ class BaseComponent {
 }
 exports.BaseComponent = BaseComponent;
 
-},{"./utils":10}],7:[function(require,module,exports){
+},{"./utils":7}],4:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -612,7 +686,7 @@ class Horizontal extends Base {
 }
 exports.Horizontal = Horizontal;
 
-},{"../style/base":11}],8:[function(require,module,exports){
+},{"../style/base":8}],5:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -623,7 +697,7 @@ window.On = window.addEventListener;
 const On = window.On;
 exports.On = On;
 
-},{}],9:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -668,8 +742,17 @@ class BaseSafir {
       }
     }));
   };
+  translate = {
+    update: function () {
+      var allTranDoms = document.querySelectorAll('[data-label]');
+      console.log(allTranDoms);
+      allTranDoms.forEach(i => {
+        i.innerHTML = T[i.getAttribute('data-label')];
+      });
+    }
+  };
   loadMultilang = async function (path = 'assets/multilang/en.json') {
-    // console.info("Multilang integrated component... ");
+    console.info("Multilang integrated component... ");
     try {
       const r = await fetch(path, {
         headers: {
@@ -692,6 +775,7 @@ class Safir extends BaseSafir {
     this.subComponents = [];
     this.appRoot = (0, _utils.getComp)("app");
     this.construct();
+    return this;
   }
   ready = () => {
     console.log(`%c App root component is ready ♻. %c 🤘 [safir rocks]`, _utils.colorLog1, _utils.colorLog2);
@@ -713,7 +797,14 @@ class Safir extends BaseSafir {
     let x = document.createElement('div');
     x.setAttribute("id", arg.id);
     // if (rootStyle) x.setAttribute("style", rootStyle);
-    if (rootStyle) x.classList.add(rootStyle);
+    if (rootStyle && rootStyle.indexOf(' ') !== -1) {
+      let classes = rootStyle.split(' ');
+      classes.forEach(c => {
+        if (rootStyle) x.classList.add(c);
+      });
+    } else {
+      if (rootStyle) x.classList.add(rootStyle);
+    }
     this.appRoot?.append(x);
     x.innerHTML = arg.render(arg);
     this.subComponents.push(arg);
@@ -738,7 +829,7 @@ class Safir extends BaseSafir {
 }
 exports.Safir = Safir;
 
-},{"./custom-com":7,"./modifier":8,"./utils":10}],10:[function(require,module,exports){
+},{"./custom-com":4,"./modifier":5,"./utils":7}],7:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -746,7 +837,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.colorLog2 = exports.colorLog1 = exports.byTag = exports.byID = exports.byClass = exports.QueryString = exports.Manager = exports.LocalStorageMemory = exports.LocalSessionMemory = exports.JSON_HEADER = void 0;
 exports.degToRad = degToRad;
-exports.getComp = void 0;
+exports.getComp = exports.emit = void 0;
 exports.isMobile = isMobile;
 exports.loadImage = loadImage;
 exports.radToDeg = radToDeg;
@@ -952,8 +1043,16 @@ const JSON_HEADER = {
   'Content-Type': 'application/json'
 };
 exports.JSON_HEADER = JSON_HEADER;
+const emit = (en, d) => {
+  if (typeof d == 'undefined') d = {};
+  let e = new CustomEvent(en, {
+    detail: d
+  });
+  dispatchEvent(e);
+};
+exports.emit = emit;
 
-},{}],11:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -979,4 +1078,331 @@ let horCenter = `
 `;
 exports.horCenter = horCenter;
 
-},{}]},{},[2]);
+},{}],9:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _safir = require("safir");
+class SimpleBtn extends _safir.BaseComponent {
+  id = '';
+  text = '';
+  ready = () => {};
+  constructor(arg, arg2 = '') {
+    super(arg);
+    this.initial(arg, arg2);
+  }
+  onClick = this.clickBind;
+  render = () => `
+    <button class="fill bg-transparent" onclick="(${this.onClick})('${this.id}')">
+      ${this.text}
+    </button>
+  `;
+}
+exports.default = SimpleBtn;
+
+},{"safir":1}],10:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Avatar = void 0;
+let Avatar = arg => `
+  <img class="avatarProfile" alt="${arg.key1}" src="${arg.apiDomain}/storage${arg.res[arg.key][arg.key1]}"/>
+`;
+exports.Avatar = Avatar;
+
+},{}],11:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _simpleBtn = _interopRequireDefault(require("../components/simple-btn"));
+var _safir = require("safir");
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+class MyHeader extends _safir.BaseComponent {
+  id = 'my-heder';
+  mySybCompBtnYes = new _simpleBtn.default({
+    text: _safir.T.gotoLeaderboard,
+    id: 'gotoLeaderboard'
+  }, 'fill');
+  constructor(arg) {
+    super(arg);
+    this.initial(arg);
+    (0, _safir.On)('gotoLeaderboard', () => {
+      console.info('Trigger Btn gotoLeaderboard', this);
+    });
+    (0, _safir.On)('change-theme', () => {
+      this.changeTheme();
+      console.info('Trigger ChangeTheme integrated.');
+    });
+  }
+  change = this.clickBind;
+
+  //  
+
+  render = () => `
+    <div class="middle h5">
+       <div class="heder">
+          <img src="assets/icons/96.png" class="h5" />
+          <button class="fill" onclick="(${this.change})('change-theme')">
+            Change Theme
+          </button>
+          ${this.mySybCompBtnYes.renderId()}
+       </div>
+    </div>
+  `;
+}
+exports.default = MyHeader;
+
+},{"../components/simple-btn":9,"safir":1}],12:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _safir = require("safir");
+var _simpleBtn = _interopRequireDefault(require("../components/simple-btn"));
+var _imageProfile = require("../direct-render/imageProfile");
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+class RocketCraftingLayout extends _safir.BaseComponent {
+  id = 'my-body';
+  apiDomain = '';
+  loginBtn = new _simpleBtn.default({
+    text: 'Login',
+    id: 'loginBtn'
+  }, 'w30');
+  registerBtn = new _simpleBtn.default({
+    text: 'Register',
+    id: 'registerBtn'
+  }, 'w30');
+
+  // NOTE SAFIRSLOT NEED RENDER DOM IN MOMENT OF INSTANCING
+  testSafirSlot = new _safir.SafirBuildInPlugins.SafirSlot({
+    id: 'userPoints',
+    rootDom: 'userPoints'
+  }, 'fit');
+  nickname = null;
+  email = null;
+  token = null;
+  photo = null;
+  constructor(arg) {
+    super(arg);
+    console.info('[RC ARGS]:', arg);
+    this.apiDomain = arg;
+    (0, _safir.On)('loginBtn', data => {
+      console.info('[login] Trigger Btn', data.detail);
+      this.runApiCall('login');
+    });
+    (0, _safir.On)('registerBtn', data => {
+      console.info('[register] Trigger Btn', data.detail);
+      this.runApiCall('register');
+    });
+  }
+  ready = () => {
+    console.log('RocketCrafting Login form ready.');
+    console.log('RocketCrafting FAST Login form ready. try this', this.email);
+    if (sessionStorage.getItem('my-body-email') != null && sessionStorage.getItem('my-body-token') != null) {
+      this.runApiFastLogin();
+    }
+  };
+  async runApiCall(apiCallFlag) {
+    let route = this.apiDomain || location.origin;
+    const args = {
+      emailField: (0, _safir.byID)('arg-username').value,
+      passwordField: (0, _safir.byID)('arg-password').value
+    };
+    const rawResponse = await fetch(route + '/rocket/' + apiCallFlag, {
+      method: 'POST',
+      headers: _safir.JSON_HEADER,
+      body: JSON.stringify(args)
+    });
+    var response = await rawResponse.json();
+    this.exploreResponse(response);
+  }
+  async runApiFastLogin() {
+    // must be fixed this.email at this moment
+    let route = this.apiDomain || location.origin;
+    const args = {
+      email: _safir.LocalSessionMemory.load('my-body-email'),
+      token: _safir.LocalSessionMemory.load('my-body-token')
+    };
+    const rawResponse = await fetch(route + '/rocket/fast-login', {
+      method: 'POST',
+      headers: _safir.JSON_HEADER,
+      body: JSON.stringify(args)
+    });
+    var response = await rawResponse.json();
+    this.exploreResponse(response);
+  }
+  async runUploadAvatar(apiCallFlag) {
+    let route = this.apiDomain || location.origin;
+    const args = {
+      email: this.email,
+      token: this.token,
+      photo: this.photo
+    };
+    const rawResponse = await fetch(route + '/rocket/' + apiCallFlag, {
+      method: 'POST',
+      headers: _safir.JSON_HEADER,
+      body: JSON.stringify(args)
+    });
+    var response = await rawResponse.json();
+    this.exploreResponse(response);
+  }
+
+  // Best way - intergalactic
+  exploreResponse(res) {
+    (0, _safir.byID)('apiResponse').innerHTML = '';
+    for (let key in res) {
+      let color = 'white';
+      if (typeof res[key] == 'object') {
+        for (let key1 in res[key]) {
+          color = 'color:indigo;text-shadow: 0px 0px 1px #52f2ff, 1px 1px 1px #11ffff;';
+          (0, _safir.byID)('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key][key1]} </div>`;
+        }
+      } else {
+        if (key == 'message' && res[key] == 'Wrong Password') {
+          color = 'color:red;text-shadow: 0px 0px 1px #52f2ff, 1px 1px 1px #11ffff;';
+          (0, _safir.byID)('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]}</div>`;
+        } else if (res[key] == 'USER_LOGGED') {
+          // byID('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]} 👨‍🚀</div>`;
+        }
+      }
+    }
+
+    // how to use sub rerender
+    // console.log(" TEST #######")
+    // simple override
+    this.render = this.accountRender;
+    (0, _safir.getComp)(this.id).innerHTML = this.render();
+
+    // NOTE SAFIRSLOT NEED RENDER DOM IN MOMENT OF INSTANCING
+    this.testSafirSlot = new _safir.SafirBuildInPlugins.SafirSlot({
+      id: 'userPoints',
+      rootDom: 'userPoints'
+    }, 'fit');
+    (0, _safir.emit)('app.trans.update', {
+      f: 'f'
+    });
+    this.accountData(res);
+  }
+
+  // Best way - intergalactic
+  accountData(res) {
+    (0, _safir.byID)('apiResponse').innerHTML = '';
+    for (let key in res) {
+      let color = 'white';
+      if (typeof res[key] == 'object') {
+        for (let key1 in res[key]) {
+          if (key1 == 'profileImage') {
+            (0, _safir.byID)('apiResponse').innerHTML += (0, _imageProfile.Avatar)({
+              key,
+              key1,
+              res,
+              apiDomain: this.apiDomain
+            });
+            // hot to use in runtime attaching:
+            (0, _safir.byID)('apiResponse').innerHTML += `<input type="file" id="avatar" />`;
+            (0, _safir.byID)('apiResponse').innerHTML += `<button type="file" id="uploadAvatar">CHANGE AVATAR</button>`;
+            (0, _safir.byID)('avatar').addEventListener('change', this.handleFileUpload, {
+              passive: true
+            });
+            (0, _safir.byID)('uploadAvatar').addEventListener('click', this.handleAvatarUpload, {
+              passive: true
+            });
+          } else if (key1 == 'points') {
+            this.setPropById(key1, res[key][key1], 1);
+            (0, _safir.byID)('apiResponse').innerHTML += `<div style='${color}' >${key1} : ${res[key][key1]} </div>`;
+            this.testSafirSlot.setByTime(parseFloat(res[key][key1]));
+          } else {
+            this.setPropById(key1, res[key][key1], 1);
+            (0, _safir.byID)('apiResponse').innerHTML += `<div style='${color}' >${key1} : ${res[key][key1]} </div>`;
+          }
+        }
+      } else {
+        if (res[key] == 'USER_LOGGED') {
+          (0, _safir.byID)('apiResponse').innerHTML += `<div style='${color}'> 👨‍🚀</div>`;
+        }
+      }
+    }
+  }
+  handleAvatarUpload = e => {
+    this.runUploadAvatar('profile/upload');
+  };
+  handleFileUpload = e => {
+    const reader = new FileReader();
+    let rawImg;
+    reader.onloadend = () => {
+      rawImg = reader.result;
+      this.setPropById('photo', rawImg);
+    };
+    reader.readAsDataURL(e.target.files[0]);
+  };
+  accountRender = () => `
+    <div class='midWrapper bg-transparent'>
+      <div class='middle'>
+        <h2>Welcome, <h2 id='nickname'>${this.nickname}</h2></h2>
+        <span style="margin-right:50px;">${this.testSafirSlot.renderId()}</span>
+      </div>
+      <span id="apiResponse"></span>
+      <div class='midWrapper bg-transparent'>
+       <h2> Safir Vanilla Virtual DOM</h2>
+      </div>
+    </div>
+  `;
+  render = () => `
+    <div class="paddingtop20 animate-jello2 bg-transparent textCenter">
+      <h2 class='blackText'>RocketCraft Server 🌍</h2>
+       ${this.testSafirSlot.renderId()}
+      <p class="textColorWhite">Backend based on <a href="https://github.com/RocketCraftingServer/rocket-craft-server" >rocketCraftingServer</a></p>
+
+    </div>
+    <div class="midWrapper animate-jello2 bg-transparent">
+        <input class="w30" id='arg-username' type='text' value='zlatnaspirala@gmail.com' />
+        <input class="w30" id='arg-password' type='password' value='12345678' />
+        ${this.loginBtn.renderId()}
+        ${this.registerBtn.renderId()}
+    </div>
+
+    <div class='midWrapper bg-transparent' >
+      <span id="apiResponse"></span>
+    </div>
+  `;
+}
+exports.default = RocketCraftingLayout;
+
+},{"../components/simple-btn":9,"../direct-render/imageProfile":10,"safir":1}],13:[function(require,module,exports){
+"use strict";
+
+var _safir = require("safir");
+var _rocketCraftingAccount = _interopRequireDefault(require("./layouts/rocket-crafting-account"));
+var _heder = _interopRequireDefault(require("./layouts/heder"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+let app = new _safir.Safir();
+(0, _safir.On)("app.trans.update", () => {
+  app.translate.update();
+});
+(0, _safir.On)("app.ready", () => {
+  /**
+   * @description
+   * If you put http://localhost then you 
+   * need to run rocketCreftingServer on local mashine.
+   * You can use also `http://maximumroulette.com`
+   */
+  app.loadComponent(new _heder.default('my-header'));
+  app.loadVanillaComp("vanilla-components/footer.html");
+  let apiDomain = 'https://maximumroulette.com';
+  // let apiDomain = 'http://localhost';
+  app.loadComponent(new _rocketCraftingAccount.default(apiDomain), 'bg-transparent');
+  document.body.classList.add('funnyBg2');
+});
+window.app = app;
+
+},{"./layouts/heder":11,"./layouts/rocket-crafting-account":12,"safir":1}]},{},[13]);

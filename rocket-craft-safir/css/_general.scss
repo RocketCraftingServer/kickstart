@@ -273,27 +273,7 @@ p {
   justify-content: center;
   align-items: center;
 }
-
-.tttWrapper {
-  width: 40vh;
-  height: 40vh;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-}
-
-.tttField {
-  animation: safirBounceAnim 1s ease-in-out 0s 1 normal forwards;
-  background: radial-gradient( #08A09A 0%, #4A00FF 100%);
-  border: solid blueviolet 1px;
-  width: 20vw;
-  height: 20vw;
-  max-width: 190px !important;
-  max-height: 190px !important;
-  font-size: 40px !important;
-}
-
+ 
 .funnyBg1 {
   background: linear-gradient(90deg, #D80909 0%, #A1D024 10%, #00F90B 20%, #1AB5DC 30%, #401CCA 60%, #67145A 70%, #860d74 80%, #d6164f 90%, #d41010 100%);
 }
@@ -310,7 +290,17 @@ p {
 }
 
 .avatarProfile {
-  color:indigo;text-shadow: 0px 0px 1px #52f2ff, 1px 1px 1px #14ffff;
+  color:indigo;
+  border: solid;
+  border-color: linear-gradient(90deg, #D80909 0%, #A1D024 10%, #00F90B 20%, #1AB5DC 30%, #401CCA 60%, #67145A 70%, #860d74 80%, #d6164f 90%, #d41010 100%);
   width: 256px;
   height: 256px;
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.heder {
+  display: flex;
 }

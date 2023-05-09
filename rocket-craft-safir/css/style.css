@@ -260,6 +260,64 @@
   }
 }
 
+.numAnimHolder {
+  overflow: hidden;
+  height: 5vw !important;
+}
+
+.slot {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  place-items: center;
+  min-height: 4vh;
+  -webkit-perspective: 500px;
+          perspective: 500px;
+  -webkit-perspective-origin: 50% 50%;
+          perspective-origin: 50% 50%;
+  margin: 15px;
+  width: inherit;
+}
+
+.ring0, .ring1, .ring2, .ring3, .ring4, .ring5, .ring6, .ring7, .ring8, .ring9 {
+  text-align: center;
+  -webkit-transform-style: preserve-3d;
+          transform-style: preserve-3d;
+  -webkit-transition: -webkit-transform 0.1s;
+  transition: -webkit-transform 0.1s;
+  transition: transform 0.1s;
+  transition: transform 0.1s, -webkit-transform 0.1s;
+  -webkit-transform: rotateX(var(--deg));
+          transform: rotateX(var(--deg));
+}
+
+.panel0, .panel1, .panel2, .panel3, .panel4, .panel5, .panel6, .panel7, .panel8, .panel9 {
+  font-size: 3vw !important;
+  position: absolute;
+  -webkit-transform: translate(-50%, -50%) rotateX(var(--angle)) translateZ(150.5px);
+          transform: translate(-50%, -50%) rotateX(var(--angle)) translateZ(150.5px);
+  border-bottom: 1px solid black;
+  width: 22px;
+}
+
+.theme-light .panel0, .theme-light .panel1, .theme-light .panel2, .theme-light .panel3, .theme-light .panel4, .theme-light .panel5, .theme-light .panel6, .theme-light .panel7, .theme-light .panel8, .theme-light .panel9 {
+  font-family: "Accuratist";
+  color: #023e66;
+  background-color: rgba(255, 88, 88, 0.7) !important;
+}
+
+.theme-dark .panel0, .theme-dark .panel1, .theme-dark .panel2, .theme-dark .panel3, .theme-dark .panel4, .theme-dark .panel5, .theme-dark .panel6, .theme-dark .panel7, .theme-dark .panel8, .theme-dark .panel9 {
+  font-family: "Accuratist";
+  color: white;
+  background-color: rgba(83, 83, 83, 0.7) !important;
+}
+
+.theme-orange .panel0, .theme-orange .panel1, .theme-orange .panel2, .theme-orange .panel3, .theme-orange .panel4, .theme-orange .panel5, .theme-orange .panel6, .theme-orange .panel7, .theme-orange .panel8, .theme-orange .panel9 {
+  font-family: "Accuratist";
+  color: #ff2600;
+  background-color: black !important;
+}
+
 @font-face {
   font-family: Accuratist;
   src: url(../assets/fonts/Accuratist.ttf);
@@ -291,13 +349,13 @@ body {
 .theme-light body {
   font-family: "Accuratist";
   color: #023e66;
-  background-color: transparent;
+  background-color: rgba(255, 88, 88, 0.7);
 }
 
 .theme-dark body {
   font-family: "Accuratist";
   color: white;
-  background-color: #535353;
+  background-color: rgba(83, 83, 83, 0.7);
 }
 
 .theme-orange body {
@@ -348,13 +406,13 @@ div {
 .theme-light div {
   font-family: "Accuratist";
   color: #023e66;
-  background-color: transparent;
+  background-color: rgba(255, 88, 88, 0.7);
 }
 
 .theme-dark div {
   font-family: "Accuratist";
   color: white;
-  background-color: #535353;
+  background-color: rgba(83, 83, 83, 0.7);
 }
 
 .theme-orange div {
@@ -387,14 +445,14 @@ button {
 
 .theme-light button {
   color: #023e66;
-  background-color: transparent;
+  background-color: rgba(255, 88, 88, 0.7);
   border: 1px solid #0094b5;
   font-size: 2vw;
 }
 
 .theme-dark button {
   color: white;
-  background-color: #535353;
+  background-color: rgba(83, 83, 83, 0.7);
   border: 1px solid #aaa;
   font-size: 2vw;
 }
@@ -429,6 +487,7 @@ button:active {
 }
 
 input {
+  mix-blend-mode: color-burn;
   padding: 1px 1px 1px 1px;
   margin: 1px 1px 1px 1px;
 }
@@ -436,7 +495,7 @@ input {
 .theme-light input {
   font-family: "Accuratist";
   color: #023e66;
-  background-color: transparent;
+  background-color: rgba(255, 88, 88, 0.7);
   border: 1px solid #7c19ff;
   font-size: 2vw;
 }
@@ -444,7 +503,7 @@ input {
 .theme-dark input {
   font-family: "Accuratist";
   color: white;
-  background-color: #535353;
+  background-color: rgba(83, 83, 83, 0.7);
   border: 1px solid #ff8819;
   font-size: 2vw;
 }
@@ -591,12 +650,12 @@ p {
 
 .theme-light .verCenter {
   color: #023e66;
-  background-color: transparent;
+  background-color: rgba(255, 88, 88, 0.7);
 }
 
 .theme-dark .verCenter {
   color: white;
-  background-color: #535353;
+  background-color: rgba(83, 83, 83, 0.7);
 }
 
 .theme-orange .verCenter {
@@ -624,12 +683,12 @@ p {
 
 .theme-light .horCenter {
   color: #023e66;
-  background-color: transparent;
+  background-color: rgba(255, 88, 88, 0.7);
 }
 
 .theme-dark .horCenter {
   color: white;
-  background-color: #535353;
+  background-color: rgba(83, 83, 83, 0.7);
 }
 
 .theme-orange .horCenter {
@@ -717,36 +776,6 @@ p {
           align-items: center;
 }
 
-.tttWrapper {
-  width: 40vh;
-  height: 40vh;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: row;
-          flex-direction: row;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-}
-
-.tttField {
-  -webkit-animation: safirBounceAnim 1s ease-in-out 0s 1 normal forwards;
-          animation: safirBounceAnim 1s ease-in-out 0s 1 normal forwards;
-  background: radial-gradient(#08A09A 0%, #4A00FF 100%);
-  border: solid blueviolet 1px;
-  width: 20vw;
-  height: 20vw;
-  max-width: 190px !important;
-  max-height: 190px !important;
-  font-size: 40px !important;
-}
-
 .funnyBg1 {
   background: -webkit-gradient(linear, left top, right top, from(#D80909), color-stop(10%, #A1D024), color-stop(20%, #00F90B), color-stop(30%, #1AB5DC), color-stop(60%, #401CCA), color-stop(70%, #67145A), color-stop(80%, #860d74), color-stop(90%, #d6164f), to(#d41010));
   background: linear-gradient(90deg, #D80909 0%, #A1D024 10%, #00F90B 20%, #1AB5DC 30%, #401CCA 60%, #67145A 70%, #860d74 80%, #d6164f 90%, #d41010 100%);
@@ -765,8 +794,19 @@ p {
 
 .avatarProfile {
   color: indigo;
-  text-shadow: 0px 0px 1px #52f2ff, 1px 1px 1px #14ffff;
+  border: solid;
+  border-color: linear-gradient(90deg, #D80909 0%, #A1D024 10%, #00F90B 20%, #1AB5DC 30%, #401CCA 60%, #67145A 70%, #860d74 80%, #d6164f 90%, #d41010 100%);
   width: 256px;
   height: 256px;
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.heder {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
 }
 /*# sourceMappingURL=style.css.map */
