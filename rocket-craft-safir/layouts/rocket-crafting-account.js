@@ -1,6 +1,7 @@
 import {BaseComponent, On, emit, JSON_HEADER, byID, getComp, LocalSessionMemory, SafirBuildInPlugins} from "safir";
 import SimpleBtn from "../components/simple-btn";
 import {Avatar} from "../direct-render/imageProfile";
+import LeaderBoard from "../components/leaderboard";
 
 export default class RocketCraftingLayout extends BaseComponent {
 
@@ -9,9 +10,10 @@ export default class RocketCraftingLayout extends BaseComponent {
   apiDomain = '';
   loginBtn = new SimpleBtn({text: 'Login', id: 'loginBtn'}, 'w30');
   registerBtn = new SimpleBtn({text: 'Register', id: 'registerBtn'}, 'w30');
+  leaderBoard = new LeaderBoard({id: 'leaderboard'});
 
   // NOTE SAFIRSLOT NEED RENDER DOM IN MOMENT OF INSTANCING
-  testSafirSlot = new SafirBuildInPlugins.SafirSlot({id : 'userPoints', rootDom: 'userPoints'}, 'fit');
+  testSafirSlot = new SafirBuildInPlugins.SafirSlot({id: 'userPoints', rootDom: 'userPoints'}, 'fit');
 
   nickname = null;
   email = null;
@@ -35,11 +37,18 @@ export default class RocketCraftingLayout extends BaseComponent {
   ready = () => {
     console.log('RocketCrafting Login form ready.')
 
-    console.log('RocketCrafting FAST Login form ready. try this', this.email)
-
     if(sessionStorage.getItem('my-body-email') != null && sessionStorage.getItem('my-body-token') != null) {
       this.runApiFastLogin();
+      console.log('RocketCrafting FAST Login form ready. try ')
     }
+
+    // from heder
+    On('gotoLeaderboard', () => {
+      console.info('Trigger Btn gotoLeaderboard!!!!!!');
+      this.render = this.leaderBoardRender;
+      getComp(this.id).innerHTML = this.render();
+    });
+
   }
 
   async runApiCall(apiCallFlag) {
@@ -116,12 +125,12 @@ export default class RocketCraftingLayout extends BaseComponent {
     getComp(this.id).innerHTML = this.render();
 
     // NOTE SAFIRSLOT NEED RENDER DOM IN MOMENT OF INSTANCING
-    this.testSafirSlot = new SafirBuildInPlugins.SafirSlot({id : 'userPoints', rootDom: 'userPoints'}, 'fit');
+    this.testSafirSlot = new SafirBuildInPlugins.SafirSlot({id: 'userPoints', rootDom: 'userPoints'}, 'fit');
 
-    emit('app.trans.update', { f:'f'})
+    emit('app.trans.update', {f: 'f'})
 
     this.accountData(res);
-    
+
   }
 
   // Best way - intergalactic
@@ -143,11 +152,11 @@ export default class RocketCraftingLayout extends BaseComponent {
             byID('apiResponse').innerHTML += `<button type="file" id="uploadAvatar">CHANGE AVATAR</button>`;
             byID('avatar').addEventListener('change', this.handleFileUpload, {passive: true});
             byID('uploadAvatar').addEventListener('click', this.handleAvatarUpload, {passive: true});
-          } else if (key1== 'points') {
+          } else if(key1 == 'points') {
             this.setPropById(key1, res[key][key1], 1);
             byID('apiResponse').innerHTML += `<div style='${color}' >${key1} : ${res[key][key1]} </div>`;
             this.testSafirSlot.setByTime(parseFloat(res[key][key1]));
-          }else {
+          } else {
             this.setPropById(key1, res[key][key1], 1);
             byID('apiResponse').innerHTML += `<div style='${color}' >${key1} : ${res[key][key1]} </div>`;
           }
@@ -173,6 +182,8 @@ export default class RocketCraftingLayout extends BaseComponent {
     }
     reader.readAsDataURL(e.target.files[0]);
   }
+
+  leaderBoardRender = () => this.leaderBoard.renderId();
 
   accountRender = () => `
     <div class='midWrapper bg-transparent'>

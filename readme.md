@@ -7,16 +7,14 @@
 ## This is all you need for standalone application supported with best custom clear code on both side (front/backend).
 ## RCS ia alias for RocketCraftingServer
 
-## Start
+## Install and start watch
 ```js
 npm i
-npm run demo5
+npm run rock
 ```
 
 ## Hosting
-
 If you wanna self hosting:
-
 HTTP
 ```js
 npm run host

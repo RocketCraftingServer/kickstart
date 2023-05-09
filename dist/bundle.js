@@ -1086,6 +1086,32 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _safir = require("safir");
+class LeaderBoard extends _safir.BaseComponent {
+  id = '';
+  text = '';
+  items = [];
+  ready = () => {};
+  constructor(arg, arg2 = '') {
+    super(arg);
+    this.initial(arg, arg2);
+  }
+  onClick = this.clickBind;
+  render = () => `
+    <div class="fill bg-transparent">
+      ${this.text}
+    </div>
+  `;
+}
+exports.default = LeaderBoard;
+
+},{"safir":1}],10:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _safir = require("safir");
 class SimpleBtn extends _safir.BaseComponent {
   id = '';
   text = '';
@@ -1103,7 +1129,7 @@ class SimpleBtn extends _safir.BaseComponent {
 }
 exports.default = SimpleBtn;
 
-},{"safir":1}],10:[function(require,module,exports){
+},{"safir":1}],11:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1115,7 +1141,7 @@ let Avatar = arg => `
 `;
 exports.Avatar = Avatar;
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1160,7 +1186,7 @@ class MyHeader extends _safir.BaseComponent {
 }
 exports.default = MyHeader;
 
-},{"../components/simple-btn":9,"safir":1}],12:[function(require,module,exports){
+},{"../components/simple-btn":10,"safir":1}],13:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1170,6 +1196,7 @@ exports.default = void 0;
 var _safir = require("safir");
 var _simpleBtn = _interopRequireDefault(require("../components/simple-btn"));
 var _imageProfile = require("../direct-render/imageProfile");
+var _leaderboard = _interopRequireDefault(require("../components/leaderboard"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 class RocketCraftingLayout extends _safir.BaseComponent {
   id = 'my-body';
@@ -1182,6 +1209,9 @@ class RocketCraftingLayout extends _safir.BaseComponent {
     text: 'Register',
     id: 'registerBtn'
   }, 'w30');
+  leaderBoard = new _leaderboard.default({
+    id: 'leaderboard'
+  });
 
   // NOTE SAFIRSLOT NEED RENDER DOM IN MOMENT OF INSTANCING
   testSafirSlot = new _safir.SafirBuildInPlugins.SafirSlot({
@@ -1207,10 +1237,17 @@ class RocketCraftingLayout extends _safir.BaseComponent {
   }
   ready = () => {
     console.log('RocketCrafting Login form ready.');
-    console.log('RocketCrafting FAST Login form ready. try this', this.email);
     if (sessionStorage.getItem('my-body-email') != null && sessionStorage.getItem('my-body-token') != null) {
       this.runApiFastLogin();
+      console.log('RocketCrafting FAST Login form ready. try ');
     }
+
+    // from heder
+    (0, _safir.On)('gotoLeaderboard', () => {
+      console.info('Trigger Btn gotoLeaderboard!!!!!!');
+      this.render = this.leaderBoardRender;
+      (0, _safir.getComp)(this.id).innerHTML = this.render();
+    });
   };
   async runApiCall(apiCallFlag) {
     let route = this.apiDomain || location.origin;
@@ -1345,6 +1382,7 @@ class RocketCraftingLayout extends _safir.BaseComponent {
     };
     reader.readAsDataURL(e.target.files[0]);
   };
+  leaderBoardRender = () => this.leaderBoard.renderId();
   accountRender = () => `
     <div class='midWrapper bg-transparent'>
       <div class='middle'>
@@ -1378,7 +1416,7 @@ class RocketCraftingLayout extends _safir.BaseComponent {
 }
 exports.default = RocketCraftingLayout;
 
-},{"../components/simple-btn":9,"../direct-render/imageProfile":10,"safir":1}],13:[function(require,module,exports){
+},{"../components/leaderboard":9,"../components/simple-btn":10,"../direct-render/imageProfile":11,"safir":1}],14:[function(require,module,exports){
 "use strict";
 
 var _safir = require("safir");
@@ -1405,4 +1443,4 @@ let app = new _safir.Safir();
 });
 window.app = app;
 
-},{"./layouts/heder":11,"./layouts/rocket-crafting-account":12,"safir":1}]},{},[13]);
+},{"./layouts/heder":12,"./layouts/rocket-crafting-account":13,"safir":1}]},{},[14]);
