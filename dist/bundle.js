@@ -1086,6 +1086,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _safir = require("safir");
+var _leaderboard = require("../direct-render/leaderboard");
 class LeaderBoard extends _safir.BaseComponent {
   id = '';
   text = '';
@@ -1096,15 +1097,39 @@ class LeaderBoard extends _safir.BaseComponent {
     this.initial(arg, arg2);
   }
   onClick = this.clickBind;
+  setData = res => {
+    (0, _safir.byID)('leaderBoardResponse').innerHTML = '';
+    console.log('RocketCrafting Login form ready.', res);
+    for (let key in res) {
+      let color = 'white';
+      if (typeof res[key] == 'object') {
+        for (let key1 in res[key]) {
+          let prepare = [];
+          for (let key2 in res[key][key1]) {
+            prepare.push({
+              key: key2,
+              value: res[key][key1][key2]
+            });
+          }
+          (0, _safir.byID)('leaderBoardResponse').innerHTML += (0, _leaderboard.LeaderBoardRender)(prepare);
+        }
+      } else {
+        if (key == 'message') {
+          console.info("Leaderboard:", res[key]);
+        } else if (res[key]) {
+          (0, _safir.byID)('leaderBoardResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]} 👨‍🚀</div>`;
+        }
+      }
+    }
+  };
   render = () => `
-    <div class="fill bg-transparent">
-      ${this.text}
+    <div id="leaderBoardResponse" class="h50 verCenter overflowAuto">
     </div>
   `;
 }
 exports.default = LeaderBoard;
 
-},{"safir":1}],10:[function(require,module,exports){
+},{"../direct-render/leaderboard":12,"safir":1}],10:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1142,6 +1167,20 @@ let Avatar = arg => `
 exports.Avatar = Avatar;
 
 },{}],12:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.LeaderBoardRender = void 0;
+let LeaderBoardRender = arg => `
+  <div class="horCenter h5">
+    ${arg.map(item => `<div class="">${item.key} : ${item.value}</div>`).join('')}
+  </div>
+`;
+exports.LeaderBoardRender = LeaderBoardRender;
+
+},{}],13:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1186,7 +1225,7 @@ class MyHeader extends _safir.BaseComponent {
 }
 exports.default = MyHeader;
 
-},{"../components/simple-btn":10,"safir":1}],13:[function(require,module,exports){
+},{"../components/simple-btn":10,"safir":1}],14:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1211,13 +1250,11 @@ class RocketCraftingLayout extends _safir.BaseComponent {
   }, 'w30');
   leaderBoard = new _leaderboard.default({
     id: 'leaderboard'
-  });
+  }, 'middle h50 overflowAuto');
 
   // NOTE SAFIRSLOT NEED RENDER DOM IN MOMENT OF INSTANCING
-  testSafirSlot = new _safir.SafirBuildInPlugins.SafirSlot({
-    id: 'userPoints',
-    rootDom: 'userPoints'
-  }, 'fit');
+  testSafirSlot = null; // new SafirBuildInPlugins.SafirSlot({id: 'userPoints', rootDom: 'userPoints'}, 'fit');
+
   nickname = null;
   email = null;
   token = null;
@@ -1228,28 +1265,26 @@ class RocketCraftingLayout extends _safir.BaseComponent {
     this.apiDomain = arg;
     (0, _safir.On)('loginBtn', data => {
       console.info('[login] Trigger Btn', data.detail);
-      this.runApiCall('login');
+      this.apiAccount('login');
     });
     (0, _safir.On)('registerBtn', data => {
       console.info('[register] Trigger Btn', data.detail);
-      this.runApiCall('register');
+      this.apiAccount('register');
     });
   }
   ready = () => {
-    console.log('RocketCrafting Login form ready.');
     if (sessionStorage.getItem('my-body-email') != null && sessionStorage.getItem('my-body-token') != null) {
       this.runApiFastLogin();
       console.log('RocketCrafting FAST Login form ready. try ');
     }
-
-    // from heder
     (0, _safir.On)('gotoLeaderboard', () => {
       console.info('Trigger Btn gotoLeaderboard!!!!!!');
+      this.runApiLeaderBoard();
       this.render = this.leaderBoardRender;
       (0, _safir.getComp)(this.id).innerHTML = this.render();
     });
   };
-  async runApiCall(apiCallFlag) {
+  async apiAccount(apiCallFlag) {
     let route = this.apiDomain || location.origin;
     const args = {
       emailField: (0, _safir.byID)('arg-username').value,
@@ -1277,6 +1312,21 @@ class RocketCraftingLayout extends _safir.BaseComponent {
     });
     var response = await rawResponse.json();
     this.exploreResponse(response);
+  }
+  async runApiLeaderBoard() {
+    // must be fixed this.email at this moment
+    let route = this.apiDomain || location.origin;
+    const args = {
+      email: _safir.LocalSessionMemory.load('my-body-email'),
+      token: _safir.LocalSessionMemory.load('my-body-token')
+    };
+    const rawResponse = await fetch(route + '/rocket/leaderboard', {
+      method: 'POST',
+      headers: _safir.JSON_HEADER,
+      body: JSON.stringify(args)
+    });
+    var response = await rawResponse.json();
+    this.leaderBoard.setData(response);
   }
   async runUploadAvatar(apiCallFlag) {
     let route = this.apiDomain || location.origin;
@@ -1314,17 +1364,16 @@ class RocketCraftingLayout extends _safir.BaseComponent {
       }
     }
 
-    // how to use sub rerender
-    // console.log(" TEST #######")
-    // simple override
-    this.render = this.accountRender;
-    (0, _safir.getComp)(this.id).innerHTML = this.render();
-
     // NOTE SAFIRSLOT NEED RENDER DOM IN MOMENT OF INSTANCING
     this.testSafirSlot = new _safir.SafirBuildInPlugins.SafirSlot({
       id: 'userPoints',
       rootDom: 'userPoints'
     }, 'fit');
+    // how to use sub rerender
+    // console.log(" TEST #######")
+    // simple override
+    this.render = this.accountRender;
+    (0, _safir.getComp)(this.id).innerHTML = this.render();
     (0, _safir.emit)('app.trans.update', {
       f: 'f'
     });
@@ -1397,8 +1446,7 @@ class RocketCraftingLayout extends _safir.BaseComponent {
   `;
   render = () => `
     <div class="paddingtop20 animate-jello2 bg-transparent textCenter">
-      <h2 class='blackText'>RocketCraft Server 🌍</h2>
-       ${this.testSafirSlot.renderId()}
+      <h2 class='blackText'>RocketCraft Server Free gameplays 🌍</h2>
       <p class="textColorWhite">Backend based on <a href="https://github.com/RocketCraftingServer/rocket-craft-server" >rocketCraftingServer</a></p>
 
     </div>
@@ -1416,7 +1464,7 @@ class RocketCraftingLayout extends _safir.BaseComponent {
 }
 exports.default = RocketCraftingLayout;
 
-},{"../components/leaderboard":9,"../components/simple-btn":10,"../direct-render/imageProfile":11,"safir":1}],14:[function(require,module,exports){
+},{"../components/leaderboard":9,"../components/simple-btn":10,"../direct-render/imageProfile":11,"safir":1}],15:[function(require,module,exports){
 "use strict";
 
 var _safir = require("safir");
@@ -1443,4 +1491,4 @@ let app = new _safir.Safir();
 });
 window.app = app;
 
-},{"./layouts/heder":12,"./layouts/rocket-crafting-account":13,"safir":1}]},{},[14]);
+},{"./layouts/heder":13,"./layouts/rocket-crafting-account":14,"safir":1}]},{},[15]);

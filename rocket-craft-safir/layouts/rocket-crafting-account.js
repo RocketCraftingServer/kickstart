@@ -10,10 +10,10 @@ export default class RocketCraftingLayout extends BaseComponent {
   apiDomain = '';
   loginBtn = new SimpleBtn({text: 'Login', id: 'loginBtn'}, 'w30');
   registerBtn = new SimpleBtn({text: 'Register', id: 'registerBtn'}, 'w30');
-  leaderBoard = new LeaderBoard({id: 'leaderboard'});
+  leaderBoard = new LeaderBoard({id: 'leaderboard'}, 'middle h50 overflowAuto');
 
   // NOTE SAFIRSLOT NEED RENDER DOM IN MOMENT OF INSTANCING
-  testSafirSlot = new SafirBuildInPlugins.SafirSlot({id: 'userPoints', rootDom: 'userPoints'}, 'fit');
+  testSafirSlot = null;// new SafirBuildInPlugins.SafirSlot({id: 'userPoints', rootDom: 'userPoints'}, 'fit');
 
   nickname = null;
   email = null;
@@ -26,32 +26,28 @@ export default class RocketCraftingLayout extends BaseComponent {
     this.apiDomain = arg;
     On('loginBtn', (data) => {
       console.info('[login] Trigger Btn', (data).detail);
-      this.runApiCall('login');
+      this.apiAccount('login');
     });
     On('registerBtn', (data) => {
       console.info('[register] Trigger Btn', (data).detail);
-      this.runApiCall('register');
+      this.apiAccount('register');
     });
   }
 
   ready = () => {
-    console.log('RocketCrafting Login form ready.')
-
     if(sessionStorage.getItem('my-body-email') != null && sessionStorage.getItem('my-body-token') != null) {
       this.runApiFastLogin();
       console.log('RocketCrafting FAST Login form ready. try ')
     }
-
-    // from heder
     On('gotoLeaderboard', () => {
       console.info('Trigger Btn gotoLeaderboard!!!!!!');
+      this.runApiLeaderBoard();
       this.render = this.leaderBoardRender;
       getComp(this.id).innerHTML = this.render();
     });
-
   }
 
-  async runApiCall(apiCallFlag) {
+  async apiAccount(apiCallFlag) {
     let route = this.apiDomain || location.origin;
     const args = {
       emailField: byID('arg-username').value,
@@ -82,6 +78,22 @@ export default class RocketCraftingLayout extends BaseComponent {
     this.exploreResponse(response);
   }
 
+  async runApiLeaderBoard() {
+    // must be fixed this.email at this moment
+    let route = this.apiDomain || location.origin;
+    const args = {
+      email: LocalSessionMemory.load('my-body-email'),
+      token: LocalSessionMemory.load('my-body-token')
+    }
+    const rawResponse = await fetch(route + '/rocket/leaderboard', {
+      method: 'POST',
+      headers: JSON_HEADER,
+      body: JSON.stringify(args)
+    })
+    var response = await rawResponse.json();
+    this.leaderBoard.setData(response);
+  }
+
   async runUploadAvatar(apiCallFlag) {
     let route = this.apiDomain || location.origin;
     const args = {
@@ -99,7 +111,7 @@ export default class RocketCraftingLayout extends BaseComponent {
   }
 
   // Best way - intergalactic
-  exploreResponse(res,) {
+  exploreResponse(res) {
     byID('apiResponse').innerHTML = '';
     for(let key in res) {
       let color = 'white';
@@ -118,19 +130,15 @@ export default class RocketCraftingLayout extends BaseComponent {
       }
     }
 
+    // NOTE SAFIRSLOT NEED RENDER DOM IN MOMENT OF INSTANCING
+    this.testSafirSlot = new SafirBuildInPlugins.SafirSlot({id: 'userPoints', rootDom: 'userPoints'}, 'fit');
     // how to use sub rerender
     // console.log(" TEST #######")
     // simple override
     this.render = this.accountRender;
     getComp(this.id).innerHTML = this.render();
-
-    // NOTE SAFIRSLOT NEED RENDER DOM IN MOMENT OF INSTANCING
-    this.testSafirSlot = new SafirBuildInPlugins.SafirSlot({id: 'userPoints', rootDom: 'userPoints'}, 'fit');
-
-    emit('app.trans.update', {f: 'f'})
-
+    emit('app.trans.update', {f: 'f'});
     this.accountData(res);
-
   }
 
   // Best way - intergalactic
@@ -200,8 +208,7 @@ export default class RocketCraftingLayout extends BaseComponent {
 
   render = () => `
     <div class="paddingtop20 animate-jello2 bg-transparent textCenter">
-      <h2 class='blackText'>RocketCraft Server 🌍</h2>
-       ${this.testSafirSlot.renderId()}
+      <h2 class='blackText'>RocketCraft Server Free gameplays 🌍</h2>
       <p class="textColorWhite">Backend based on <a href="https://github.com/RocketCraftingServer/rocket-craft-server" >rocketCraftingServer</a></p>
 
     </div>
@@ -215,5 +222,6 @@ export default class RocketCraftingLayout extends BaseComponent {
     <div class='midWrapper bg-transparent' >
       <span id="apiResponse"></span>
     </div>
-  `
+  `;
+
 }

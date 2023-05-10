@@ -227,6 +227,11 @@ p {
   }
 }
 
+.overflowAuto {
+  display: block;
+  overflow: auto;
+}
+
 .fit {
   width: fit-content !important;
   height: fit-content !important;
@@ -240,8 +245,12 @@ p {
   height: 95vh;
 }
 
-.h50 {
+.h90 {
   height: 90vh;
+}
+
+.h50 {
+  height: 50vh;
 }
 
 .h5 {
