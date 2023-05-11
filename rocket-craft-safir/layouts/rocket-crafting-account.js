@@ -83,7 +83,11 @@ export default class RocketCraftingLayout extends BaseComponent {
     let route = this.apiDomain || location.origin;
     const args = {
       email: LocalSessionMemory.load('my-body-email'),
-      token: LocalSessionMemory.load('my-body-token')
+      token: LocalSessionMemory.load('my-body-token'),
+      criterium: {
+        description: 'list-all',
+        moreExploreUsers: 0
+      }
     }
     const rawResponse = await fetch(route + '/rocket/leaderboard', {
       method: 'POST',

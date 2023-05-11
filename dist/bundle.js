@@ -1091,13 +1091,29 @@ class LeaderBoard extends _safir.BaseComponent {
   id = '';
   text = '';
   items = [];
-  ready = () => {};
+  ready = () => {
+    this.setPropById('currentPagIndex', 0, 1);
+  };
   constructor(arg, arg2 = '') {
     super(arg);
     this.initial(arg, arg2);
+    this.currentPagIndex = 0;
+    On('nextClick', () => {
+      console.log("NEXT CLICK");
+      let n = this.currentPagIndex + 1;
+      this.setPropById('currentPagIndex', n, 1);
+    });
+    On('prevClick', () => {
+      console.log("PREV CLICK");
+    });
   }
-  onClick = this.clickBind;
+  onNext = this.clickBind;
+  onPrev = this.clickBind;
   setData = res => {
+    for (var x = 0; x < (0, _safir.byID)('leaderBoardResponse').children.length; x++) {
+      console.log('WHAT INSIDE', (0, _safir.byID)('leaderBoardResponse').children[x]);
+    }
+    ;
     (0, _safir.byID)('leaderBoardResponse').innerHTML = '';
     console.log('RocketCrafting Login form ready.', res);
     for (let key in res) {
@@ -1126,7 +1142,14 @@ class LeaderBoard extends _safir.BaseComponent {
   };
   render = () => `
     <div id="leaderBoardResponse" class="h50 verCenter overflowAuto fit">
+      
     </div>
+    <div id="leaderBoardPaginator" class="horCenter fit">
+      <button onclick="(${this.onPrev})('prevClick')" >PREV</button>
+      <span id="currentPagIndex"></span>
+      <button onclick="(${this.onNext})('nextClick')" >NEXT</button>
+    </div>
+    
   `;
 }
 exports.default = LeaderBoard;
@@ -1330,7 +1353,11 @@ class RocketCraftingLayout extends _safir.BaseComponent {
     let route = this.apiDomain || location.origin;
     const args = {
       email: _safir.LocalSessionMemory.load('my-body-email'),
-      token: _safir.LocalSessionMemory.load('my-body-token')
+      token: _safir.LocalSessionMemory.load('my-body-token'),
+      criterium: {
+        description: 'list-all',
+        moreExploreUsers: 0
+      }
     };
     const rawResponse = await fetch(route + '/rocket/leaderboard', {
       method: 'POST',
