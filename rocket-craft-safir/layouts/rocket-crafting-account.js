@@ -131,7 +131,7 @@ export default class RocketCraftingLayout extends BaseComponent {
     }
 
     // NOTE SAFIRSLOT NEED RENDER DOM IN MOMENT OF INSTANCING
-    this.testSafirSlot = new SafirBuildInPlugins.SafirSlot({id: 'userPoints', rootDom: 'userPoints'}, 'fit');
+    this.testSafirSlot = new SafirBuildInPlugins.SafirSlot({id: 'userPoints', rootDom: 'userPoints'}, 'horCenter');
     // how to use sub rerender
     // console.log(" TEST #######")
     // simple override
@@ -201,7 +201,7 @@ export default class RocketCraftingLayout extends BaseComponent {
       </div>
       <span id="apiResponse"></span>
       <div class='midWrapper bg-transparent'>
-       <h2> Safir Vanilla Virtual DOM</h2>
+      <h5> <small> Safir VS RocketCraftingServer </small></h5>
       </div>
     </div>
   `;

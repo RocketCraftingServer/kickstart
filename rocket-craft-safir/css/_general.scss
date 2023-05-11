@@ -41,7 +41,7 @@ a:hover {
   color: #f58843;
 }
 
-h2 {
+h2 , h5 {
   @include themify($themes) {
     cursor: default;
     text-shadow: themed('textShadow');
@@ -179,7 +179,7 @@ p {
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  width: 100%;
+  width: 99.9%;
   height: auto;
 
   &.column {
@@ -227,9 +227,15 @@ p {
   }
 }
 
+#leaderBoardResponse{
+  width: 99.5% !important;
+  padding: 50px;
+}
+
 .overflowAuto {
   display: block;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .fit {
@@ -287,11 +293,18 @@ p {
   background: linear-gradient(90deg, #D80909 0%, #A1D024 10%, #00F90B 20%, #1AB5DC 30%, #401CCA 60%, #67145A 70%, #860d74 80%, #d6164f 90%, #d41010 100%);
 }
 
-.myPadding {
-  padding-left: 15px;
-  padding-right: 15px;
-  padding-top: 15px;
-  padding-bottom: 15px;
+.myPaddingList {
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 25px;
+  padding-bottom: 25px;
+}
+
+.myMarginList {
+  margin-left: 5px;
+  margin-right: 5px;
+  margin-top: 15px;
+  margin-bottom: 15px;
 }
 
 .blackText {

@@ -7,7 +7,9 @@ import {
 export default class MyHeader extends BaseComponent {
 
   id = 'my-heder';
-  mySybCompBtnYes = new SimpleButton({ text: T.gotoLeaderboard, id: 'gotoLeaderboard'}, 'fill');
+  gotoLeaderboardBtn = new SimpleButton({ text: T.gotoLeaderboard, id: 'gotoLeaderboard'}, 'fill');
+  gotoHomePage = new SimpleButton({ text: 'Home', id: 'gotoHome'}, 'fill');
+  gotoAccount = new SimpleButton({ text: 'Account', id: 'gotoAccount'}, 'fill');
 
   constructor(arg) {
     super(arg);
@@ -26,8 +28,6 @@ export default class MyHeader extends BaseComponent {
 
   change = this.clickBind;
 
-  //  
-
   render = () => `
     <div class="middle h5">
        <div class="heder">
@@ -35,7 +35,9 @@ export default class MyHeader extends BaseComponent {
           <button class="fill" onclick="(${this.change})('change-theme')">
             Change Theme
           </button>
-          ${(this.mySybCompBtnYes).renderId()}
+          ${(this.gotoLeaderboardBtn).renderId()}
+          ${(this.gotoAccount).renderId()}
+          ${(this.gotoHomePage).renderId()}
        </div>
     </div>
   `

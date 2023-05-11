@@ -302,7 +302,7 @@
 
 .theme-light .panel0, .theme-light .panel1, .theme-light .panel2, .theme-light .panel3, .theme-light .panel4, .theme-light .panel5, .theme-light .panel6, .theme-light .panel7, .theme-light .panel8, .theme-light .panel9 {
   font-family: "Accuratist";
-  color: #023e66;
+  color: #ffffff;
   background-color: rgba(255, 88, 88, 0.7) !important;
 }
 
@@ -348,7 +348,7 @@ body {
 
 .theme-light body {
   font-family: "Accuratist";
-  color: #023e66;
+  color: #ffffff;
   background-color: rgba(255, 88, 88, 0.7);
 }
 
@@ -372,30 +372,30 @@ a:hover {
   color: #f58843;
 }
 
-.theme-light h2 {
+.theme-light h2, .theme-light h5 {
   cursor: default;
   text-shadow: 0px 0px 1px #52f2ff;
 }
 
-.theme-light h2:hover {
+.theme-light h2:hover, .theme-light h5:hover {
   background: #49d8ff14;
 }
 
-.theme-dark h2 {
+.theme-dark h2, .theme-dark h5 {
   cursor: default;
   text-shadow: 0px 0px 1px #52f2ff;
 }
 
-.theme-dark h2:hover {
+.theme-dark h2:hover, .theme-dark h5:hover {
   background: #ff000014;
 }
 
-.theme-orange h2 {
+.theme-orange h2, .theme-orange h5 {
   cursor: default;
   text-shadow: 0px 0px 1px #52f2ff;
 }
 
-.theme-orange h2:hover {
+.theme-orange h2:hover, .theme-orange h5:hover {
   background: #ff000014;
 }
 
@@ -405,7 +405,7 @@ div {
 
 .theme-light div {
   font-family: "Accuratist";
-  color: #023e66;
+  color: #ffffff;
   background-color: rgba(255, 88, 88, 0.7);
 }
 
@@ -444,7 +444,7 @@ button {
 }
 
 .theme-light button {
-  color: #023e66;
+  color: #ffffff;
   background-color: rgba(255, 88, 88, 0.7);
   border: 1px solid #0094b5;
   font-size: 2vw;
@@ -494,7 +494,7 @@ input {
 
 .theme-light input {
   font-family: "Accuratist";
-  color: #023e66;
+  color: #ffffff;
   background-color: rgba(255, 88, 88, 0.7);
   border: 1px solid #7c19ff;
   font-size: 2vw;
@@ -619,7 +619,7 @@ p {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  width: 100%;
+  width: 99.9%;
   height: auto;
 }
 
@@ -649,7 +649,7 @@ p {
 }
 
 .theme-light .verCenter {
-  color: #023e66;
+  color: #ffffff;
   background-color: rgba(255, 88, 88, 0.7);
 }
 
@@ -682,7 +682,7 @@ p {
 }
 
 .theme-light .horCenter {
-  color: #023e66;
+  color: #ffffff;
   background-color: rgba(255, 88, 88, 0.7);
 }
 
@@ -717,9 +717,15 @@ p {
   font-family: "Accuratist";
 }
 
+#leaderBoardResponse {
+  width: 99.5% !important;
+  padding: 50px;
+}
+
 .overflowAuto {
   display: block;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .fit {
@@ -790,11 +796,18 @@ p {
   background: linear-gradient(90deg, #D80909 0%, #A1D024 10%, #00F90B 20%, #1AB5DC 30%, #401CCA 60%, #67145A 70%, #860d74 80%, #d6164f 90%, #d41010 100%);
 }
 
-.myPadding {
-  padding-left: 15px;
-  padding-right: 15px;
-  padding-top: 15px;
-  padding-bottom: 15px;
+.myPaddingList {
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 25px;
+  padding-bottom: 25px;
+}
+
+.myMarginList {
+  margin-left: 5px;
+  margin-right: 5px;
+  margin-top: 15px;
+  margin-bottom: 15px;
 }
 
 .blackText {

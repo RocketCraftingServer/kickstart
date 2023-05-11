@@ -24,6 +24,7 @@ export default class LeaderBoard extends BaseComponent {
       let color = 'white';
       if(typeof res[key] == 'object') {
 
+        let colorFlag = true;
         for(let key1 in res[key]) {
           let prepare = [];
           for(let key2 in res[key][key1]) {
@@ -34,7 +35,8 @@ export default class LeaderBoard extends BaseComponent {
               }
             );
           }
-          byID('leaderBoardResponse').innerHTML += LeaderBoardRender(prepare);
+          byID('leaderBoardResponse').innerHTML += LeaderBoardRender(prepare, colorFlag);
+          colorFlag = !colorFlag;
         }
 
       } else {
@@ -47,7 +49,7 @@ export default class LeaderBoard extends BaseComponent {
     }
   }
   render = () => `
-    <div id="leaderBoardResponse" class="h50 verCenter overflowAuto">
+    <div id="leaderBoardResponse" class="h50 verCenter overflowAuto fit">
     </div>
   `;
 }

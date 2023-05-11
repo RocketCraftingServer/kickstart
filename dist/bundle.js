@@ -1103,6 +1103,7 @@ class LeaderBoard extends _safir.BaseComponent {
     for (let key in res) {
       let color = 'white';
       if (typeof res[key] == 'object') {
+        let colorFlag = true;
         for (let key1 in res[key]) {
           let prepare = [];
           for (let key2 in res[key][key1]) {
@@ -1111,7 +1112,8 @@ class LeaderBoard extends _safir.BaseComponent {
               value: res[key][key1][key2]
             });
           }
-          (0, _safir.byID)('leaderBoardResponse').innerHTML += (0, _leaderboard.LeaderBoardRender)(prepare);
+          (0, _safir.byID)('leaderBoardResponse').innerHTML += (0, _leaderboard.LeaderBoardRender)(prepare, colorFlag);
+          colorFlag = !colorFlag;
         }
       } else {
         if (key == 'message') {
@@ -1123,7 +1125,7 @@ class LeaderBoard extends _safir.BaseComponent {
     }
   };
   render = () => `
-    <div id="leaderBoardResponse" class="h50 verCenter overflowAuto">
+    <div id="leaderBoardResponse" class="h50 verCenter overflowAuto fit">
     </div>
   `;
 }
@@ -1173,9 +1175,12 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.LeaderBoardRender = void 0;
-let LeaderBoardRender = arg => `
-  <div class="horCenter h5">
-    ${arg.map(item => `<div class="">${item.key} : ${item.value}</div>`).join('')}
+let LeaderBoardRender = (arg, colorFlag) => `
+  <div class="horCenter h5 myMarginList" 
+       style="background-color:${colorFlag == true ? 'rgba(0,0,0,0.1)' : 'rgba(0,0,0,0.3)'}">
+    ${arg.map((item, index) => `<div 
+         style="background-color:${index % 2 == 0 ? 'rgba(50,0,0,0.1)' : 'rgba(50,0,0,0.3)'};
+                color: white !important;">${item.key} : ${item.value}</div>`).join('')}
   </div>
 `;
 exports.LeaderBoardRender = LeaderBoardRender;
@@ -1192,9 +1197,17 @@ var _safir = require("safir");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 class MyHeader extends _safir.BaseComponent {
   id = 'my-heder';
-  mySybCompBtnYes = new _simpleBtn.default({
+  gotoLeaderboardBtn = new _simpleBtn.default({
     text: _safir.T.gotoLeaderboard,
     id: 'gotoLeaderboard'
+  }, 'fill');
+  gotoHomePage = new _simpleBtn.default({
+    text: 'Home',
+    id: 'gotoHome'
+  }, 'fill');
+  gotoAccount = new _simpleBtn.default({
+    text: 'Account',
+    id: 'gotoAccount'
   }, 'fill');
   constructor(arg) {
     super(arg);
@@ -1208,9 +1221,6 @@ class MyHeader extends _safir.BaseComponent {
     });
   }
   change = this.clickBind;
-
-  //  
-
   render = () => `
     <div class="middle h5">
        <div class="heder">
@@ -1218,7 +1228,9 @@ class MyHeader extends _safir.BaseComponent {
           <button class="fill" onclick="(${this.change})('change-theme')">
             Change Theme
           </button>
-          ${this.mySybCompBtnYes.renderId()}
+          ${this.gotoLeaderboardBtn.renderId()}
+          ${this.gotoAccount.renderId()}
+          ${this.gotoHomePage.renderId()}
        </div>
     </div>
   `;
@@ -1368,7 +1380,7 @@ class RocketCraftingLayout extends _safir.BaseComponent {
     this.testSafirSlot = new _safir.SafirBuildInPlugins.SafirSlot({
       id: 'userPoints',
       rootDom: 'userPoints'
-    }, 'fit');
+    }, 'horCenter');
     // how to use sub rerender
     // console.log(" TEST #######")
     // simple override
@@ -1440,7 +1452,7 @@ class RocketCraftingLayout extends _safir.BaseComponent {
       </div>
       <span id="apiResponse"></span>
       <div class='midWrapper bg-transparent'>
-       <h2> Safir Vanilla Virtual DOM</h2>
+      <h5> <small> Safir VS RocketCraftingServer </small></h5>
       </div>
     </div>
   `;
