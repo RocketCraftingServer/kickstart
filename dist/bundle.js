@@ -1092,30 +1092,30 @@ class LeaderBoard extends _safir.BaseComponent {
   text = '';
   items = [];
   ready = () => {
-    this.setPropById('currentPagIndex', 0, 1);
+    this.setPropById('currentPagIndex', 1, 1);
   };
   constructor(arg, arg2 = '') {
     super(arg);
     this.initial(arg, arg2);
-    this.currentPagIndex = 0;
+    this.currentPagIndex = 1;
     On('nextClick', () => {
-      console.log("NEXT CLICK");
       let n = this.currentPagIndex + 1;
       this.setPropById('currentPagIndex', n, 1);
     });
     On('prevClick', () => {
-      console.log("PREV CLICK");
+      if (this.currentPagIndex > 1) {
+        let n = this.currentPagIndex - 1;
+        this.setPropById('currentPagIndex', n, 1);
+      }
     });
   }
   onNext = this.clickBind;
   onPrev = this.clickBind;
   setData = res => {
-    for (var x = 0; x < (0, _safir.byID)('leaderBoardResponse').children.length; x++) {
-      console.log('WHAT INSIDE', (0, _safir.byID)('leaderBoardResponse').children[x]);
-    }
-    ;
+    // for ( var x = 0; x < byID('leaderBoardResponse').children.length;x++) {
+    //   console.log('WHAT INSIDE', byID('leaderBoardResponse').children[x])
+    // };
     (0, _safir.byID)('leaderBoardResponse').innerHTML = '';
-    console.log('RocketCrafting Login form ready.', res);
     for (let key in res) {
       let color = 'white';
       if (typeof res[key] == 'object') {
@@ -1141,15 +1141,12 @@ class LeaderBoard extends _safir.BaseComponent {
     }
   };
   render = () => `
-    <div id="leaderBoardResponse" class="h50 verCenter overflowAuto fit">
-      
-    </div>
-    <div id="leaderBoardPaginator" class="horCenter fit">
+    <div id="leaderBoardResponse" class="h50 verCenter overflowAuto fit"></div>
+    <div id="leaderBoardPaginator" class="middle myPaddingList">
       <button onclick="(${this.onPrev})('prevClick')" >PREV</button>
-      <span id="currentPagIndex"></span>
+      <span id="currentPagIndex">1</span>
       <button onclick="(${this.onNext})('nextClick')" >NEXT</button>
     </div>
-    
   `;
 }
 exports.default = LeaderBoard;
@@ -1284,7 +1281,8 @@ class RocketCraftingLayout extends _safir.BaseComponent {
     id: 'registerBtn'
   }, 'w30');
   leaderBoard = new _leaderboard.default({
-    id: 'leaderboard'
+    id: 'leaderboard',
+    currentPagIndex: '0'
   }, 'middle h50 overflowAuto');
 
   // NOTE SAFIRSLOT NEED RENDER DOM IN MOMENT OF INSTANCING
@@ -1296,7 +1294,6 @@ class RocketCraftingLayout extends _safir.BaseComponent {
   photo = null;
   constructor(arg) {
     super(arg);
-    console.info('[RC ARGS]:', arg);
     this.apiDomain = arg;
     (0, _safir.On)('loginBtn', data => {
       console.info('[login] Trigger Btn', data.detail);

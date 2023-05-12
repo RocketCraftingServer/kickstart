@@ -10,7 +10,7 @@ export default class RocketCraftingLayout extends BaseComponent {
   apiDomain = '';
   loginBtn = new SimpleBtn({text: 'Login', id: 'loginBtn'}, 'w30');
   registerBtn = new SimpleBtn({text: 'Register', id: 'registerBtn'}, 'w30');
-  leaderBoard = new LeaderBoard({id: 'leaderboard'}, 'middle h50 overflowAuto');
+  leaderBoard = new LeaderBoard({id: 'leaderboard', currentPagIndex: '0' }, 'middle h50 overflowAuto');
 
   // NOTE SAFIRSLOT NEED RENDER DOM IN MOMENT OF INSTANCING
   testSafirSlot = null;// new SafirBuildInPlugins.SafirSlot({id: 'userPoints', rootDom: 'userPoints'}, 'fit');
@@ -22,7 +22,6 @@ export default class RocketCraftingLayout extends BaseComponent {
 
   constructor(arg) {
     super(arg);
-    console.info('[RC ARGS]:', arg);
     this.apiDomain = arg;
     On('loginBtn', (data) => {
       console.info('[login] Trigger Btn', (data).detail);

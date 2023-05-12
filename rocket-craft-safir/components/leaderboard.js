@@ -8,60 +8,47 @@ export default class LeaderBoard extends BaseComponent {
   items = [];
 
   ready = () => {
-    this.setPropById('currentPagIndex', 0, 1);
+    this.setPropById('currentPagIndex', 1, 1);
   };
 
   constructor(arg, arg2 = '') {
     super(arg);
     this.initial(arg, arg2);
-
-    this.currentPagIndex = 0;
+    this.currentPagIndex = 1;
 
     On('nextClick', () => {
-      console.log("NEXT CLICK")
       let n = this.currentPagIndex + 1;
       this.setPropById('currentPagIndex', n, 1);
     });
 
     On('prevClick', () => {
-      console.log("PREV CLICK")
-
+      if (this.currentPagIndex > 1) {
+        let n = this.currentPagIndex - 1;
+        this.setPropById('currentPagIndex', n, 1);
+      }
     })
-
   }
 
   onNext = this.clickBind;
   onPrev = this.clickBind;
 
   setData = (res) => {
-
-    for ( var x = 0; x < byID('leaderBoardResponse').children.length;x++) {
-      console.log('WHAT INSIDE', byID('leaderBoardResponse').children[x])
-    };
-
+    // for ( var x = 0; x < byID('leaderBoardResponse').children.length;x++) {
+    //   console.log('WHAT INSIDE', byID('leaderBoardResponse').children[x])
+    // };
     byID('leaderBoardResponse').innerHTML = '';
-
-    console.log('RocketCrafting Login form ready.', res)
-
     for(let key in res) {
       let color = 'white';
       if(typeof res[key] == 'object') {
-
         let colorFlag = true;
         for(let key1 in res[key]) {
           let prepare = [];
           for(let key2 in res[key][key1]) {
-            prepare.push(
-              {
-                key: key2,
-                value: res[key][key1][key2]
-              }
-            );
+            prepare.push({key: key2, value: res[key][key1][key2]});
           }
           byID('leaderBoardResponse').innerHTML += LeaderBoardRender(prepare, colorFlag);
           colorFlag = !colorFlag;
         }
-
       } else {
         if(key == 'message') {
           console.info("Leaderboard:", res[key]);
@@ -71,15 +58,13 @@ export default class LeaderBoard extends BaseComponent {
       }
     }
   }
+
   render = () => `
-    <div id="leaderBoardResponse" class="h50 verCenter overflowAuto fit">
-      
-    </div>
-    <div id="leaderBoardPaginator" class="horCenter fit">
+    <div id="leaderBoardResponse" class="h50 verCenter overflowAuto fit"></div>
+    <div id="leaderBoardPaginator" class="middle myPaddingList">
       <button onclick="(${this.onPrev})('prevClick')" >PREV</button>
-      <span id="currentPagIndex"></span>
+      <span id="currentPagIndex">1</span>
       <button onclick="(${this.onNext})('nextClick')" >NEXT</button>
     </div>
-    
   `;
 }
