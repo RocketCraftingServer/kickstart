@@ -1099,13 +1099,15 @@ class LeaderBoard extends _safir.BaseComponent {
     this.initial(arg, arg2);
     this.currentPagIndex = 1;
     On('nextClick', () => {
-      let n = this.currentPagIndex + 1;
-      this.setPropById('currentPagIndex', n, 1);
+      this.currentPagIndex++;
+      this.setPropById('currentPagIndex', this.currentPagIndex, 1);
+      (0, _safir.emit)('pagNext');
     });
     On('prevClick', () => {
       if (this.currentPagIndex > 1) {
-        let n = this.currentPagIndex - 1;
-        this.setPropById('currentPagIndex', n, 1);
+        this.currentPagIndex--;
+        this.setPropById('currentPagIndex', this.currentPagIndex, 1);
+        (0, _safir.emit)('pagPrev');
       }
     });
   }
@@ -1286,8 +1288,7 @@ class RocketCraftingLayout extends _safir.BaseComponent {
   }, 'middle h50 overflowAuto');
 
   // NOTE SAFIRSLOT NEED RENDER DOM IN MOMENT OF INSTANCING
-  testSafirSlot = null; // new SafirBuildInPlugins.SafirSlot({id: 'userPoints', rootDom: 'userPoints'}, 'fit');
-
+  testSafirSlot = null;
   nickname = null;
   email = null;
   token = null;
@@ -1303,14 +1304,20 @@ class RocketCraftingLayout extends _safir.BaseComponent {
       console.info('[register] Trigger Btn', data.detail);
       this.apiAccount('register');
     });
+    (0, _safir.On)('pagNext', () => {
+      this.runApiLeaderBoard();
+    });
+    (0, _safir.On)('pagPrev', () => {
+      this.runApiLeaderBoard();
+    });
   }
   ready = () => {
     if (sessionStorage.getItem('my-body-email') != null && sessionStorage.getItem('my-body-token') != null) {
       this.runApiFastLogin();
-      console.log('RocketCrafting FAST Login form ready. try ');
+      console.info('RocketCrafting fast login.');
     }
     (0, _safir.On)('gotoLeaderboard', () => {
-      console.info('Trigger Btn gotoLeaderboard!!!!!!');
+      console.info('Trigger Btn gotoLeaderboard!');
       this.runApiLeaderBoard();
       this.render = this.leaderBoardRender;
       (0, _safir.getComp)(this.id).innerHTML = this.render();
@@ -1346,14 +1353,15 @@ class RocketCraftingLayout extends _safir.BaseComponent {
     this.exploreResponse(response);
   }
   async runApiLeaderBoard() {
-    // must be fixed this.email at this moment
+    // Elegant collecting data => this.leaderBoard.currentPagIndex
     let route = this.apiDomain || location.origin;
     const args = {
       email: _safir.LocalSessionMemory.load('my-body-email'),
       token: _safir.LocalSessionMemory.load('my-body-token'),
       criterium: {
-        description: 'list-all',
-        moreExploreUsers: 0
+        description: 'paginator',
+        limitValue: 50,
+        currentPagIndex: this.leaderBoard.currentPagIndex
       }
     };
     const rawResponse = await fetch(route + '/rocket/leaderboard', {
@@ -1379,8 +1387,6 @@ class RocketCraftingLayout extends _safir.BaseComponent {
     var response = await rawResponse.json();
     this.exploreResponse(response);
   }
-
-  // Best way - intergalactic
   exploreResponse(res) {
     (0, _safir.byID)('apiResponse').innerHTML = '';
     for (let key in res) {
@@ -1406,7 +1412,6 @@ class RocketCraftingLayout extends _safir.BaseComponent {
       rootDom: 'userPoints'
     }, 'horCenter');
     // how to use sub rerender
-    // console.log(" TEST #######")
     // simple override
     this.render = this.accountRender;
     (0, _safir.getComp)(this.id).innerHTML = this.render();
@@ -1415,8 +1420,6 @@ class RocketCraftingLayout extends _safir.BaseComponent {
     });
     this.accountData(res);
   }
-
-  // Best way - intergalactic
   accountData(res) {
     (0, _safir.byID)('apiResponse').innerHTML = '';
     for (let key in res) {
@@ -1482,9 +1485,10 @@ class RocketCraftingLayout extends _safir.BaseComponent {
   `;
   render = () => `
     <div class="paddingtop20 animate-jello2 bg-transparent textCenter">
-      <h2 class='blackText'>RocketCraft Server Free gameplays 🌍</h2>
+      <h2 class='blackText'>RocketCraft Platform - Free Games 🌍</h2>
+      <br>
+      <h2 class='blackText'>Be first on leadrboard</h2>
       <p class="textColorWhite">Backend based on <a href="https://github.com/RocketCraftingServer/rocket-craft-server" >rocketCraftingServer</a></p>
-
     </div>
     <div class="midWrapper animate-jello2 bg-transparent">
         <input class="w30" id='arg-username' type='text' value='zlatnaspirala@gmail.com' />
@@ -1492,7 +1496,6 @@ class RocketCraftingLayout extends _safir.BaseComponent {
         ${this.loginBtn.renderId()}
         ${this.registerBtn.renderId()}
     </div>
-
     <div class='midWrapper bg-transparent' >
       <span id="apiResponse"></span>
     </div>

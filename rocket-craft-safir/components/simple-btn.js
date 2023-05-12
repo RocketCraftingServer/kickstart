@@ -10,6 +10,7 @@ export default class SimpleBtn extends BaseComponent {
     super(arg);
     this.initial(arg, arg2);
   }
+
   onClick = this.clickBind;
 
   render = () => `

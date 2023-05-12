@@ -13,7 +13,7 @@ export default class RocketCraftingLayout extends BaseComponent {
   leaderBoard = new LeaderBoard({id: 'leaderboard', currentPagIndex: '0' }, 'middle h50 overflowAuto');
 
   // NOTE SAFIRSLOT NEED RENDER DOM IN MOMENT OF INSTANCING
-  testSafirSlot = null;// new SafirBuildInPlugins.SafirSlot({id: 'userPoints', rootDom: 'userPoints'}, 'fit');
+  testSafirSlot = null;
 
   nickname = null;
   email = null;
@@ -22,24 +22,36 @@ export default class RocketCraftingLayout extends BaseComponent {
 
   constructor(arg) {
     super(arg);
+
     this.apiDomain = arg;
+
     On('loginBtn', (data) => {
       console.info('[login] Trigger Btn', (data).detail);
       this.apiAccount('login');
     });
+
     On('registerBtn', (data) => {
       console.info('[register] Trigger Btn', (data).detail);
       this.apiAccount('register');
     });
+
+    On('pagNext', ()=> {
+      this.runApiLeaderBoard();
+    });
+
+    On('pagPrev', ()=> {
+      this.runApiLeaderBoard();
+    });
+
   }
 
   ready = () => {
     if(sessionStorage.getItem('my-body-email') != null && sessionStorage.getItem('my-body-token') != null) {
       this.runApiFastLogin();
-      console.log('RocketCrafting FAST Login form ready. try ')
+      console.info('RocketCrafting fast login.');
     }
     On('gotoLeaderboard', () => {
-      console.info('Trigger Btn gotoLeaderboard!!!!!!');
+      console.info('Trigger Btn gotoLeaderboard!');
       this.runApiLeaderBoard();
       this.render = this.leaderBoardRender;
       getComp(this.id).innerHTML = this.render();
@@ -78,14 +90,15 @@ export default class RocketCraftingLayout extends BaseComponent {
   }
 
   async runApiLeaderBoard() {
-    // must be fixed this.email at this moment
+    // Elegant collecting data => this.leaderBoard.currentPagIndex
     let route = this.apiDomain || location.origin;
     const args = {
       email: LocalSessionMemory.load('my-body-email'),
       token: LocalSessionMemory.load('my-body-token'),
       criterium: {
-        description: 'list-all',
-        moreExploreUsers: 0
+        description: 'paginator',
+        limitValue: 50,
+        currentPagIndex: this.leaderBoard.currentPagIndex
       }
     }
     const rawResponse = await fetch(route + '/rocket/leaderboard', {
@@ -113,7 +126,6 @@ export default class RocketCraftingLayout extends BaseComponent {
     this.exploreResponse(response);
   }
 
-  // Best way - intergalactic
   exploreResponse(res) {
     byID('apiResponse').innerHTML = '';
     for(let key in res) {
@@ -136,7 +148,6 @@ export default class RocketCraftingLayout extends BaseComponent {
     // NOTE SAFIRSLOT NEED RENDER DOM IN MOMENT OF INSTANCING
     this.testSafirSlot = new SafirBuildInPlugins.SafirSlot({id: 'userPoints', rootDom: 'userPoints'}, 'horCenter');
     // how to use sub rerender
-    // console.log(" TEST #######")
     // simple override
     this.render = this.accountRender;
     getComp(this.id).innerHTML = this.render();
@@ -144,7 +155,6 @@ export default class RocketCraftingLayout extends BaseComponent {
     this.accountData(res);
   }
 
-  // Best way - intergalactic
   accountData(res) {
     byID('apiResponse').innerHTML = '';
     for(let key in res) {
@@ -211,9 +221,10 @@ export default class RocketCraftingLayout extends BaseComponent {
 
   render = () => `
     <div class="paddingtop20 animate-jello2 bg-transparent textCenter">
-      <h2 class='blackText'>RocketCraft Server Free gameplays 🌍</h2>
+      <h2 class='blackText'>RocketCraft Platform - Free Games 🌍</h2>
+      <br>
+      <h2 class='blackText'>Be first on leadrboard</h2>
       <p class="textColorWhite">Backend based on <a href="https://github.com/RocketCraftingServer/rocket-craft-server" >rocketCraftingServer</a></p>
-
     </div>
     <div class="midWrapper animate-jello2 bg-transparent">
         <input class="w30" id='arg-username' type='text' value='zlatnaspirala@gmail.com' />
@@ -221,7 +232,6 @@ export default class RocketCraftingLayout extends BaseComponent {
         ${this.loginBtn.renderId()}
         ${this.registerBtn.renderId()}
     </div>
-
     <div class='midWrapper bg-transparent' >
       <span id="apiResponse"></span>
     </div>

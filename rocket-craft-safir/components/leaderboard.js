@@ -1,4 +1,4 @@
-import {BaseComponent, byID} from "safir";
+import {BaseComponent, byID, emit} from "safir";
 import {LeaderBoardRender} from "../direct-render/leaderboard";
 
 export default class LeaderBoard extends BaseComponent {
@@ -17,16 +17,19 @@ export default class LeaderBoard extends BaseComponent {
     this.currentPagIndex = 1;
 
     On('nextClick', () => {
-      let n = this.currentPagIndex + 1;
-      this.setPropById('currentPagIndex', n, 1);
+      this.currentPagIndex++;
+      this.setPropById('currentPagIndex', this.currentPagIndex, 1);
+      emit('pagNext');
     });
 
     On('prevClick', () => {
       if (this.currentPagIndex > 1) {
-        let n = this.currentPagIndex - 1;
-        this.setPropById('currentPagIndex', n, 1);
+        this.currentPagIndex--;
+        this.setPropById('currentPagIndex', this.currentPagIndex, 1);
+        emit('pagPrev');
       }
-    })
+    });
+
   }
 
   onNext = this.clickBind;
