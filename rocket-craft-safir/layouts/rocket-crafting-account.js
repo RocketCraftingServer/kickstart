@@ -146,7 +146,7 @@ export default class RocketCraftingLayout extends BaseComponent {
     }
 
     // NOTE SAFIRSLOT NEED RENDER DOM IN MOMENT OF INSTANCING
-    this.testSafirSlot = new SafirBuildInPlugins.SafirSlot({id: 'userPoints', rootDom: 'userPoints'}, 'horCenter');
+    this.testSafirSlot = new SafirBuildInPlugins.SafirSlot({id: 'userPoints', rootDom: 'userPoints'}, 'horCenter bg-transparent');
     // how to use sub rerender
     // simple override
     this.render = this.accountRender;
@@ -210,7 +210,7 @@ export default class RocketCraftingLayout extends BaseComponent {
     <div class='midWrapper bg-transparent'>
       <div class='middle'>
         <h2>Welcome, <h2 id='nickname'>${this.nickname}</h2></h2>
-        <span style="margin-right:50px;">${this.testSafirSlot.renderId()}</span>
+        <span style="margin:40px;">${this.testSafirSlot.renderId()}</span>
       </div>
       <span id="apiResponse"></span>
       <div class='midWrapper bg-transparent'>
