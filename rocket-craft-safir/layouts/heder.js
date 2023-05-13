@@ -15,12 +15,22 @@ export default class MyHeader extends BaseComponent {
     super(arg);
     this.initial(arg);
 
+    this.themes = ['dark', 'light', 'orange', 'blue'];
+    this.curTheme = 0;
+
     On('gotoLeaderboard', () => {
       console.info('Trigger Btn gotoLeaderboard', (this));
     });
 
     On('change-theme', () => {
-      (this).changeTheme();
+
+      (this).changeTheme('theme-' +this.themes[this.curTheme]);
+      if (this.curTheme >= this.themes.length) {
+        this.curTheme = 0;
+      } else {
+        this.curTheme++;
+      }
+      
       console.info('Trigger ChangeTheme integrated.');
     })
 

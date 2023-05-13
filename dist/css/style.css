@@ -349,6 +349,42 @@
   background-color: black !important;
 }
 
+.theme-light .tableStyleMark0 {
+  font-family: "Accuratist";
+  color: #ffffff;
+  background-color: rgba(255, 88, 88, 0.7) !important;
+}
+
+.theme-dark .tableStyleMark0 {
+  font-family: "Accuratist";
+  color: white;
+  background-color: rgba(83, 83, 83, 0.7) !important;
+}
+
+.theme-orange .tableStyleMark0 {
+  font-family: "Accuratist";
+  color: #ff2600;
+  background-color: black !important;
+}
+
+.theme-light .tableStyleMark1 {
+  font-family: "Accuratist";
+  color: #0f2d41;
+  background-color: white !important;
+}
+
+.theme-dark .tableStyleMark1 {
+  font-family: "Accuratist";
+  color: #d6d6d6;
+  background-color: #333 !important;
+}
+
+.theme-orange .tableStyleMark1 {
+  font-family: "Accuratist";
+  color: #f34f2b;
+  background-color: #333 !important;
+}
+
 @font-face {
   font-family: Accuratist;
   src: url(../assets/fonts/Accuratist.ttf);

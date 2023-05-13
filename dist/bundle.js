@@ -118,7 +118,6 @@ class SingleCounter extends _index.BaseComponent {
     let slot = document.createElement('div');
     slot.id = `${this.rootDom}slot${this.id}`;
     slot.classList.add('slot');
-    console.log("ROOT DOM", this.rootDom);
     (0, _index.byID)(this.rootDom + '-holder').append(slot);
     if (this.id.indexOf('D') != -1) {
       slot.innerHTML = ',';
@@ -134,10 +133,8 @@ class SingleCounter extends _index.BaseComponent {
   constructor(arg) {
     super(arg);
     this.content = arg.content;
-    console.log('slot layout ready ', this.content);
     if (this.content.length == 0) {
       this.content = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-      console.log('slot layout ready ', this.content);
     }
     this.initial(arg);
     this.rootDom = arg.rootDom;
@@ -277,7 +274,6 @@ class SafirSlot extends _index.BaseComponent {
   constructor(arg, classArg) {
     super();
     this.initial(arg, classArg);
-    console.log('ARG classArg', classArg);
     this.rootDom = arg.rootDom;
     this.myConstruct(arg);
   }
@@ -452,7 +448,7 @@ class BaseComponent {
   }
   initial(arg, rootStyle) {
     if (typeof arg === 'string') {
-      console.info('Arg is string!');
+      // console.info('Arg is string!');
       this.text = arg;
       this.id = arg;
     } else if (typeof arg === 'object') {
@@ -1198,9 +1194,10 @@ exports.LeaderBoardRender = void 0;
 let LeaderBoardRender = (arg, colorFlag) => `
   <div class="horCenter h5 myMarginList" 
        style="background-color:${colorFlag == true ? 'rgba(0,0,0,0.1)' : 'rgba(0,0,0,0.3)'}">
-    ${arg.map((item, index) => `<div 
-         style="background-color:${index % 2 == 0 ? 'rgba(50,0,0,0.1)' : 'rgba(50,0,0,0.3)'};
-                color: white !important;">${item.key} : ${item.value}</div>`).join('')}
+    ${arg.map((item, index) => `<div
+         class="${index % 2 == 0 ? 'tableStyleMark0' : 'tableStyleMark1'}">
+           ${item.key} : ${item.value}
+          </div>`).join('')}
   </div>
 `;
 exports.LeaderBoardRender = LeaderBoardRender;
@@ -1232,11 +1229,18 @@ class MyHeader extends _safir.BaseComponent {
   constructor(arg) {
     super(arg);
     this.initial(arg);
+    this.themes = ['dark', 'light', 'orange', 'blue'];
+    this.curTheme = 0;
     (0, _safir.On)('gotoLeaderboard', () => {
       console.info('Trigger Btn gotoLeaderboard', this);
     });
     (0, _safir.On)('change-theme', () => {
-      this.changeTheme();
+      this.changeTheme('theme-' + this.themes[this.curTheme]);
+      if (this.curTheme >= this.themes.length) {
+        this.curTheme = 0;
+      } else {
+        this.curTheme++;
+      }
       console.info('Trigger ChangeTheme integrated.');
     });
   }
