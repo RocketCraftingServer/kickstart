@@ -1091,9 +1091,7 @@ class LeaderBoard extends _safir.BaseComponent {
   id = '';
   text = '';
   items = [];
-  ready = () => {
-    this.setPropById('currentPagIndex', 1, 1);
-  };
+  ready = () => {};
   constructor(arg, arg2 = '') {
     super(arg);
     this.initial(arg, arg2);
@@ -1143,10 +1141,10 @@ class LeaderBoard extends _safir.BaseComponent {
     }
   };
   render = () => `
-    <div id="leaderBoardResponse" class="h50 verCenter overflowAuto fit"></div>
+    <div id="leaderBoardResponse" class="animate-born myScroll verCenter overflowAuto"></div>
     <div id="leaderBoardPaginator" class="middle myPaddingList">
       <button onclick="(${this.onPrev})('prevClick')" >PREV</button>
-      <span id="currentPagIndex">1</span>
+      <span id="currentPagIndex"></span>
       <button onclick="(${this.onNext})('nextClick')" >NEXT</button>
     </div>
   `;
@@ -1282,10 +1280,7 @@ class RocketCraftingLayout extends _safir.BaseComponent {
     text: 'Register',
     id: 'registerBtn'
   }, 'w30');
-  leaderBoard = new _leaderboard.default({
-    id: 'leaderboard',
-    currentPagIndex: '0'
-  }, 'middle h50 overflowAuto');
+  leaderBoard = null; // new LeaderBoard({id: 'leaderboard', currentPagIndex: '0' }, 'middle overflowAuto');
 
   // NOTE SAFIRSLOT NEED RENDER DOM IN MOMENT OF INSTANCING
   testSafirSlot = null;
@@ -1318,7 +1313,12 @@ class RocketCraftingLayout extends _safir.BaseComponent {
     }
     (0, _safir.On)('gotoLeaderboard', () => {
       console.info('Trigger Btn gotoLeaderboard!');
+      this.leaderBoard = new _leaderboard.default({
+        id: 'leaderboard',
+        currentPagIndex: '0'
+      }, 'middle overflowAuto');
       this.runApiLeaderBoard();
+      this.leaderBoardRender = () => this.leaderBoard.renderId();
       this.render = this.leaderBoardRender;
       (0, _safir.getComp)(this.id).innerHTML = this.render();
     });
@@ -1410,7 +1410,7 @@ class RocketCraftingLayout extends _safir.BaseComponent {
     this.testSafirSlot = new _safir.SafirBuildInPlugins.SafirSlot({
       id: 'userPoints',
       rootDom: 'userPoints'
-    }, 'horCenter');
+    }, 'horCenter bg-transparent');
     // how to use sub rerender
     // simple override
     this.render = this.accountRender;
@@ -1470,12 +1470,11 @@ class RocketCraftingLayout extends _safir.BaseComponent {
     };
     reader.readAsDataURL(e.target.files[0]);
   };
-  leaderBoardRender = () => this.leaderBoard.renderId();
   accountRender = () => `
     <div class='midWrapper bg-transparent'>
       <div class='middle'>
         <h2>Welcome, <h2 id='nickname'>${this.nickname}</h2></h2>
-        <span style="margin-right:50px;">${this.testSafirSlot.renderId()}</span>
+        <span style="margin:40px;">${this.testSafirSlot.renderId()}</span>
       </div>
       <span id="apiResponse"></span>
       <div class='midWrapper bg-transparent'>

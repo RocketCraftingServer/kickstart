@@ -8,7 +8,6 @@ export default class LeaderBoard extends BaseComponent {
   items = [];
 
   ready = () => {
-    this.setPropById('currentPagIndex', 1, 1);
   };
 
   constructor(arg, arg2 = '') {
@@ -63,10 +62,10 @@ export default class LeaderBoard extends BaseComponent {
   }
 
   render = () => `
-    <div id="leaderBoardResponse" class="h50 verCenter overflowAuto fit"></div>
+    <div id="leaderBoardResponse" class="animate-born myScroll verCenter overflowAuto"></div>
     <div id="leaderBoardPaginator" class="middle myPaddingList">
       <button onclick="(${this.onPrev})('prevClick')" >PREV</button>
-      <span id="currentPagIndex">1</span>
+      <span id="currentPagIndex"></span>
       <button onclick="(${this.onNext})('nextClick')" >NEXT</button>
     </div>
   `;

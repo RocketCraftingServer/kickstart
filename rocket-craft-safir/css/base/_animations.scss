@@ -47,7 +47,22 @@
 }
 
 .animate-destroy {
-  animation: animateDestroy 1s ease 0s 1 normal forwards;
+  animation: animateDestroy 1s ease 0s 1 normal backwards;
+}
+
+.animate-born {
+  animation: animateBorn 1s ease 0s 1 normal backwards;
+}
+
+@keyframes animateBorn {
+  0% {
+    opacity: 0;
+    transform: rotate(-540deg) scale(0);
+  }
+  100% {
+    opacity: 1;
+    transform: rotate(0) scale(1);
+  }
 }
 
 @keyframes animateDestroy {

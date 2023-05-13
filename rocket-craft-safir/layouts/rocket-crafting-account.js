@@ -10,7 +10,7 @@ export default class RocketCraftingLayout extends BaseComponent {
   apiDomain = '';
   loginBtn = new SimpleBtn({text: 'Login', id: 'loginBtn'}, 'w30');
   registerBtn = new SimpleBtn({text: 'Register', id: 'registerBtn'}, 'w30');
-  leaderBoard = new LeaderBoard({id: 'leaderboard', currentPagIndex: '0' }, 'middle h50 overflowAuto');
+  leaderBoard = null; // new LeaderBoard({id: 'leaderboard', currentPagIndex: '0' }, 'middle overflowAuto');
 
   // NOTE SAFIRSLOT NEED RENDER DOM IN MOMENT OF INSTANCING
   testSafirSlot = null;
@@ -52,8 +52,12 @@ export default class RocketCraftingLayout extends BaseComponent {
     }
     On('gotoLeaderboard', () => {
       console.info('Trigger Btn gotoLeaderboard!');
+
+      this.leaderBoard = new LeaderBoard({id: 'leaderboard', currentPagIndex: '0' }, 'middle overflowAuto');
       this.runApiLeaderBoard();
+      this.leaderBoardRender = () => this.leaderBoard.renderId();
       this.render = this.leaderBoardRender;
+
       getComp(this.id).innerHTML = this.render();
     });
   }
@@ -203,8 +207,6 @@ export default class RocketCraftingLayout extends BaseComponent {
     }
     reader.readAsDataURL(e.target.files[0]);
   }
-
-  leaderBoardRender = () => this.leaderBoard.renderId();
 
   accountRender = () => `
     <div class='midWrapper bg-transparent'>
