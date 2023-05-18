@@ -566,11 +566,16 @@ class BaseComponent {
       if ((0, _utils.getComp)('app')?.classList.contains(newTheme)) {
         console.info('already containe theme!');
       } else {
-        (0, _utils.getComp)('app')?.classList.remove('theme-light');
-        (0, _utils.getComp)('app')?.classList.remove('theme-dark');
+        console.info('already new theme!');
+        (0, _utils.getComp)('app').classList = 'app fill';
         (0, _utils.getComp)('app')?.classList.add(newTheme);
       }
     } else {
+      if (!(0, _utils.getComp)('app')?.classList.contains('theme-light') && !(0, _utils.getComp)('app')?.classList.contains('theme-dark')) {
+        (0, _utils.getComp)('app').classList = 'app fill';
+        (0, _utils.getComp)('app')?.classList.add('theme-dark');
+        return;
+      }
       if ((0, _utils.getComp)('app')?.classList.contains('theme-light')) {
         console.info('Change theme !');
         (0, _utils.getComp)('app')?.classList.remove('theme-light');
@@ -1083,6 +1088,39 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 var _safir = require("safir");
 var _leaderboard = require("../direct-render/leaderboard");
+class Home extends _safir.BaseComponent {
+  id = '';
+  ready = () => {};
+  constructor(arg, arg2 = '') {
+    super(arg);
+    this.initial(arg, arg2);
+    this.links = ['https://maximumroulette.com/apps/nidza/nidza/examples/single.html?u=star-effect-2.js'];
+    On('nextClick', () => {
+      this.currentPagIndex++;
+      this.setPropById('currentPagIndex', this.currentPagIndex, 1);
+    });
+  }
+  onNext = this.clickBind;
+  render = () => `
+    <div id="homePage" class="animate-born myScroll verCenter overflowAuto">
+      <div class="middle">
+        <object data="${this.links[0]}"></object>
+        <button onclick="(${this.onNext})('nextClick')" >NEXT</button>
+      </div>
+    </div>
+  `;
+}
+exports.default = Home;
+
+},{"../direct-render/leaderboard":13,"safir":1}],10:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _safir = require("safir");
+var _leaderboard = require("../direct-render/leaderboard");
 class LeaderBoard extends _safir.BaseComponent {
   id = '';
   text = '';
@@ -1147,7 +1185,7 @@ class LeaderBoard extends _safir.BaseComponent {
 }
 exports.default = LeaderBoard;
 
-},{"../direct-render/leaderboard":12,"safir":1}],10:[function(require,module,exports){
+},{"../direct-render/leaderboard":13,"safir":1}],11:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1172,7 +1210,7 @@ class SimpleBtn extends _safir.BaseComponent {
 }
 exports.default = SimpleBtn;
 
-},{"safir":1}],11:[function(require,module,exports){
+},{"safir":1}],12:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1184,7 +1222,7 @@ let Avatar = arg => `
 `;
 exports.Avatar = Avatar;
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1202,7 +1240,7 @@ let LeaderBoardRender = (arg, colorFlag) => `
 `;
 exports.LeaderBoardRender = LeaderBoardRender;
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1261,7 +1299,7 @@ class MyHeader extends _safir.BaseComponent {
 }
 exports.default = MyHeader;
 
-},{"../components/simple-btn":10,"safir":1}],14:[function(require,module,exports){
+},{"../components/simple-btn":11,"safir":1}],15:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1272,6 +1310,7 @@ var _safir = require("safir");
 var _simpleBtn = _interopRequireDefault(require("../components/simple-btn"));
 var _imageProfile = require("../direct-render/imageProfile");
 var _leaderboard = _interopRequireDefault(require("../components/leaderboard"));
+var _home = _interopRequireDefault(require("../components/home"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 class RocketCraftingLayout extends _safir.BaseComponent {
   id = 'my-body';
@@ -1285,6 +1324,10 @@ class RocketCraftingLayout extends _safir.BaseComponent {
     id: 'registerBtn'
   }, 'w30');
   leaderBoard = null; // new LeaderBoard({id: 'leaderboard', currentPagIndex: '0' }, 'middle overflowAuto');
+
+  home = new _home.default({
+    id: 'homepage'
+  });
 
   // NOTE SAFIRSLOT NEED RENDER DOM IN MOMENT OF INSTANCING
   testSafirSlot = null;
@@ -1328,6 +1371,12 @@ class RocketCraftingLayout extends _safir.BaseComponent {
       } else {
         console.info('no session');
       }
+    });
+    (0, _safir.On)('gotoHome', () => {
+      // Home
+      this.homeRender = () => this.home.renderId();
+      this.render = this.homeRender;
+      (0, _safir.getComp)(this.id).innerHTML = this.render();
     });
   };
   async apiAccount(apiCallFlag) {
@@ -1509,7 +1558,7 @@ class RocketCraftingLayout extends _safir.BaseComponent {
 }
 exports.default = RocketCraftingLayout;
 
-},{"../components/leaderboard":9,"../components/simple-btn":10,"../direct-render/imageProfile":11,"safir":1}],15:[function(require,module,exports){
+},{"../components/home":9,"../components/leaderboard":10,"../components/simple-btn":11,"../direct-render/imageProfile":12,"safir":1}],16:[function(require,module,exports){
 "use strict";
 
 var _safir = require("safir");
@@ -1536,4 +1585,4 @@ let app = new _safir.Safir();
 });
 window.app = app;
 
-},{"./layouts/heder":13,"./layouts/rocket-crafting-account":14,"safir":1}]},{},[15]);
+},{"./layouts/heder":14,"./layouts/rocket-crafting-account":15,"safir":1}]},{},[16]);

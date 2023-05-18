@@ -13,7 +13,7 @@
   "dependencies": {
     "browser-resolve": "^2.0.0",
     "watchify": "^4.0.0",
-    "safir": "^1.1.18"
+    "safir": "^1.1.19"
   },
   "devDependencies": {
     "esmify": "^2.1.1"

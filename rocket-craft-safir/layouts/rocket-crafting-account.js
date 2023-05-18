@@ -2,6 +2,7 @@ import {BaseComponent, On, emit, JSON_HEADER, byID, getComp, LocalSessionMemory,
 import SimpleBtn from "../components/simple-btn";
 import {Avatar} from "../direct-render/imageProfile";
 import LeaderBoard from "../components/leaderboard";
+import Home from "../components/home";
 
 export default class RocketCraftingLayout extends BaseComponent {
 
@@ -11,6 +12,8 @@ export default class RocketCraftingLayout extends BaseComponent {
   loginBtn = new SimpleBtn({text: 'Login', id: 'loginBtn'}, 'w30');
   registerBtn = new SimpleBtn({text: 'Register', id: 'registerBtn'}, 'w30');
   leaderBoard = null; // new LeaderBoard({id: 'leaderboard', currentPagIndex: '0' }, 'middle overflowAuto');
+
+  home = new Home({id:'homepage'})
 
   // NOTE SAFIRSLOT NEED RENDER DOM IN MOMENT OF INSTANCING
   testSafirSlot = null;
@@ -61,6 +64,13 @@ export default class RocketCraftingLayout extends BaseComponent {
         console.info('no session');
       }
     });
+
+    On('gotoHome', () => {
+      // Home
+      this.homeRender = () => this.home.renderId();
+      this.render = this.homeRender;
+      getComp(this.id).innerHTML = this.render();
+    })
   }
 
   async apiAccount(apiCallFlag) {
