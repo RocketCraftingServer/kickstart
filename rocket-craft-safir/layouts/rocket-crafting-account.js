@@ -51,14 +51,15 @@ export default class RocketCraftingLayout extends BaseComponent {
       console.info('RocketCrafting fast login.');
     }
     On('gotoLeaderboard', () => {
-      console.info('Trigger Btn gotoLeaderboard!');
-
-      this.leaderBoard = new LeaderBoard({id: 'leaderboard', currentPagIndex: '0' }, 'middle overflowAuto');
-      this.runApiLeaderBoard();
-      this.leaderBoardRender = () => this.leaderBoard.renderId();
-      this.render = this.leaderBoardRender;
-
-      getComp(this.id).innerHTML = this.render();
+      if (LocalSessionMemory.load('my-body-email') !== false && LocalSessionMemory.load('my-body-token') !== false) {
+        this.leaderBoard = new LeaderBoard({id: 'leaderboard', currentPagIndex: '0' }, 'middle overflowAuto');
+        this.runApiLeaderBoard();
+        this.leaderBoardRender = () => this.leaderBoard.renderId();
+        this.render = this.leaderBoardRender;
+        getComp(this.id).innerHTML = this.render();
+      } else {
+        console.info('no session');
+      }
     });
   }
 

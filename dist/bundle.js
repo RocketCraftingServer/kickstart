@@ -1316,15 +1316,18 @@ class RocketCraftingLayout extends _safir.BaseComponent {
       console.info('RocketCrafting fast login.');
     }
     (0, _safir.On)('gotoLeaderboard', () => {
-      console.info('Trigger Btn gotoLeaderboard!');
-      this.leaderBoard = new _leaderboard.default({
-        id: 'leaderboard',
-        currentPagIndex: '0'
-      }, 'middle overflowAuto');
-      this.runApiLeaderBoard();
-      this.leaderBoardRender = () => this.leaderBoard.renderId();
-      this.render = this.leaderBoardRender;
-      (0, _safir.getComp)(this.id).innerHTML = this.render();
+      if (_safir.LocalSessionMemory.load('my-body-email') !== false && _safir.LocalSessionMemory.load('my-body-token') !== false) {
+        this.leaderBoard = new _leaderboard.default({
+          id: 'leaderboard',
+          currentPagIndex: '0'
+        }, 'middle overflowAuto');
+        this.runApiLeaderBoard();
+        this.leaderBoardRender = () => this.leaderBoard.renderId();
+        this.render = this.leaderBoardRender;
+        (0, _safir.getComp)(this.id).innerHTML = this.render();
+      } else {
+        console.info('no session');
+      }
     });
   };
   async apiAccount(apiCallFlag) {
