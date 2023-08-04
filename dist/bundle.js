@@ -1274,7 +1274,7 @@ class MyHeader extends _safir.BaseComponent {
   gotoHomePage = new _simpleBtn.default({
     text: 'Home',
     id: 'gotoHome'
-  }, 'fill');
+  }, 'fill home');
   gotoAccount = new _simpleBtn.default({
     text: 'Account',
     id: 'gotoAccount'

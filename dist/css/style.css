@@ -807,4 +807,8 @@ p {
   width: 90vw;
   height: 50vh;
   flex-direction: column !important;
+}
+
+.home {
+  height: 100vh !important;
 }/*# sourceMappingURL=style.css.map */
