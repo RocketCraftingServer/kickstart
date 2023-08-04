@@ -1090,18 +1090,66 @@ var _safir = require("safir");
 var _leaderboard = require("../direct-render/leaderboard");
 class Home extends _safir.BaseComponent {
   id = '';
-  ready = () => {};
+  ready = () => {
+    window.onmessage = function (e) {
+      if (e.data == 'points-plus-10') {
+        alert('points-plus-10!');
+      }
+    };
+  };
   constructor(arg, arg2 = '') {
     super(arg);
     this.initial(arg, arg2);
     this.links = ['https://maximumroulette.com/apps/visual-ts/basket-ball-chat/app.html'];
-    On('nextClick', () => {
-      this.currentPagIndex++;
-      this.setPropById('currentPagIndex', this.currentPagIndex, 1);
+    On('pointsPlus10', () => {
+      console.log('POINTS PLUS');
+      this.runApiPointsPlus10();
     });
   }
-  onNext = this.clickBind;
-  // <button onclick="(${this.onNext})('nextClick')" >NEXT</button>
+  accessGamplay() {
+    // for now single tag object
+    var t = (0, _safir.byTag)("object")[0];
+    var htmlDocument = t.contentDocument;
+    console.log('POACCESS OBJECT TAG', htmlDocument);
+  }
+  exploreResponse(res) {
+    (0, _safir.byID)('testResponse').innerHTML = '';
+    for (let key in res) {
+      let color = 'white';
+      if (typeof res[key] == 'object') {
+        for (let key1 in res[key]) {
+          color = 'color:indigo;text-shadow: 0px 0px 1px #52f2ff, 1px 1px 1px #11ffff;';
+          (0, _safir.byID)('testResponse').innerHTML += `<div style='${color}' >${key} : ${res[key][key1]} </div>`;
+        }
+      } else {
+        if (key == 'message' && res[key] == 'Wrong Password') {
+          color = 'color:red;text-shadow: 0px 0px 1px #52f2ff, 1px 1px 1px #11ffff;';
+          (0, _safir.byID)('testResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]}</div>`;
+        }
+      }
+    }
+    console.log('TEST POINTS');
+  }
+  async runApiPointsPlus10() {
+    // must be fixed this.email at this moment
+    let route = this.apiDomain || location.origin;
+    const args = {
+      email: _safir.LocalSessionMemory.load('my-body-email'),
+      token: _safir.LocalSessionMemory.load('my-body-token')
+    };
+    const rawResponse = await fetch(route + '/rocket/point-plus10', {
+      method: 'POST',
+      headers: _safir.JSON_HEADER,
+      body: JSON.stringify(args)
+    }).catch(() => {
+      console.log('err in plus points');
+    });
+    var response = await rawResponse.json();
+    this.exploreResponse(response);
+  }
+  pointsPlus10 = this.clickBind;
+  // 
+  // point-plus10
 
   render = () => `
     <div id="homePage" class="animate-born myScroll verCenter overflowAuto">
@@ -1110,6 +1158,8 @@ class Home extends _safir.BaseComponent {
         <h3>Play Platformer [2d]</h3>
         <object class="gameplay" data="${this.links[0]}"></object>
         <br>
+        <button onclick="(${this.pointsPlus10})('pointsPlus10')" >TEST POINTS</button>
+        <div id="testResponse"></div>
       </div>
     </div>
   `;
@@ -1274,7 +1324,7 @@ class MyHeader extends _safir.BaseComponent {
   gotoHomePage = new _simpleBtn.default({
     text: 'Home',
     id: 'gotoHome'
-  }, 'fill home');
+  }, 'fill');
   gotoAccount = new _simpleBtn.default({
     text: 'Account',
     id: 'gotoAccount'
@@ -1606,9 +1656,8 @@ let app = new _safir.Safir();
    */
   app.loadComponent(new _heder.default('my-header'));
   app.loadVanillaComp("vanilla-components/footer.html");
-
-  // let apiDomain = 'https://maximumroulette.com';
-  let apiDomain = 'http://localhost';
+  let apiDomain = 'https://maximumroulette.com';
+  // let apiDomain = 'http://localhost';
   app.loadComponent(new _rocketCraftingAccount.default(apiDomain), 'bg-transparent');
   document.body.classList.add('funnyBg2');
 });

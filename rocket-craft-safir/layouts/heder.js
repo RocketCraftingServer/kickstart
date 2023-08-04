@@ -8,7 +8,7 @@ export default class MyHeader extends BaseComponent {
 
   id = 'my-heder';
   gotoLeaderboardBtn = new SimpleButton({ text: T.gotoLeaderboard, id: 'gotoLeaderboard'}, 'fill');
-  gotoHomePage = new SimpleButton({ text: 'Home', id: 'gotoHome'}, 'fill home');
+  gotoHomePage = new SimpleButton({ text: 'Home', id: 'gotoHome'}, 'fill');
   gotoAccount = new SimpleButton({ text: 'Account', id: 'gotoAccount'}, 'fill');
 
   constructor(arg) {

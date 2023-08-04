@@ -18,8 +18,8 @@ On("app.ready", () => {
   app.loadComponent(new MyHeader('my-header'));
   app.loadVanillaComp("vanilla-components/footer.html");
 
-  // let apiDomain = 'https://maximumroulette.com';
-  let apiDomain = 'http://localhost';
+  let apiDomain = 'https://maximumroulette.com';
+  // let apiDomain = 'http://localhost';
   app.loadComponent(new RocketCraftingLayout(apiDomain), 'bg-transparent');
 
   document.body.classList.add('funnyBg2');
