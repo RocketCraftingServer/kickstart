@@ -135,14 +135,32 @@
   width: inherit;
 }
 
-.ring0, .ring1, .ring2, .ring3, .ring4, .ring5, .ring6, .ring7, .ring8, .ring9 {
+.ring0,
+.ring1,
+.ring2,
+.ring3,
+.ring4,
+.ring5,
+.ring6,
+.ring7,
+.ring8,
+.ring9 {
   text-align: center;
   transform-style: preserve-3d;
   transition: transform 0.1s;
   transform: rotateX(var(--deg));
 }
 
-.panel0, .panel1, .panel2, .panel3, .panel4, .panel5, .panel6, .panel7, .panel8, .panel9 {
+.panel0,
+.panel1,
+.panel2,
+.panel3,
+.panel4,
+.panel5,
+.panel6,
+.panel7,
+.panel8,
+.panel9 {
   font-size: 3vw !important;
   position: absolute;
   transform: translate(-50%, -50%) rotateX(var(--angle)) translateZ(150.5px);
@@ -150,22 +168,72 @@
   width: -moz-fit-content;
   width: fit-content;
 }
-.theme-light .panel0, .theme-light .panel1, .theme-light .panel2, .theme-light .panel3, .theme-light .panel4, .theme-light .panel5, .theme-light .panel6, .theme-light .panel7, .theme-light .panel8, .theme-light .panel9 {
+@media only screen and (min-width: 780px) {
+  .panel0,
+  .panel1,
+  .panel2,
+  .panel3,
+  .panel4,
+  .panel5,
+  .panel6,
+  .panel7,
+  .panel8,
+  .panel9 {
+    font-size: 20px !important;
+  }
+}
+.theme-light .panel0,
+.theme-light .panel1,
+.theme-light .panel2,
+.theme-light .panel3,
+.theme-light .panel4,
+.theme-light .panel5,
+.theme-light .panel6,
+.theme-light .panel7,
+.theme-light .panel8,
+.theme-light .panel9 {
   font-family: "Accuratist";
   color: #ffffff;
   background-color: rgb(255, 88, 88) !important;
 }
-.theme-dark .panel0, .theme-dark .panel1, .theme-dark .panel2, .theme-dark .panel3, .theme-dark .panel4, .theme-dark .panel5, .theme-dark .panel6, .theme-dark .panel7, .theme-dark .panel8, .theme-dark .panel9 {
+.theme-dark .panel0,
+.theme-dark .panel1,
+.theme-dark .panel2,
+.theme-dark .panel3,
+.theme-dark .panel4,
+.theme-dark .panel5,
+.theme-dark .panel6,
+.theme-dark .panel7,
+.theme-dark .panel8,
+.theme-dark .panel9 {
   font-family: "Accuratist";
   color: rgb(255, 255, 255);
   background-color: rgba(83, 83, 83, 0.7) !important;
 }
-.theme-orange .panel0, .theme-orange .panel1, .theme-orange .panel2, .theme-orange .panel3, .theme-orange .panel4, .theme-orange .panel5, .theme-orange .panel6, .theme-orange .panel7, .theme-orange .panel8, .theme-orange .panel9 {
+.theme-orange .panel0,
+.theme-orange .panel1,
+.theme-orange .panel2,
+.theme-orange .panel3,
+.theme-orange .panel4,
+.theme-orange .panel5,
+.theme-orange .panel6,
+.theme-orange .panel7,
+.theme-orange .panel8,
+.theme-orange .panel9 {
   font-family: "Accuratist";
   color: rgb(255, 85, 0);
   background-color: rgb(0, 0, 0) !important;
 }
-.theme-blue .panel0, .theme-blue .panel1, .theme-blue .panel2, .theme-blue .panel3, .theme-blue .panel4, .theme-blue .panel5, .theme-blue .panel6, .theme-blue .panel7, .theme-blue .panel8, .theme-blue .panel9 {
+.theme-blue .panel0,
+.theme-blue .panel1,
+.theme-blue .panel2,
+.theme-blue .panel3,
+.theme-blue .panel4,
+.theme-blue .panel5,
+.theme-blue .panel6,
+.theme-blue .panel7,
+.theme-blue .panel8,
+.theme-blue .panel9 {
   font-family: "Closeness";
   color: rgb(181, 240, 255);
   background-color: rgb(3, 0, 49) !important;
@@ -721,6 +789,22 @@ p {
   padding-bottom: 5px;
 }
 
+.uploadAvatarInput {
+  max-width: 50vw;
+  font-size: 20px !important;
+}
+
 .heder {
   display: flex;
+}
+
+.gameplayObj {
+  margin: 40px 10px 10px 10px;
+  flex-direction: column !important;
+}
+
+.gameplay {
+  width: 90vw;
+  height: 50vh;
+  flex-direction: column !important;
 }/*# sourceMappingURL=style.css.map */

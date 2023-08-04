@@ -200,7 +200,7 @@ export default class RocketCraftingLayout extends BaseComponent {
               apiDomain: this.apiDomain
             });
             // hot to use in runtime attaching:
-            byID('apiResponse').innerHTML += `<input type="file" id="avatar" />`;
+            byID('apiResponse').innerHTML += `<input class="uploadAvatarInput" type="file" id="avatar" />`;
             byID('apiResponse').innerHTML += `<button type="file" id="uploadAvatar">CHANGE AVATAR</button>`;
             byID('avatar').addEventListener('change', this.handleFileUpload, {passive: true});
             byID('uploadAvatar').addEventListener('click', this.handleAvatarUpload, {passive: true});

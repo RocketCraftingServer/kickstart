@@ -351,6 +351,23 @@ p {
   padding-bottom: 5px;
 }
 
+.uploadAvatarInput {
+  max-width: 50vw;
+  font-size: 20px !important;
+}
+
 .heder {
   display: flex;
+}
+
+.gameplayObj {
+  // width: 90vw;
+  margin: 40px 10px 10px 10px;
+  flex-direction: column !important;;
+}
+
+.gameplay {
+  width: 90vw;
+  height: 50vh;
+  flex-direction: column !important;;
 }

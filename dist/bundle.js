@@ -1094,18 +1094,22 @@ class Home extends _safir.BaseComponent {
   constructor(arg, arg2 = '') {
     super(arg);
     this.initial(arg, arg2);
-    this.links = ['https://maximumroulette.com/apps/nidza/nidza/examples/single.html?u=star-effect-2.js'];
+    this.links = ['https://maximumroulette.com/apps/visual-ts/basket-ball-chat/app.html'];
     On('nextClick', () => {
       this.currentPagIndex++;
       this.setPropById('currentPagIndex', this.currentPagIndex, 1);
     });
   }
   onNext = this.clickBind;
+  // <button onclick="(${this.onNext})('nextClick')" >NEXT</button>
+
   render = () => `
     <div id="homePage" class="animate-born myScroll verCenter overflowAuto">
-      <div class="middle">
-        <object data="${this.links[0]}"></object>
-        <button onclick="(${this.onNext})('nextClick')" >NEXT</button>
+      <div class="middle gameplayObj">
+        <h2>RocketCraftingServer Platform</h2>
+        <h3>Play Platformer [2d]</h3>
+        <object class="gameplay" data="${this.links[0]}"></object>
+        <br>
       </div>
     </div>
   `;
@@ -1513,7 +1517,7 @@ class RocketCraftingLayout extends _safir.BaseComponent {
               apiDomain: this.apiDomain
             });
             // hot to use in runtime attaching:
-            (0, _safir.byID)('apiResponse').innerHTML += `<input type="file" id="avatar" />`;
+            (0, _safir.byID)('apiResponse').innerHTML += `<input class="uploadAvatarInput" type="file" id="avatar" />`;
             (0, _safir.byID)('apiResponse').innerHTML += `<button type="file" id="uploadAvatar">CHANGE AVATAR</button>`;
             (0, _safir.byID)('avatar').addEventListener('change', this.handleFileUpload, {
               passive: true
