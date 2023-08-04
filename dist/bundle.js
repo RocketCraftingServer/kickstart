@@ -1146,9 +1146,6 @@ class LeaderBoard extends _safir.BaseComponent {
   onNext = this.clickBind;
   onPrev = this.clickBind;
   setData = res => {
-    // for ( var x = 0; x < byID('leaderBoardResponse').children.length;x++) {
-    //   console.log('WHAT INSIDE', byID('leaderBoardResponse').children[x])
-    // };
     (0, _safir.byID)('leaderBoardResponse').innerHTML = '';
     for (let key in res) {
       let color = 'white';
@@ -1173,6 +1170,20 @@ class LeaderBoard extends _safir.BaseComponent {
         }
       }
     }
+
+    // new test
+    var locCollectItems = [];
+    for (var x = 0; x < (0, _safir.byID)('leaderBoardResponse').children.length; x++) {
+      for (var y = 0; y < (0, _safir.byID)('leaderBoardResponse').children[x].children.length; y++) {
+        locCollectItems.push((0, _safir.byID)('leaderBoardResponse').children[x].children[y]);
+      }
+    }
+    ;
+    locCollectItems.forEach((item, index) => {
+      setTimeout(function () {
+        locCollectItems[index].classList.add('animate-bounce1');
+      }, 50 * index);
+    });
   };
   render = () => `
     <div id="leaderBoardResponse" class="animate-born myScroll verCenter overflowAuto"></div>
@@ -1368,6 +1379,8 @@ class RocketCraftingLayout extends _safir.BaseComponent {
         this.leaderBoardRender = () => this.leaderBoard.renderId();
         this.render = this.leaderBoardRender;
         (0, _safir.getComp)(this.id).innerHTML = this.render();
+
+        // funny animation
       } else {
         console.info('no session');
       }
@@ -1377,6 +1390,13 @@ class RocketCraftingLayout extends _safir.BaseComponent {
       this.homeRender = () => this.home.renderId();
       this.render = this.homeRender;
       (0, _safir.getComp)(this.id).innerHTML = this.render();
+    });
+    (0, _safir.On)('gotoAccount', () => {
+      // Account
+      console.log('goto account trigger - just run fetch for fresh data');
+      this.render = this.accountRender;
+      (0, _safir.getComp)(this.id).innerHTML = this.render();
+      this.runApiFastLogin();
     });
   };
   async apiAccount(apiCallFlag) {
@@ -1528,7 +1548,7 @@ class RocketCraftingLayout extends _safir.BaseComponent {
   };
   accountRender = () => `
     <div class='midWrapper bg-transparent'>
-      <div class='middle'>
+      <div class='middle topHeader'>
         <h2>Welcome, <h2 id='nickname'>${this.nickname}</h2></h2>
         <span style="margin:40px;">${this.testSafirSlot.renderId()}</span>
       </div>
@@ -1544,6 +1564,7 @@ class RocketCraftingLayout extends _safir.BaseComponent {
       <br>
       <h2 class='blackText'>Be first on leadrboard</h2>
       <p class="textColorWhite">Backend based on <a href="https://github.com/RocketCraftingServer/rocket-craft-server" >rocketCraftingServer</a></p>
+      <br>
     </div>
     <div class="midWrapper animate-jello2 bg-transparent">
         <input class="w30" id='arg-username' type='text' value='zlatnaspirala@gmail.com' />
@@ -1578,8 +1599,9 @@ let app = new _safir.Safir();
    */
   app.loadComponent(new _heder.default('my-header'));
   app.loadVanillaComp("vanilla-components/footer.html");
-  let apiDomain = 'https://maximumroulette.com';
-  // let apiDomain = 'http://localhost';
+
+  // let apiDomain = 'https://maximumroulette.com';
+  let apiDomain = 'http://localhost';
   app.loadComponent(new _rocketCraftingAccount.default(apiDomain), 'bg-transparent');
   document.body.classList.add('funnyBg2');
 });

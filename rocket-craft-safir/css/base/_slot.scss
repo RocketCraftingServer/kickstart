@@ -1,7 +1,7 @@
 
  .numAnimHolder {
   overflow: hidden;
-  height: 5vw !important;
+  // height: 5vw !important;
   // width: fit-content !important;
  }
 
@@ -11,7 +11,7 @@
   min-height: 4vh;
   perspective: 500px;
   perspective-origin: 50% 50%;
-  margin: 15px;
+  margin: 1.25vw;
   width: inherit;
  }
  
@@ -36,5 +36,5 @@
     color: themed('textColor');
     background-color: themed('backgroundColor') !important;
   }
-   width:22px;
+   width:fit-content;
  }

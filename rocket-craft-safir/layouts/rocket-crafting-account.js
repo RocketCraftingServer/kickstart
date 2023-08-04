@@ -60,6 +60,10 @@ export default class RocketCraftingLayout extends BaseComponent {
         this.leaderBoardRender = () => this.leaderBoard.renderId();
         this.render = this.leaderBoardRender;
         getComp(this.id).innerHTML = this.render();
+
+        // funny animation
+        
+
       } else {
         console.info('no session');
       }
@@ -70,6 +74,14 @@ export default class RocketCraftingLayout extends BaseComponent {
       this.homeRender = () => this.home.renderId();
       this.render = this.homeRender;
       getComp(this.id).innerHTML = this.render();
+    })
+
+    On('gotoAccount', () => {
+      // Account
+      console.log('goto account trigger - just run fetch for fresh data')
+      this.render = this.accountRender;
+      getComp(this.id).innerHTML = this.render();
+      this.runApiFastLogin();
     })
   }
 
@@ -221,7 +233,7 @@ export default class RocketCraftingLayout extends BaseComponent {
 
   accountRender = () => `
     <div class='midWrapper bg-transparent'>
-      <div class='middle'>
+      <div class='middle topHeader'>
         <h2>Welcome, <h2 id='nickname'>${this.nickname}</h2></h2>
         <span style="margin:40px;">${this.testSafirSlot.renderId()}</span>
       </div>
@@ -238,6 +250,7 @@ export default class RocketCraftingLayout extends BaseComponent {
       <br>
       <h2 class='blackText'>Be first on leadrboard</h2>
       <p class="textColorWhite">Backend based on <a href="https://github.com/RocketCraftingServer/rocket-craft-server" >rocketCraftingServer</a></p>
+      <br>
     </div>
     <div class="midWrapper animate-jello2 bg-transparent">
         <input class="w30" id='arg-username' type='text' value='zlatnaspirala@gmail.com' />

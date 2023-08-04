@@ -54,6 +54,10 @@
   animation: animateBorn 1s ease 0s 1 normal backwards;
 }
 
+.animate-bounce1 {
+  animation: safirBounceAnim 1s ease 0s 1 normal backwards;
+}
+
 @keyframes animateBorn {
   0% {
     opacity: 0;

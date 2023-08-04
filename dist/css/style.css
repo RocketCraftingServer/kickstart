@@ -45,6 +45,10 @@
   animation: animateBorn 1s ease 0s 1 normal backwards;
 }
 
+.animate-bounce1 {
+  animation: safirBounceAnim 1s ease 0s 1 normal backwards;
+}
+
 @keyframes animateBorn {
   0% {
     opacity: 0;
@@ -119,7 +123,6 @@
 }
 .numAnimHolder {
   overflow: hidden;
-  height: 5vw !important;
 }
 
 .slot {
@@ -128,7 +131,7 @@
   min-height: 4vh;
   perspective: 500px;
   perspective-origin: 50% 50%;
-  margin: 15px;
+  margin: 1.25vw;
   width: inherit;
 }
 
@@ -144,12 +147,13 @@
   position: absolute;
   transform: translate(-50%, -50%) rotateX(var(--angle)) translateZ(150.5px);
   border-bottom: 1px solid black;
-  width: 22px;
+  width: -moz-fit-content;
+  width: fit-content;
 }
 .theme-light .panel0, .theme-light .panel1, .theme-light .panel2, .theme-light .panel3, .theme-light .panel4, .theme-light .panel5, .theme-light .panel6, .theme-light .panel7, .theme-light .panel8, .theme-light .panel9 {
   font-family: "Accuratist";
   color: #ffffff;
-  background-color: rgba(255, 88, 88, 0.7) !important;
+  background-color: rgb(255, 88, 88) !important;
 }
 .theme-dark .panel0, .theme-dark .panel1, .theme-dark .panel2, .theme-dark .panel3, .theme-dark .panel4, .theme-dark .panel5, .theme-dark .panel6, .theme-dark .panel7, .theme-dark .panel8, .theme-dark .panel9 {
   font-family: "Accuratist";
@@ -170,7 +174,7 @@
 .theme-light .tableStyleMark0 {
   font-family: "Accuratist";
   color: #ffffff;
-  background-color: rgba(255, 88, 88, 0.7) !important;
+  background-color: rgb(255, 88, 88) !important;
 }
 .theme-dark .tableStyleMark0 {
   font-family: "Accuratist";
@@ -237,7 +241,7 @@ body {
 .theme-light body {
   font-family: "Accuratist";
   color: #ffffff;
-  background-color: rgba(255, 88, 88, 0.7);
+  background-color: rgb(255, 88, 88);
 }
 .theme-dark body {
   font-family: "Accuratist";
@@ -299,7 +303,7 @@ div {
 .theme-light div {
   font-family: "Accuratist";
   color: #ffffff;
-  background-color: rgba(255, 88, 88, 0.7);
+  background-color: rgb(255, 88, 88);
 }
 .theme-dark div {
   font-family: "Accuratist";
@@ -340,7 +344,7 @@ button {
 }
 .theme-light button {
   color: #ffffff;
-  background-color: rgba(255, 88, 88, 0.7);
+  background-color: rgb(255, 88, 88);
   border: 1px solid rgb(0, 148, 181);
   font-size: 2vw;
 }
@@ -392,7 +396,7 @@ input {
 .theme-light input {
   font-family: "Accuratist";
   color: #ffffff;
-  background-color: rgba(255, 88, 88, 0.7);
+  background-color: rgb(255, 88, 88);
   border: 1px solid #7c19ff;
   font-size: 2vw;
 }
@@ -501,6 +505,10 @@ p {
   overflow-x: hidden;
 }
 
+.topHeader {
+  height: 50px !important;
+}
+
 .middle {
   display: flex;
   flex-direction: row;
@@ -523,7 +531,7 @@ p {
 }
 .theme-light .verCenter {
   color: #ffffff;
-  background-color: rgba(255, 88, 88, 0.7);
+  background-color: rgb(255, 88, 88);
 }
 .theme-dark .verCenter {
   color: rgb(255, 255, 255);
@@ -548,7 +556,7 @@ p {
 }
 .theme-light .horCenter {
   color: #ffffff;
-  background-color: rgba(255, 88, 88, 0.7);
+  background-color: rgb(255, 88, 88);
 }
 .theme-dark .horCenter {
   color: rgb(255, 255, 255);
@@ -586,7 +594,7 @@ p {
 
 #leaderBoardResponse {
   width: 99.5% !important;
-  padding: 50px;
+  padding: 5vw;
 }
 
 .overflowAuto {

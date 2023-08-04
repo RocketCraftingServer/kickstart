@@ -175,6 +175,10 @@ p {
   overflow-x: hidden;
 }
 
+.topHeader {
+  height: 50px !important;
+}
+
 .middle {
   display: flex;
   flex-direction: row;
