@@ -13,7 +13,7 @@ export default class RocketCraftingLayout extends BaseComponent {
   registerBtn = new SimpleBtn({text: 'Register', id: 'registerBtn'}, 'w30');
   leaderBoard = null; // new LeaderBoard({id: 'leaderboard', currentPagIndex: '0' }, 'middle overflowAuto');
 
-  home = new Home({id:'homepage'})
+  home = new Home({id: 'homepage'})
 
   // NOTE SAFIRSLOT NEED RENDER DOM IN MOMENT OF INSTANCING
   testSafirSlot = null;
@@ -38,11 +38,11 @@ export default class RocketCraftingLayout extends BaseComponent {
       this.apiAccount('register');
     });
 
-    On('pagNext', ()=> {
+    On('pagNext', () => {
       this.runApiLeaderBoard();
     });
 
-    On('pagPrev', ()=> {
+    On('pagPrev', () => {
       this.runApiLeaderBoard();
     });
 
@@ -54,15 +54,15 @@ export default class RocketCraftingLayout extends BaseComponent {
       console.info('RocketCrafting fast login.');
     }
     On('gotoLeaderboard', () => {
-      if (LocalSessionMemory.load('my-body-email') !== false && LocalSessionMemory.load('my-body-token') !== false) {
-        this.leaderBoard = new LeaderBoard({id: 'leaderboard', currentPagIndex: '0' }, 'middle overflowAuto');
+      if(LocalSessionMemory.load('my-body-email') !== false && LocalSessionMemory.load('my-body-token') !== false) {
+        this.leaderBoard = new LeaderBoard({id: 'leaderboard', currentPagIndex: '0'}, 'middle overflowAuto');
         this.runApiLeaderBoard();
         this.leaderBoardRender = () => this.leaderBoard.renderId();
         this.render = this.leaderBoardRender;
         getComp(this.id).innerHTML = this.render();
 
         // funny animation
-        
+
 
       } else {
         console.info('no session');
@@ -172,8 +172,12 @@ export default class RocketCraftingLayout extends BaseComponent {
       }
     }
 
-    // NOTE SAFIRSLOT NEED RENDER DOM IN MOMENT OF INSTANCING
-    this.testSafirSlot = new SafirBuildInPlugins.SafirSlot({id: 'userPoints', rootDom: 'userPoints'}, 'horCenter bg-transparent');
+    console.log('TEST this.testSafirSlot ', this.testSafirSlot)
+    if(this.testSafirSlot == null) {
+      // NOTE SAFIRSLOT NEED RENDER DOM IN MOMENT OF INSTANCING
+      this.testSafirSlot = new SafirBuildInPlugins.SafirSlot({id: 'userPoints', rootDom: 'userPoints'}, 'horCenter bg-transparent');
+    }
+
     // how to use sub rerender
     // simple override
     this.render = this.accountRender;

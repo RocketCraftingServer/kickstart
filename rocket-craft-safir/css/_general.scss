@@ -23,13 +23,17 @@ body {
   padding: 0;
   overflow: hidden;
   font-size: 2vw;
-}
 
-body {
   @include themify($themes) {
     font-family: themed('fontFamily');
     color: themed('textColor');
     background-color: themed('backgroundColor');
+  }
+}
+
+@media only screen and (min-width: 780px) {
+  body {
+    font-size: 22px;
   }
 }
 
@@ -41,14 +45,20 @@ a:hover {
   color: #f58843;
 }
 
-h2 , h5 {
+h2,
+h5 {
   @include themify($themes) {
     cursor: default;
     text-shadow: themed('textShadow');
+
     &:hover {
       color: themed('textHoverColor');
-      background:  themed('divShadowColor');
+      background: themed('divShadowColor');
     }
+  }
+
+  @media only screen and (min-width: 780px) {
+    font-size: 20px;
   }
 }
 
@@ -64,12 +74,18 @@ div {
 
   cursor: default;
   width: inherit;
+
+  @media only screen and (min-width: 780px) {
+    font-size: 20px;
+  }
+
 }
 
 span {
   @include themify($themes) {
     font-size: themed('fontSize');
   }
+
   padding: 5px 5px 5px 5px;
 }
 
@@ -84,6 +100,10 @@ button {
   font-family: Accuratist;
   padding: 1px 1px 1px 1px;
   margin: 1px 1px 1px 1px;
+
+  @media only screen and (min-width: 780px) {
+    font-size: 20px !important;
+  }
 
   &:active {
     box-shadow: none;
@@ -151,6 +171,7 @@ p {
   @include themify($themes) {
     box-shadow: themed('scrollBar');
   }
+
   border-radius: 8px;
 }
 
@@ -159,6 +180,7 @@ p {
   @include themify($themes) {
     background: themed('scrollbarThumb');
   }
+
   border-radius: 10px;
 }
 
@@ -227,12 +249,13 @@ p {
 .fill {
   width: 100% !important;
   height: 100% !important;
+
   @include themify($themes) {
     font-family: themed('fontFamily');
   }
 }
 
-#leaderBoardResponse{
+#leaderBoardResponse {
   width: 99.5% !important;
   padding: 50px;
 }
@@ -293,7 +316,7 @@ p {
   justify-content: center;
   align-items: center;
 }
- 
+
 .funnyBg1 {
   background: linear-gradient(90deg, #D80909 0%, #A1D024 10%, #00F90B 20%, #1AB5DC 30%, #401CCA 60%, #67145A 70%, #860d74 80%, #d6164f 90%, #d41010 100%);
 }
@@ -317,7 +340,7 @@ p {
 }
 
 .avatarProfile {
-  color:indigo;
+  color: indigo;
   border: solid;
   border-color: linear-gradient(90deg, #D80909 0%, #A1D024 10%, #00F90B 20%, #1AB5DC 30%, #401CCA 60%, #67145A 70%, #860d74 80%, #d6164f 90%, #d41010 100%);
   width: 256px;

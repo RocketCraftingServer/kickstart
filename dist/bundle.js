@@ -1481,12 +1481,15 @@ class RocketCraftingLayout extends _safir.BaseComponent {
         }
       }
     }
+    console.log('TEST this.testSafirSlot ', this.testSafirSlot);
+    if (this.testSafirSlot == null) {
+      // NOTE SAFIRSLOT NEED RENDER DOM IN MOMENT OF INSTANCING
+      this.testSafirSlot = new _safir.SafirBuildInPlugins.SafirSlot({
+        id: 'userPoints',
+        rootDom: 'userPoints'
+      }, 'horCenter bg-transparent');
+    }
 
-    // NOTE SAFIRSLOT NEED RENDER DOM IN MOMENT OF INSTANCING
-    this.testSafirSlot = new _safir.SafirBuildInPlugins.SafirSlot({
-      id: 'userPoints',
-      rootDom: 'userPoints'
-    }, 'horCenter bg-transparent');
     // how to use sub rerender
     // simple override
     this.render = this.accountRender;
