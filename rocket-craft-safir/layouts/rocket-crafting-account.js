@@ -71,6 +71,7 @@ export default class RocketCraftingLayout extends BaseComponent {
 
     On('gotoHome', () => {
       // Home
+      this.home.apiDomain = this.apiDomain;
       this.homeRender = () => this.home.renderId();
       this.render = this.homeRender;
       getComp(this.id).innerHTML = this.render();

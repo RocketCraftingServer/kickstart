@@ -1,16 +1,40 @@
 
 .tableStyleMark0 {
   @include themify($themes) {
+    padding: 5px 5px 5px 5px;
     font-family: themed('fontFamily');
     color: themed('textColor');
     background-color: themed('backgroundColor') !important;
+
+    border-bottom: themed('tableBorder2');
+    border-top:  themed('tableBorder2');
+
+    &:hover {
+      color: themed('buttonTextHoverColor');
+
+      border-bottom: themed('tableBorder');
+      border-top:  themed('tableBorder');
+    }
   }
 }
 
 .tableStyleMark1 {
   @include themify($themes) {
+    padding: 5px 5px 5px 5px;
     font-family: themed('fontFamily');
     color: themed('buttonTextColor');
     background-color: themed('buttonColor') !important;
+
+    border-bottom: themed('tableBorder');
+    border-top:  themed('tableBorder');
+
+    &:hover {
+      background-color: themed('backgroundColor') !important;
+      color: themed('textColor') !important;
+
+      border-bottom: themed('tableBorder2');
+      border-top:  themed('tableBorder2');
+    }
+
   }
 }

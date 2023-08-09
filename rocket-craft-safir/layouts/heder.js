@@ -23,14 +23,12 @@ export default class MyHeader extends BaseComponent {
     });
 
     On('change-theme', () => {
-
       (this).changeTheme('theme-' +this.themes[this.curTheme]);
       if (this.curTheme >= this.themes.length) {
         this.curTheme = 0;
       } else {
         this.curTheme++;
       }
-      
       console.info('Trigger ChangeTheme integrated.');
     })
 

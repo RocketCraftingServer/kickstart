@@ -240,45 +240,113 @@
 }
 
 .theme-light .tableStyleMark0 {
+  padding: 5px 5px 5px 5px;
   font-family: "Accuratist";
   color: #ffffff;
   background-color: rgb(255, 88, 88) !important;
+  border-bottom: solid rgba(220, 0, 0, 0.886) 1px;
+  border-top: solid rgba(220, 0, 0, 0.886) 1px;
+}
+.theme-light .tableStyleMark0:hover {
+  color: #000000;
+  border-bottom: solid rgb(255, 132, 0) 1px;
+  border-top: solid rgb(255, 132, 0) 1px;
 }
 .theme-dark .tableStyleMark0 {
+  padding: 5px 5px 5px 5px;
   font-family: "Accuratist";
   color: rgb(255, 255, 255);
   background-color: rgba(83, 83, 83, 0.7) !important;
+  border-bottom: solid rgb(105, 105, 105) 1px;
+  border-top: solid rgb(105, 105, 105) 1px;
+}
+.theme-dark .tableStyleMark0:hover {
+  color: rgb(255, 255, 255);
+  border-bottom: solid rgb(71, 71, 71) 1px;
+  border-top: solid rgb(71, 71, 71) 1px;
 }
 .theme-orange .tableStyleMark0 {
+  padding: 5px 5px 5px 5px;
   font-family: "Accuratist";
   color: rgb(255, 85, 0);
   background-color: rgb(0, 0, 0) !important;
+  border-bottom: solid rgb(255, 100, 17) 1px;
+  border-top: solid rgb(255, 100, 17) 1px;
+}
+.theme-orange .tableStyleMark0:hover {
+  color: rgb(255, 255, 255);
+  border-bottom: solid rgb(255, 77, 0) 1px;
+  border-top: solid rgb(255, 77, 0) 1px;
 }
 .theme-blue .tableStyleMark0 {
+  padding: 5px 5px 5px 5px;
   font-family: "Closeness";
   color: rgb(181, 240, 255);
   background-color: rgb(3, 0, 49) !important;
+  border-bottom: solid rgb(0, 55, 255) 1px;
+  border-top: solid rgb(0, 55, 255) 1px;
+}
+.theme-blue .tableStyleMark0:hover {
+  color: rgb(255, 255, 255);
+  border-bottom: solid rgb(0, 94, 255) 1px;
+  border-top: solid rgb(0, 94, 255) 1px;
 }
 
 .theme-light .tableStyleMark1 {
+  padding: 5px 5px 5px 5px;
   font-family: "Accuratist";
   color: #0f2d41;
   background-color: rgb(255, 255, 255) !important;
+  border-bottom: solid rgb(255, 132, 0) 1px;
+  border-top: solid rgb(255, 132, 0) 1px;
+}
+.theme-light .tableStyleMark1:hover {
+  background-color: rgb(255, 88, 88) !important;
+  color: #ffffff !important;
+  border-bottom: solid rgba(220, 0, 0, 0.886) 1px;
+  border-top: solid rgba(220, 0, 0, 0.886) 1px;
 }
 .theme-dark .tableStyleMark1 {
+  padding: 5px 5px 5px 5px;
   font-family: "Accuratist";
   color: rgb(214, 214, 214);
   background-color: #333 !important;
+  border-bottom: solid rgb(71, 71, 71) 1px;
+  border-top: solid rgb(71, 71, 71) 1px;
+}
+.theme-dark .tableStyleMark1:hover {
+  background-color: rgba(83, 83, 83, 0.7) !important;
+  color: rgb(255, 255, 255) !important;
+  border-bottom: solid rgb(105, 105, 105) 1px;
+  border-top: solid rgb(105, 105, 105) 1px;
 }
 .theme-orange .tableStyleMark1 {
+  padding: 5px 5px 5px 5px;
   font-family: "Accuratist";
   color: rgb(243, 79, 43);
   background-color: #333 !important;
+  border-bottom: solid rgb(255, 77, 0) 1px;
+  border-top: solid rgb(255, 77, 0) 1px;
+}
+.theme-orange .tableStyleMark1:hover {
+  background-color: rgb(0, 0, 0) !important;
+  color: rgb(255, 85, 0) !important;
+  border-bottom: solid rgb(255, 100, 17) 1px;
+  border-top: solid rgb(255, 100, 17) 1px;
 }
 .theme-blue .tableStyleMark1 {
+  padding: 5px 5px 5px 5px;
   font-family: "Closeness";
   color: rgb(43, 150, 243);
   background-color: #333 !important;
+  border-bottom: solid rgb(0, 94, 255) 1px;
+  border-top: solid rgb(0, 94, 255) 1px;
+}
+.theme-blue .tableStyleMark1:hover {
+  background-color: rgb(3, 0, 49) !important;
+  color: rgb(181, 240, 255) !important;
+  border-bottom: solid rgb(0, 55, 255) 1px;
+  border-top: solid rgb(0, 55, 255) 1px;
 }
 
 @font-face {
@@ -496,35 +564,35 @@ input {
 .theme-light input {
   font-family: "Accuratist";
   color: #ffffff;
-  background-color: rgb(255, 88, 88);
+  background-color: rgba(255, 88, 88, 0.3);
   border: 1px solid #7c19ff;
   font-size: 3.5vw;
 }
 .theme-dark input {
   font-family: "Accuratist";
   color: rgb(255, 255, 255);
-  background-color: rgba(83, 83, 83, 0.7);
+  background-color: rgba(83, 83, 83, 0.3);
   border: 1px solid #ff8819;
   font-size: 2vw;
 }
 .theme-orange input {
   font-family: "Accuratist";
   color: rgb(255, 85, 0);
-  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.3);
   border: 1px solid #fce14a;
   font-size: 2vw;
 }
 .theme-blue input {
   font-family: "Closeness";
   color: rgb(181, 240, 255);
-  background-color: rgb(3, 0, 49);
+  background-color: rgba(3, 0, 49, 0.3);
   border: 1px solid #fce14a;
   font-size: 2vw;
 }
 input:active {
   box-shadow: none;
-  /**transform: translateY(-1px);
-  transform: translateX(-1px);*/
+  transform: translateX(-5px);
+  /**transform: translateX(-1px);*/
 }
 .theme-light input:hover {
   color: #000000;

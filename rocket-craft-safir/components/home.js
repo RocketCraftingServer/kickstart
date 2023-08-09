@@ -19,6 +19,7 @@ export default class Home extends BaseComponent {
     super(arg);
     this.initial(arg, arg2);
     this.links = [
+      'null',
       'https://maximumroulette.com/apps/visual-ts/basket-ball-chat/app.html'
     ];
 
@@ -38,6 +39,7 @@ export default class Home extends BaseComponent {
   }
 
   exploreResponse(res) {
+    console.log('TEST POINTS res', res)
     byID('testResponse').innerHTML = '';
     for(let key in res) {
       let color = 'white';
@@ -50,10 +52,13 @@ export default class Home extends BaseComponent {
         if(key == 'message' && res[key] == 'Wrong Password') {
           color = 'color:red;text-shadow: 0px 0px 1px #52f2ff, 1px 1px 1px #11ffff;';
           byID('testResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]}</div>`;
+          return;
+        }
+        if ( res[key]) {
+          byID('testResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]} </div>`;
         }
       }
     }
-    console.log('TEST POINTS')
   }
 
   async runApiPointsPlus10() {
@@ -63,6 +68,7 @@ export default class Home extends BaseComponent {
       email: LocalSessionMemory.load('my-body-email'),
       token: LocalSessionMemory.load('my-body-token')
     }
+    alert(this.apiDomain )
     const rawResponse = await fetch(route + '/rocket/point-plus10', {
       method: 'POST',
       headers: JSON_HEADER,

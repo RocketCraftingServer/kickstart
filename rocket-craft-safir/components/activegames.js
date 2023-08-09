@@ -1,7 +1,7 @@
 import {BaseComponent, byID, emit} from "safir";
 import {LeaderBoardRender} from "../direct-render/leaderboard";
 
-export default class LeaderBoard extends BaseComponent {
+export default class ActiveGames extends BaseComponent {
 
   id = '';
   text = '';

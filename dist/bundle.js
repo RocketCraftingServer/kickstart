@@ -1100,7 +1100,7 @@ class Home extends _safir.BaseComponent {
   constructor(arg, arg2 = '') {
     super(arg);
     this.initial(arg, arg2);
-    this.links = ['https://maximumroulette.com/apps/visual-ts/basket-ball-chat/app.html'];
+    this.links = ['null', 'https://maximumroulette.com/apps/visual-ts/basket-ball-chat/app.html'];
     On('pointsPlus10', () => {
       console.log('POINTS PLUS');
       this.runApiPointsPlus10();
@@ -1113,6 +1113,7 @@ class Home extends _safir.BaseComponent {
     console.log('POACCESS OBJECT TAG', htmlDocument);
   }
   exploreResponse(res) {
+    console.log('TEST POINTS res', res);
     (0, _safir.byID)('testResponse').innerHTML = '';
     for (let key in res) {
       let color = 'white';
@@ -1125,10 +1126,13 @@ class Home extends _safir.BaseComponent {
         if (key == 'message' && res[key] == 'Wrong Password') {
           color = 'color:red;text-shadow: 0px 0px 1px #52f2ff, 1px 1px 1px #11ffff;';
           (0, _safir.byID)('testResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]}</div>`;
+          return;
+        }
+        if (res[key]) {
+          (0, _safir.byID)('testResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]} </div>`;
         }
       }
     }
-    console.log('TEST POINTS');
   }
   async runApiPointsPlus10() {
     // must be fixed this.email at this moment
@@ -1137,6 +1141,7 @@ class Home extends _safir.BaseComponent {
       email: _safir.LocalSessionMemory.load('my-body-email'),
       token: _safir.LocalSessionMemory.load('my-body-token')
     };
+    alert(this.apiDomain);
     const rawResponse = await fetch(route + '/rocket/point-plus10', {
       method: 'POST',
       headers: _safir.JSON_HEADER,
@@ -1441,6 +1446,7 @@ class RocketCraftingLayout extends _safir.BaseComponent {
     });
     (0, _safir.On)('gotoHome', () => {
       // Home
+      this.home.apiDomain = this.apiDomain;
       this.homeRender = () => this.home.renderId();
       this.render = this.homeRender;
       (0, _safir.getComp)(this.id).innerHTML = this.render();

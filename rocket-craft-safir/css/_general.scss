@@ -123,7 +123,7 @@ input {
   @include themify($themes) {
     font-family: themed('fontFamily');
     color: themed('textColor');
-    background-color: themed('backgroundColor');
+    background-color: themed('backgroundColor2');
     border: themed('inputBorder');
     font-size: themed('fontSize');
   }
@@ -134,8 +134,8 @@ input {
 
   &:active {
     box-shadow: none;
-    /**transform: translateY(-1px);
-    transform: translateX(-1px);*/
+    transform: translateX(-5px);
+    /**transform: translateX(-1px);*/
   }
 
   &:hover {

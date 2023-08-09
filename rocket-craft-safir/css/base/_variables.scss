@@ -3,6 +3,7 @@ $themes: (
     fontFamily: 'Accuratist',
     fontSize: 3.5vw,
     backgroundColor: rgba(255, 88, 88, 1),
+    backgroundColor2: rgba(255, 88, 88, 0.3),
     divShadowColor: #49d8ff14,
     scrollBar: inset 0 0 5px rgb(32, 116, 135),
     scrollbarThumb: silver,
@@ -15,12 +16,16 @@ $themes: (
     buttonColor: rgb(255, 255, 255),
     buttonBorder: 1px solid rgb(0, 148, 181),
     buttonBorderHover: 1px solid rgb(0, 221, 255),
-    inputBorder: 1px solid #7c19ff
+    inputBorder: 1px solid #7c19ff,
+    tableBg:  rgba(228, 24, 24, 0.3),
+    tableBorder: solid rgb(255, 132, 0) 1px,
+    tableBorder2: solid rgba(220, 0, 0, 0.886) 1px,
   ),
   dark: (
     fontFamily: 'Accuratist',
     fontSize: 2vw,
     backgroundColor: rgba(83, 83, 83, 0.7),
+    backgroundColor2: rgba(83, 83, 83, 0.3),
     divShadowColor: #ff000014,
     scrollBar: inset 0 0 5px rgb(32, 116, 135),
     scrollbarThumbHover: orange,
@@ -32,12 +37,16 @@ $themes: (
     buttonColor: #333,
     buttonBorder: 1px solid #aaa,
     buttonBorderHover: 1px solid rgb(250, 250, 250),
-    inputBorder: 1px solid #ff8819
+    inputBorder: 1px solid #ff8819,
+    tableBg:  rgba(228, 24, 24, 0.3),
+    tableBorder: solid rgb(71, 71, 71) 1px,
+    tableBorder2: solid rgb(105, 105, 105) 1px,
   ),
   orange: (
     fontFamily: 'Accuratist',
     fontSize: 2vw,
     backgroundColor: rgb(0, 0, 0),
+    backgroundColor2: rgb(0, 0, 0, 0.3),
     divShadowColor: #ff000014,
     scrollBar: inset 0 0 5px rgb(253, 196, 9),
     scrollbarThumbHover: orange,
@@ -49,12 +58,16 @@ $themes: (
     buttonColor: #333,
     buttonBorder: 1px solid rgb(255, 194, 40),
     buttonBorderHover: 1px solid rgb(255, 139, 100),
-    inputBorder: 1px solid #fce14a
+    inputBorder: 1px solid #fce14a,
+    tableBg:  rgba(228, 24, 24, 0.3),
+    tableBorder: solid rgb(255, 77, 0) 1px,
+    tableBorder2: solid rgb(255, 100, 17) 1px,
   ),
   blue: (
     fontFamily: 'Closeness',
     fontSize: 2vw,
     backgroundColor: rgb(3, 0, 49),
+    backgroundColor2: rgb(3, 0, 49, 0.3),
     divShadowColor: #0022ff14,
     scrollBar: inset 0 0 5px rgb(9, 107, 253),
     scrollbarThumbHover: rgb(0, 7, 146),
@@ -66,6 +79,9 @@ $themes: (
     buttonColor: #333,
     buttonBorder: 1px solid rgb(255, 194, 40),
     buttonBorderHover: 1px solid rgb(250, 255, 100),
-    inputBorder: 1px solid #fce14a
+    inputBorder: 1px solid #fce14a,
+    tableBg:  rgba(228, 24, 24, 0.3),
+    tableBorder: solid rgb(0, 94, 255) 1px,
+    tableBorder2: solid rgb(0, 55, 255) 1px,
   )
 );
