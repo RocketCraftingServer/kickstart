@@ -1564,7 +1564,7 @@ class MyHeader extends _safir.BaseComponent {
     id: 'gotoLeaderboard'
   }, 'fill');
   gotoHomePage = new _simpleBtn.default({
-    text: 'Play',
+    text: 'GamePlay',
     id: 'gotoHome'
   }, 'fill');
   gotoAccount = new _simpleBtn.default({
@@ -1580,7 +1580,6 @@ class MyHeader extends _safir.BaseComponent {
     this.initial(arg);
     this.themes = ['dark', 'light', 'orange', 'blue'];
     this.curTheme = 0;
-    (0, _safir.On)('gotoLeaderboard', () => {});
     (0, _safir.On)('change-theme', () => {
       this.changeTheme('theme-' + this.themes[this.curTheme]);
       if (this.curTheme >= this.themes.length) {
@@ -1591,9 +1590,7 @@ class MyHeader extends _safir.BaseComponent {
       console.info('Trigger ChangeTheme integrated.');
     });
   }
-  ready = () => {
-    console.info('READY HEDER', this);
-  };
+  ready = () => {};
   change = this.clickBind;
   render = () => `
     <div class="middle h5">
@@ -1642,7 +1639,6 @@ class RocketCraftingLayout extends _safir.BaseComponent {
   home = new _home.default({
     id: 'homepage'
   });
-
   // NOTE SAFIRSLOT NEED RENDER DOM IN MOMENT OF INSTANCING
   testSafirSlot = null;
   nickname = null;
@@ -1652,7 +1648,6 @@ class RocketCraftingLayout extends _safir.BaseComponent {
   constructor(arg) {
     super(arg);
     this.apiDomain = arg;
-    console.log('CONSTrUC OF RCFTAFT');
   }
   ready = () => {
     if (sessionStorage.getItem('my-body-email') != null && sessionStorage.getItem('my-body-token') != null) {

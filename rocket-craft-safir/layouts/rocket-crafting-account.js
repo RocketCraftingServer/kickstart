@@ -14,12 +14,9 @@ export default class RocketCraftingLayout extends BaseComponent {
   registerBtn = new SimpleBtn({text: 'Register', id: 'registerBtn'}, 'w30');
   leaderBoard = null;
   activeGamesList = null;
-
   home = new Home({id: 'homepage'})
-
   // NOTE SAFIRSLOT NEED RENDER DOM IN MOMENT OF INSTANCING
   testSafirSlot = null;
-
   nickname = null;
   email = null;
   token = null;
@@ -28,7 +25,6 @@ export default class RocketCraftingLayout extends BaseComponent {
   constructor(arg) {
     super(arg);
     this.apiDomain = arg;
-    console.log('CONSTrUC OF RCFTAFT')
   }
 
   ready = () => {
@@ -40,7 +36,6 @@ export default class RocketCraftingLayout extends BaseComponent {
   }
 
   attach() {
-
     On('loginBtn', (data) => {
       console.info('[login] Trigger Btn', (data).detail);
       this.apiAccount('login');
@@ -299,5 +294,4 @@ export default class RocketCraftingLayout extends BaseComponent {
       <span id="apiResponse"></span>
     </div>
   `;
-
 }

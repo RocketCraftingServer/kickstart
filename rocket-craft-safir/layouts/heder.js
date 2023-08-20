@@ -9,10 +9,9 @@ export default class MyHeader extends BaseComponent {
 
   id = 'my-heder';
   gotoLeaderboardBtn = new SimpleButton({ text: T.gotoLeaderboard, id: 'gotoLeaderboard'}, 'fill');
-  gotoHomePage = new SimpleButton({ text: 'Play', id: 'gotoHome'}, 'fill');
+  gotoHomePage = new SimpleButton({ text: 'GamePlay', id: 'gotoHome'}, 'fill');
   gotoAccount = new SimpleButton({ text: 'Account', id: 'gotoAccount'}, 'fill');
   gotoAGL = new SimpleButton({text: 'AGL', id: 'gotoAGL'}, 'fill')
-
 
   constructor(arg) {
     super(arg);
@@ -20,10 +19,6 @@ export default class MyHeader extends BaseComponent {
 
     this.themes = ['dark', 'light', 'orange', 'blue'];
     this.curTheme = 0;
-
-    On('gotoLeaderboard', () => {
-    
-    });
 
     On('change-theme', () => {
       (this).changeTheme('theme-' +this.themes[this.curTheme]);
@@ -34,12 +29,9 @@ export default class MyHeader extends BaseComponent {
       }
       console.info('Trigger ChangeTheme integrated.');
     })
-    
   }
 
-  ready = () => {
-    console.info('READY HEDER', (this));
-  }
+  ready = () => {}
 
   change = this.clickBind;
 
