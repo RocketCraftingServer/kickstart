@@ -1,41 +1,55 @@
-import {BaseComponent, byID, byTag, JSON_HEADER, LocalSessionMemory} from "safir";
+import {BaseComponent, byID, On, byTag, JSON_HEADER, LocalSessionMemory} from "safir";
 import {LeaderBoardRender} from "../direct-render/leaderboard";
+import SimpleButton from "../components/simple-btn";
 
 export default class Home extends BaseComponent {
 
   id = '';
+  btns = [];
+
+  constructGameList() {
+    this.links.forEach(element => {
+      this.btns.push(new SimpleButton({text: element.name, id: element.action}, 'fill'))
+
+      On(element.action, () => {
+        this.loadGamplay(element.link)
+      })
+
+    })
+  }
 
   ready = () => {
-
-    window.onmessage = function(e) {
-      if(e.data == 'points-plus-10') {
-        alert('points-plus-10!');
-      }
-    };
-
+    this.constructGameList()
   };
 
   constructor(arg, arg2 = '') {
     super(arg);
     this.initial(arg, arg2);
     this.links = [
-      'null',
-      'https://maximumroulette.com/apps/visual-ts/basket-ball-chat/app.html'
+      {action: 'platformer', name: "Nidzica", link: 'https://maximumroulette.com/apps/visual-ts/singleplayer/app.html'},
+      {action: 'platformer-multiplayer', name: "Multiplayer platformer", link: 'https://maximumroulette.com/apps/visual-ts/basket-ball-chat/app.html'},
+      {action: 'hang3d', name: "Hang3d Nightmare", link: 'https://maximumroulette.com/apps/hang3d/'}
     ];
-
     On('pointsPlus10', () => {
-
       console.log('POINTS PLUS')
       this.runApiPointsPlus10();
-
     });
   }
 
-  accessGamplay() {
+  accessGamplay(i) {
     // for now single tag object
+    var t = byTag("object")[i];
+    var htmlDocument = t.contentDocument;
+    console.log('POACCESS OBJECT TAG', htmlDocument)
+  }
+
+  loadGamplay(i) {
     var t = byTag("object")[0];
     var htmlDocument = t.contentDocument;
     console.log('POACCESS OBJECT TAG', htmlDocument)
+    t.data = i
+    byID('GameList').style.display = 'none';
+    byID('gameplayDiv').style.display = 'flex';
   }
 
   exploreResponse(res) {
@@ -54,7 +68,7 @@ export default class Home extends BaseComponent {
           byID('testResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]}</div>`;
           return;
         }
-        if ( res[key]) {
+        if(res[key]) {
           byID('testResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]} </div>`;
         }
       }
@@ -68,7 +82,7 @@ export default class Home extends BaseComponent {
       email: LocalSessionMemory.load('my-body-email'),
       token: LocalSessionMemory.load('my-body-token')
     }
-    alert(this.apiDomain )
+    alert(this.apiDomain)
     const rawResponse = await fetch(route + '/rocket/point-plus10', {
       method: 'POST',
       headers: JSON_HEADER,
@@ -86,10 +100,15 @@ export default class Home extends BaseComponent {
 
   render = () => `
     <div id="homePage" class="animate-born myScroll verCenter overflowAuto">
-      <div class="middle gameplayObj">
+    <div id="GameList" class="middle gameplayObj" style="display: flex;">
+      ${this.btns.map((i) =>
+    `${i.renderId()}`).join('')
+    }
+    </div>
+      <div id="gameplayDiv" class="middle gameplayObj" style="display: none;">
         <h2>RocketCraftingServer Platform</h2>
         <h3>Play Platformer [2d]</h3>
-        <object class="gameplay" data="${this.links[0]}"></object>
+        <object id="gameplay" class="gameplay" data="${this.links[0]}"></object>
         <br>
         <button onclick="(${this.pointsPlus10})('pointsPlus10')" >TEST POINTS</button>
         <div id="testResponse"></div>

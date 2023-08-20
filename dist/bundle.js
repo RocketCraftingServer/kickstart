@@ -1265,29 +1265,59 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 var _safir = require("safir");
 var _leaderboard = require("../direct-render/leaderboard");
+var _simpleBtn = _interopRequireDefault(require("../components/simple-btn"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 class Home extends _safir.BaseComponent {
   id = '';
+  btns = [];
+  constructGameList() {
+    this.links.forEach(element => {
+      this.btns.push(new _simpleBtn.default({
+        text: element.name,
+        id: element.action
+      }, 'fill'));
+      (0, _safir.On)(element.action, () => {
+        this.loadGamplay(element.link);
+      });
+    });
+  }
   ready = () => {
-    window.onmessage = function (e) {
-      if (e.data == 'points-plus-10') {
-        alert('points-plus-10!');
-      }
-    };
+    this.constructGameList();
   };
   constructor(arg, arg2 = '') {
     super(arg);
     this.initial(arg, arg2);
-    this.links = ['null', 'https://maximumroulette.com/apps/visual-ts/basket-ball-chat/app.html'];
-    On('pointsPlus10', () => {
+    this.links = [{
+      action: 'platformer',
+      name: "Nidzica",
+      link: 'https://maximumroulette.com/apps/visual-ts/singleplayer/app.html'
+    }, {
+      action: 'platformer-multiplayer',
+      name: "Multiplayer platformer",
+      link: 'https://maximumroulette.com/apps/visual-ts/basket-ball-chat/app.html'
+    }, {
+      action: 'hang3d',
+      name: "Hang3d Nightmare",
+      link: 'https://maximumroulette.com/apps/hang3d/'
+    }];
+    (0, _safir.On)('pointsPlus10', () => {
       console.log('POINTS PLUS');
       this.runApiPointsPlus10();
     });
   }
-  accessGamplay() {
+  accessGamplay(i) {
     // for now single tag object
+    var t = (0, _safir.byTag)("object")[i];
+    var htmlDocument = t.contentDocument;
+    console.log('POACCESS OBJECT TAG', htmlDocument);
+  }
+  loadGamplay(i) {
     var t = (0, _safir.byTag)("object")[0];
     var htmlDocument = t.contentDocument;
     console.log('POACCESS OBJECT TAG', htmlDocument);
+    t.data = i;
+    (0, _safir.byID)('GameList').style.display = 'none';
+    (0, _safir.byID)('gameplayDiv').style.display = 'flex';
   }
   exploreResponse(res) {
     console.log('TEST POINTS res', res);
@@ -1335,10 +1365,13 @@ class Home extends _safir.BaseComponent {
 
   render = () => `
     <div id="homePage" class="animate-born myScroll verCenter overflowAuto">
-      <div class="middle gameplayObj">
+    <div id="GameList" class="middle gameplayObj" style="display: flex;">
+      ${this.btns.map(i => `${i.renderId()}`).join('')}
+    </div>
+      <div id="gameplayDiv" class="middle gameplayObj" style="display: none;">
         <h2>RocketCraftingServer Platform</h2>
         <h3>Play Platformer [2d]</h3>
-        <object class="gameplay" data="${this.links[0]}"></object>
+        <object id="gameplay" class="gameplay" data="${this.links[0]}"></object>
         <br>
         <button onclick="(${this.pointsPlus10})('pointsPlus10')" >TEST POINTS</button>
         <div id="testResponse"></div>
@@ -1348,7 +1381,7 @@ class Home extends _safir.BaseComponent {
 }
 exports.default = Home;
 
-},{"../direct-render/leaderboard":15,"safir":1}],11:[function(require,module,exports){
+},{"../components/simple-btn":12,"../direct-render/leaderboard":15,"safir":1}],11:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1505,7 +1538,7 @@ exports.LeaderBoardRender = void 0;
 let LeaderBoardRender = (arg, colorFlag) => `
   <div class="horCenter h5 myMarginList" 
        style="background-color:${colorFlag == true ? 'rgba(0,0,0,0.1)' : 'rgba(0,0,0,0.3)'}">
-    ${arg.map((item, index) => `<div
+    ${arg.map((item, index) => `<div onclick=" navigator.clipboard.writeText(this.innerHTML);"
          class="${index % 2 == 0 ? 'tableStyleMark0' : 'tableStyleMark1'}">
            ${item.key} : ${item.value}
           </div>`).join('')}
@@ -1531,7 +1564,7 @@ class MyHeader extends _safir.BaseComponent {
     id: 'gotoLeaderboard'
   }, 'fill');
   gotoHomePage = new _simpleBtn.default({
-    text: 'Home',
+    text: 'Play',
     id: 'gotoHome'
   }, 'fill');
   gotoAccount = new _simpleBtn.default({
