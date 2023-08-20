@@ -1,5 +1,7 @@
-
+# _____________________________
 # Safir vs RocketCraftingServer
+# Gamplay Platform          WIP
+# _____________________________
 
 ## Based on tech: Node.js, JS
 ## Tools: browserify
@@ -30,8 +32,10 @@ Alternative : You can use any other web server.
 ## Routes [RCS]
 
 <pre>
+
 +----------+----------+---------------------------------------------------------------------------------+
 |         kickstart [safir]                    ANY CLIENT                                               |
+|         My link                              https://maximumroulette.com/apps/gameplay/               |
 +----------+----------+---------------------------------------------------------------------------------+
            ^          |
            |          |
