@@ -3,6 +3,7 @@ import SimpleBtn from "../components/simple-btn";
 import {Avatar} from "../direct-render/imageProfile";
 import LeaderBoard from "../components/leaderboard";
 import Home from "../components/home";
+import ActiveGames from "../components/activegames";
 
 export default class RocketCraftingLayout extends BaseComponent {
 
@@ -11,7 +12,8 @@ export default class RocketCraftingLayout extends BaseComponent {
   apiDomain = '';
   loginBtn = new SimpleBtn({text: 'Login', id: 'loginBtn'}, 'w30');
   registerBtn = new SimpleBtn({text: 'Register', id: 'registerBtn'}, 'w30');
-  leaderBoard = null; // new LeaderBoard({id: 'leaderboard', currentPagIndex: '0' }, 'middle overflowAuto');
+  leaderBoard = null;
+  activeGamesList = null;
 
   home = new Home({id: 'homepage'})
 
@@ -25,8 +27,19 @@ export default class RocketCraftingLayout extends BaseComponent {
 
   constructor(arg) {
     super(arg);
-
     this.apiDomain = arg;
+    console.log('CONSTrUC OF RCFTAFT')
+  }
+
+  ready = () => {
+    if(sessionStorage.getItem('my-body-email') != null && sessionStorage.getItem('my-body-token') != null) {
+      this.runApiFastLogin();
+      console.info('RocketCrafting fast login.');
+    }
+    this.attach()
+  }
+
+  attach() {
 
     On('loginBtn', (data) => {
       console.info('[login] Trigger Btn', (data).detail);
@@ -46,13 +59,6 @@ export default class RocketCraftingLayout extends BaseComponent {
       this.runApiLeaderBoard();
     });
 
-  }
-
-  ready = () => {
-    if(sessionStorage.getItem('my-body-email') != null && sessionStorage.getItem('my-body-token') != null) {
-      this.runApiFastLogin();
-      console.info('RocketCrafting fast login.');
-    }
     On('gotoLeaderboard', () => {
       if(LocalSessionMemory.load('my-body-email') !== false && LocalSessionMemory.load('my-body-token') !== false) {
         this.leaderBoard = new LeaderBoard({id: 'leaderboard', currentPagIndex: '0'}, 'middle overflowAuto');
@@ -60,10 +66,20 @@ export default class RocketCraftingLayout extends BaseComponent {
         this.leaderBoardRender = () => this.leaderBoard.renderId();
         this.render = this.leaderBoardRender;
         getComp(this.id).innerHTML = this.render();
-
         // funny animation
+      } else {
+        console.info('no session');
+      }
+    });
 
-
+    On('gotoAGL', () => {
+      if(LocalSessionMemory.load('my-body-email') !== false && LocalSessionMemory.load('my-body-token') !== false) {
+        this.activeGamesList = new ActiveGames({id: 'activeGamesList', currentPagIndex: '0'}, 'middle overflowAuto');
+        this.runApiAGL();
+        this.activeGamesListRender = () => this.activeGamesList.renderId();
+        this.render = this.activeGamesListRender;
+        getComp(this.id).innerHTML = this.render();
+        // funny animation
       } else {
         console.info('no session');
       }
@@ -136,6 +152,22 @@ export default class RocketCraftingLayout extends BaseComponent {
     })
     var response = await rawResponse.json();
     this.leaderBoard.setData(response);
+  }
+
+  async runApiAGL() {
+    // Elegant collecting data => this.leaderBoard.currentPagIndex
+    let route = this.apiDomain || location.origin;
+    const args = {
+      email: LocalSessionMemory.load('my-body-email'),
+      token: LocalSessionMemory.load('my-body-token'),
+    }
+    const rawResponse = await fetch(route + '/rocket/active-games/', {
+      method: 'POST',
+      headers: JSON_HEADER,
+      body: JSON.stringify(args)
+    })
+    var response = await rawResponse.json();
+    this.activeGamesList.setData(response);
   }
 
   async runUploadAvatar(apiCallFlag) {

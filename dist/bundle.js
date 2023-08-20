@@ -14,6 +14,12 @@ Object.defineProperty(exports, "BaseComponent", {
     return _comp.BaseComponent;
   }
 });
+Object.defineProperty(exports, "GetAllEvents", {
+  enumerable: true,
+  get: function () {
+    return _modifier.GetAllEvents;
+  }
+});
 Object.defineProperty(exports, "JSON_HEADER", {
   enumerable: true,
   get: function () {
@@ -36,6 +42,12 @@ Object.defineProperty(exports, "Manager", {
   enumerable: true,
   get: function () {
     return _utils.Manager;
+  }
+});
+Object.defineProperty(exports, "Off", {
+  enumerable: true,
+  get: function () {
+    return _modifier.Off;
   }
 });
 Object.defineProperty(exports, "On", {
@@ -693,10 +705,16 @@ exports.Horizontal = Horizontal;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.On = void 0;
+exports.On = exports.Off = exports.GetAllEvents = void 0;
 window.On = window.addEventListener;
+window.Off = window.removeEventListener;
+window.GetAllEvents = [];
 const On = window.On;
 exports.On = On;
+const Off = window.Off;
+exports.Off = Off;
+const GetAllEvents = window.GetAllEvents;
+exports.GetAllEvents = GetAllEvents;
 
 },{}],6:[function(require,module,exports){
 "use strict";
@@ -773,6 +791,7 @@ class Safir extends BaseSafir {
   appRoot;
   constructor() {
     super();
+    this.listeners = [];
     this.subComponents = [];
     this.appRoot = (0, _utils.getComp)("app");
     this.construct();
@@ -784,7 +803,7 @@ class Safir extends BaseSafir {
   construct = () => {
     // Translation Enabled.
     this.emitML(this);
-    // console.info("Multilang integrated component.ROOT. Still not resolved (pass arg) for services eg. codepen etc.");
+    console.info("Multilang integrated wwith component root.");
     window.customElements.define('ver-box', _customCom.Vertical);
     window.customElements.define('hor-box', _customCom.Horizontal);
     // console.info("Custom Base Dom elements integrated => [Vertical, Horizontal].");
@@ -809,7 +828,7 @@ class Safir extends BaseSafir {
     this.appRoot?.append(x);
     x.innerHTML = arg.render(arg);
     this.subComponents.push(arg);
-    arg.ready();
+    // arg.ready();
     return arg;
   };
   loadVanillaComp(arg) {
@@ -842,6 +861,25 @@ exports.getComp = exports.emit = void 0;
 exports.isMobile = isMobile;
 exports.loadImage = loadImage;
 exports.radToDeg = radToDeg;
+/**
+ * Top priory!
+ */
+let listeners = [];
+const oDoc = window.addEventListener;
+window.addEventListener = function (type, listener, options) {
+  listeners.push({
+    element: this,
+    type,
+    listener,
+    options
+  });
+  if (typeof app.listeners !== 'undefined' && app.listeners.length == 0) {
+    console.log('app.listeners once');
+    app.listeners = listeners;
+  }
+  return oDoc.call(this, type, listener, options);
+};
+
 /**
  * @description
  * List of always usefull functions.
@@ -1087,6 +1125,145 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _safir = require("safir");
+var _agl = require("../direct-render/agl");
+class ActiveGames extends _safir.BaseComponent {
+  id = '';
+  text = '';
+  items = [];
+  ready = () => {};
+  preventor1 = false;
+  preventor2 = false;
+  funcWP = () => {
+    if (this.preventor1 == false) {
+      this.preventor1 = true;
+      this.runApiWannaPlay();
+      setTimeout(() => {
+        this.preventor1 = false;
+      }, 2000);
+    }
+  };
+  funcDWP = () => {
+    if (this.preventor2 == false) {
+      this.preventor2 = true;
+      this.runApiRemoveMeFromList();
+      setTimeout(() => {
+        this.preventor2 = false;
+      }, 2000);
+    }
+  };
+  constructor(arg, arg2 = '') {
+    super(arg);
+    this.initial(arg, arg2);
+    this.currentPagIndex = 1;
+    var t = app.listeners.filter(__ => __.type == 'WannaPlay');
+    if (t.length == 0) {
+      On('WannaPlay', this.funcWP);
+      On('End', this.funcDWP);
+    }
+  }
+  onWannaPlay = this.clickBind;
+  onEnd = this.clickBind;
+  async runApiRemoveMeFromList() {
+    let route = this.apiDomain || location.origin;
+    const args = {
+      email: _safir.LocalSessionMemory.load('my-body-email'),
+      token: _safir.LocalSessionMemory.load('my-body-token')
+    };
+    const rawResponse = await fetch(route + '/rocket/remove-from-server-list', {
+      method: 'POST',
+      headers: _safir.JSON_HEADER,
+      body: JSON.stringify(args)
+    });
+    var response = await rawResponse.json();
+    // this.setData(response);
+    app.subComponents[0].gotoAGL.onClick('gotoAGL');
+  }
+  async runApiWannaPlay() {
+    let route = this.apiDomain || location.origin;
+    const args = {
+      email: _safir.LocalSessionMemory.load('my-body-email'),
+      token: _safir.LocalSessionMemory.load('my-body-token'),
+      mapName: 'this-is-channel1',
+      sessionPlatform: 'platformer-multiplayer'
+    };
+    const rawResponse = await fetch(route + '/rocket/wanna-play', {
+      method: 'POST',
+      headers: _safir.JSON_HEADER,
+      body: JSON.stringify(args)
+    });
+    var response = await rawResponse.json();
+    this.setData(response);
+    setTimeout(() => {
+      app.subComponents[0].gotoAGL.onClick('gotoAGL');
+    }, 2000);
+  }
+  setData = res => {
+    (0, _safir.byID)('activegamesResponse').innerHTML = '';
+    for (let key in res) {
+      let color = 'white';
+      if (typeof res[key] == 'object') {
+        let colorFlag = true;
+        for (let key1 in res[key]) {
+          let prepare = [];
+          for (let key2 in res[key][key1]) {
+            if (key2 == 'sessionHostIp') {
+              console.log('sessionHostIp active games => ', res[key][key1][key2]);
+              prepare.push({
+                key: key2,
+                value: res[key][key1][key2].split('.')[0] + ".*.*.*"
+              });
+            } else {
+              prepare.push({
+                key: key2,
+                value: res[key][key1][key2]
+              });
+            }
+          }
+          (0, _safir.byID)('activegamesResponse').innerHTML += (0, _agl.activeGamesListRender)(prepare, colorFlag);
+          colorFlag = !colorFlag;
+        }
+      } else {
+        if (key == 'message') {
+          console.info("activegamesResponse:", res[key]);
+          (0, _safir.byID)('activegamesResponse').innerHTML += `<div style='color:${color};margin-bottom:10px;' >${key} : ${res[key]} 👨‍🚀</div>`;
+        } else if (res[key]) {
+          (0, _safir.byID)('activegamesResponse').innerHTML += `<div style='color:${color};margin-bottom:10px;' >${key} : ${res[key]} 👨‍🚀</div>`;
+        }
+      }
+    }
+
+    // new test
+    var locCollectItems = [];
+    for (var x = 0; x < (0, _safir.byID)('activegamesResponse').children.length; x++) {
+      for (var y = 0; y < (0, _safir.byID)('activegamesResponse').children[x].children.length; y++) {
+        locCollectItems.push((0, _safir.byID)('activegamesResponse').children[x].children[y]);
+      }
+    }
+    ;
+    locCollectItems.forEach((item, index) => {
+      setTimeout(function () {
+        locCollectItems[index].classList.add('animate-bounce1');
+      }, 50 * index);
+    });
+  };
+  render = () => `
+    <div id="activegamesResponse" class="animate-born myScroll verCenter overflowAuto"></div>
+    <div id="activegamesPaginator" class="middle myPaddingList">
+      <button onclick="(${this.onWannaPlay})('WannaPlay')" >Wanna Play - call this from gameplay - send most important data to make multiplayer gplay</button>
+      <button onclick="(${this.onEnd})('End')" >I dont wanna host/play any game - remove me from list </button>
+    </div>
+  `;
+}
+exports.default = ActiveGames;
+
+},{"../direct-render/agl":13,"safir":1}],10:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _safir = require("safir");
 var _leaderboard = require("../direct-render/leaderboard");
 class Home extends _safir.BaseComponent {
   id = '';
@@ -1171,7 +1348,7 @@ class Home extends _safir.BaseComponent {
 }
 exports.default = Home;
 
-},{"../direct-render/leaderboard":13,"safir":1}],10:[function(require,module,exports){
+},{"../direct-render/leaderboard":15,"safir":1}],11:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1184,24 +1361,31 @@ class LeaderBoard extends _safir.BaseComponent {
   id = '';
   text = '';
   items = [];
-  ready = () => {};
+  ready = () => {
+    var t = app.listeners.filter(__ => __.type == 'nextClick');
+    if (t.length == 0) {
+      On('nextClick', this.next);
+      On('prevClick', () => {
+        if (this.currentPagIndex > 1) {
+          this.currentPagIndex--;
+          this.setPropById('currentPagIndex', this.currentPagIndex, 1);
+          (0, _safir.emit)('pagPrev');
+        }
+      });
+    }
+  };
   constructor(arg, arg2 = '') {
     super(arg);
     this.initial(arg, arg2);
     this.currentPagIndex = 1;
-    On('nextClick', () => {
-      this.currentPagIndex++;
-      this.setPropById('currentPagIndex', this.currentPagIndex, 1);
-      (0, _safir.emit)('pagNext');
-    });
-    On('prevClick', () => {
-      if (this.currentPagIndex > 1) {
-        this.currentPagIndex--;
-        this.setPropById('currentPagIndex', this.currentPagIndex, 1);
-        (0, _safir.emit)('pagPrev');
-      }
-    });
+    console.log('TEST CALL CLICK constructor');
   }
+  next = () => {
+    console.log('TEST CALL CLICK 11111');
+    this.currentPagIndex++;
+    this.setPropById('currentPagIndex', this.currentPagIndex, 1);
+    (0, _safir.emit)('pagNext');
+  };
   onNext = this.clickBind;
   onPrev = this.clickBind;
   setData = res => {
@@ -1255,7 +1439,7 @@ class LeaderBoard extends _safir.BaseComponent {
 }
 exports.default = LeaderBoard;
 
-},{"../direct-render/leaderboard":13,"safir":1}],11:[function(require,module,exports){
+},{"../direct-render/leaderboard":15,"safir":1}],12:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1280,7 +1464,26 @@ class SimpleBtn extends _safir.BaseComponent {
 }
 exports.default = SimpleBtn;
 
-},{"safir":1}],12:[function(require,module,exports){
+},{"safir":1}],13:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.activeGamesListRender = void 0;
+let activeGamesListRender = (arg, colorFlag) => `
+  <div class="horCenter h5 myMarginList" 
+       style="background-color:${colorFlag == true ? 'rgba(0,0,0,0.1)' : 'rgba(0,0,0,0.3)'}">
+    ${arg.map((item, index) => `<div
+         style="${item.key == '_id' ? 'display:none' : ""}"
+         class="${index % 2 == 0 ? 'tableStyleMark0' : 'tableStyleMark1'}">
+           ${item.key} : ${item.value}
+          </div>`).join('')}
+  </div>
+`;
+exports.activeGamesListRender = activeGamesListRender;
+
+},{}],14:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1292,7 +1495,7 @@ let Avatar = arg => `
 `;
 exports.Avatar = Avatar;
 
-},{}],13:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1310,13 +1513,14 @@ let LeaderBoardRender = (arg, colorFlag) => `
 `;
 exports.LeaderBoardRender = LeaderBoardRender;
 
-},{}],14:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
+var _activegames = _interopRequireDefault(require("../components/activegames"));
 var _simpleBtn = _interopRequireDefault(require("../components/simple-btn"));
 var _safir = require("safir");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -1334,14 +1538,16 @@ class MyHeader extends _safir.BaseComponent {
     text: 'Account',
     id: 'gotoAccount'
   }, 'fill');
+  gotoAGL = new _simpleBtn.default({
+    text: 'AGL',
+    id: 'gotoAGL'
+  }, 'fill');
   constructor(arg) {
     super(arg);
     this.initial(arg);
     this.themes = ['dark', 'light', 'orange', 'blue'];
     this.curTheme = 0;
-    (0, _safir.On)('gotoLeaderboard', () => {
-      console.info('Trigger Btn gotoLeaderboard', this);
-    });
+    (0, _safir.On)('gotoLeaderboard', () => {});
     (0, _safir.On)('change-theme', () => {
       this.changeTheme('theme-' + this.themes[this.curTheme]);
       if (this.curTheme >= this.themes.length) {
@@ -1352,6 +1558,9 @@ class MyHeader extends _safir.BaseComponent {
       console.info('Trigger ChangeTheme integrated.');
     });
   }
+  ready = () => {
+    console.info('READY HEDER', this);
+  };
   change = this.clickBind;
   render = () => `
     <div class="middle h5">
@@ -1363,13 +1572,14 @@ class MyHeader extends _safir.BaseComponent {
           ${this.gotoLeaderboardBtn.renderId()}
           ${this.gotoAccount.renderId()}
           ${this.gotoHomePage.renderId()}
+          ${this.gotoAGL.renderId()}
        </div>
     </div>
   `;
 }
 exports.default = MyHeader;
 
-},{"../components/simple-btn":11,"safir":1}],15:[function(require,module,exports){
+},{"../components/activegames":9,"../components/simple-btn":12,"safir":1}],17:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1381,6 +1591,7 @@ var _simpleBtn = _interopRequireDefault(require("../components/simple-btn"));
 var _imageProfile = require("../direct-render/imageProfile");
 var _leaderboard = _interopRequireDefault(require("../components/leaderboard"));
 var _home = _interopRequireDefault(require("../components/home"));
+var _activegames = _interopRequireDefault(require("../components/activegames"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 class RocketCraftingLayout extends _safir.BaseComponent {
   id = 'my-body';
@@ -1393,8 +1604,8 @@ class RocketCraftingLayout extends _safir.BaseComponent {
     text: 'Register',
     id: 'registerBtn'
   }, 'w30');
-  leaderBoard = null; // new LeaderBoard({id: 'leaderboard', currentPagIndex: '0' }, 'middle overflowAuto');
-
+  leaderBoard = null;
+  activeGamesList = null;
   home = new _home.default({
     id: 'homepage'
   });
@@ -1408,6 +1619,16 @@ class RocketCraftingLayout extends _safir.BaseComponent {
   constructor(arg) {
     super(arg);
     this.apiDomain = arg;
+    console.log('CONSTrUC OF RCFTAFT');
+  }
+  ready = () => {
+    if (sessionStorage.getItem('my-body-email') != null && sessionStorage.getItem('my-body-token') != null) {
+      this.runApiFastLogin();
+      console.info('RocketCrafting fast login.');
+    }
+    this.attach();
+  };
+  attach() {
     (0, _safir.On)('loginBtn', data => {
       console.info('[login] Trigger Btn', data.detail);
       this.apiAccount('login');
@@ -1422,12 +1643,6 @@ class RocketCraftingLayout extends _safir.BaseComponent {
     (0, _safir.On)('pagPrev', () => {
       this.runApiLeaderBoard();
     });
-  }
-  ready = () => {
-    if (sessionStorage.getItem('my-body-email') != null && sessionStorage.getItem('my-body-token') != null) {
-      this.runApiFastLogin();
-      console.info('RocketCrafting fast login.');
-    }
     (0, _safir.On)('gotoLeaderboard', () => {
       if (_safir.LocalSessionMemory.load('my-body-email') !== false && _safir.LocalSessionMemory.load('my-body-token') !== false) {
         this.leaderBoard = new _leaderboard.default({
@@ -1438,7 +1653,21 @@ class RocketCraftingLayout extends _safir.BaseComponent {
         this.leaderBoardRender = () => this.leaderBoard.renderId();
         this.render = this.leaderBoardRender;
         (0, _safir.getComp)(this.id).innerHTML = this.render();
-
+        // funny animation
+      } else {
+        console.info('no session');
+      }
+    });
+    (0, _safir.On)('gotoAGL', () => {
+      if (_safir.LocalSessionMemory.load('my-body-email') !== false && _safir.LocalSessionMemory.load('my-body-token') !== false) {
+        this.activeGamesList = new _activegames.default({
+          id: 'activeGamesList',
+          currentPagIndex: '0'
+        }, 'middle overflowAuto');
+        this.runApiAGL();
+        this.activeGamesListRender = () => this.activeGamesList.renderId();
+        this.render = this.activeGamesListRender;
+        (0, _safir.getComp)(this.id).innerHTML = this.render();
         // funny animation
       } else {
         console.info('no session');
@@ -1458,7 +1687,7 @@ class RocketCraftingLayout extends _safir.BaseComponent {
       (0, _safir.getComp)(this.id).innerHTML = this.render();
       this.runApiFastLogin();
     });
-  };
+  }
   async apiAccount(apiCallFlag) {
     let route = this.apiDomain || location.origin;
     const args = {
@@ -1507,6 +1736,21 @@ class RocketCraftingLayout extends _safir.BaseComponent {
     });
     var response = await rawResponse.json();
     this.leaderBoard.setData(response);
+  }
+  async runApiAGL() {
+    // Elegant collecting data => this.leaderBoard.currentPagIndex
+    let route = this.apiDomain || location.origin;
+    const args = {
+      email: _safir.LocalSessionMemory.load('my-body-email'),
+      token: _safir.LocalSessionMemory.load('my-body-token')
+    };
+    const rawResponse = await fetch(route + '/rocket/active-games/', {
+      method: 'POST',
+      headers: _safir.JSON_HEADER,
+      body: JSON.stringify(args)
+    });
+    var response = await rawResponse.json();
+    this.activeGamesList.setData(response);
   }
   async runUploadAvatar(apiCallFlag) {
     let route = this.apiDomain || location.origin;
@@ -1642,7 +1886,7 @@ class RocketCraftingLayout extends _safir.BaseComponent {
 }
 exports.default = RocketCraftingLayout;
 
-},{"../components/home":9,"../components/leaderboard":10,"../components/simple-btn":11,"../direct-render/imageProfile":12,"safir":1}],16:[function(require,module,exports){
+},{"../components/activegames":9,"../components/home":10,"../components/leaderboard":11,"../components/simple-btn":12,"../direct-render/imageProfile":14,"safir":1}],18:[function(require,module,exports){
 "use strict";
 
 var _safir = require("safir");
@@ -1650,6 +1894,7 @@ var _rocketCraftingAccount = _interopRequireDefault(require("./layouts/rocket-cr
 var _heder = _interopRequireDefault(require("./layouts/heder"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 let app = new _safir.Safir();
+console.info('READY APP ????????????????', app.listeners);
 (0, _safir.On)("app.trans.update", () => {
   app.translate.update();
 });
@@ -1669,4 +1914,4 @@ let app = new _safir.Safir();
 });
 window.app = app;
 
-},{"./layouts/heder":14,"./layouts/rocket-crafting-account":15,"safir":1}]},{},[16]);
+},{"./layouts/heder":16,"./layouts/rocket-crafting-account":17,"safir":1}]},{},[18]);

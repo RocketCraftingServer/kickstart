@@ -4,6 +4,8 @@ import MyHeader from "./layouts/heder";
 
 let app = new Safir();
 
+console.info('READY APP ????????????????', app.listeners);
+
 On("app.trans.update", () => {
   app.translate.update()
 })
@@ -17,6 +19,8 @@ On("app.ready", () => {
    */
   app.loadComponent(new MyHeader('my-header'));
   app.loadVanillaComp("vanilla-components/footer.html");
+
+
 
   let apiDomain = 'https://maximumroulette.com';
   // let apiDomain = 'http://localhost';

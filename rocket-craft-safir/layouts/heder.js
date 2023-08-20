@@ -1,3 +1,4 @@
+import ActiveGames from "../components/activegames";
 import SimpleButton from "../components/simple-btn";
 
 import {
@@ -10,6 +11,8 @@ export default class MyHeader extends BaseComponent {
   gotoLeaderboardBtn = new SimpleButton({ text: T.gotoLeaderboard, id: 'gotoLeaderboard'}, 'fill');
   gotoHomePage = new SimpleButton({ text: 'Home', id: 'gotoHome'}, 'fill');
   gotoAccount = new SimpleButton({ text: 'Account', id: 'gotoAccount'}, 'fill');
+  gotoAGL = new SimpleButton({text: 'AGL', id: 'gotoAGL'}, 'fill')
+
 
   constructor(arg) {
     super(arg);
@@ -19,7 +22,7 @@ export default class MyHeader extends BaseComponent {
     this.curTheme = 0;
 
     On('gotoLeaderboard', () => {
-      console.info('Trigger Btn gotoLeaderboard', (this));
+    
     });
 
     On('change-theme', () => {
@@ -31,7 +34,11 @@ export default class MyHeader extends BaseComponent {
       }
       console.info('Trigger ChangeTheme integrated.');
     })
+    
+  }
 
+  ready = () => {
+    console.info('READY HEDER', (this));
   }
 
   change = this.clickBind;
@@ -46,6 +53,7 @@ export default class MyHeader extends BaseComponent {
           ${(this.gotoLeaderboardBtn).renderId()}
           ${(this.gotoAccount).renderId()}
           ${(this.gotoHomePage).renderId()}
+          ${(this.gotoAGL).renderId()}
        </div>
     </div>
   `

@@ -8,27 +8,34 @@ export default class LeaderBoard extends BaseComponent {
   items = [];
 
   ready = () => {
+
+    var t = app.listeners.filter((__) => __.type == 'nextClick');
+    if(t.length == 0) {
+
+      On('nextClick', this.next);
+      On('prevClick', () => {
+        if(this.currentPagIndex > 1) {
+          this.currentPagIndex--;
+          this.setPropById('currentPagIndex', this.currentPagIndex, 1);
+          emit('pagPrev');
+        }
+      })
+    }
+
   };
 
   constructor(arg, arg2 = '') {
     super(arg);
     this.initial(arg, arg2);
     this.currentPagIndex = 1;
+    console.log('TEST CALL CLICK constructor')
+  }
 
-    On('nextClick', () => {
-      this.currentPagIndex++;
-      this.setPropById('currentPagIndex', this.currentPagIndex, 1);
-      emit('pagNext');
-    });
-
-    On('prevClick', () => {
-      if(this.currentPagIndex > 1) {
-        this.currentPagIndex--;
-        this.setPropById('currentPagIndex', this.currentPagIndex, 1);
-        emit('pagPrev');
-      }
-    });
-
+  next = () => {
+    console.log('TEST CALL CLICK 11111')
+    this.currentPagIndex++;
+    this.setPropById('currentPagIndex', this.currentPagIndex, 1);
+    emit('pagNext');
   }
 
   onNext = this.clickBind;
