@@ -1,10 +1,11 @@
-import { Safir, On, T } from "safir";
+import { Safir, On, urlVar } from "safir";
 import RocketCraftingLayout from "./layouts/rocket-crafting-account";
 import MyHeader from "./layouts/heder";
 
 let app = new Safir();
 
-console.info('READY APP ????????????????', app.listeners);
+console.info('<listeners>', app.listeners);
+console.info('<T>', app.T);
 
 On("app.trans.update", () => {
   app.translate.update()
@@ -26,7 +27,12 @@ On("app.ready", () => {
   // let apiDomain = 'http://localhost';
   app.loadComponent(new RocketCraftingLayout(apiDomain), 'bg-transparent');
 
+  if (urlVar.lang !== 'en') {
+    app.emitML(app, urlVar.lang)
+  }
+  app.translate.update()
+
   document.body.classList.add('funnyBg2');
-});
+}, {once: true});
 
 window.app = app;

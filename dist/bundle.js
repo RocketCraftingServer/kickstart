@@ -56,12 +56,6 @@ Object.defineProperty(exports, "On", {
     return _modifier.On;
   }
 });
-Object.defineProperty(exports, "QueryString", {
-  enumerable: true,
-  get: function () {
-    return _utils.QueryString;
-  }
-});
 Object.defineProperty(exports, "Safir", {
   enumerable: true,
   get: function () {
@@ -103,6 +97,12 @@ Object.defineProperty(exports, "getComp", {
   enumerable: true,
   get: function () {
     return _root.getComp;
+  }
+});
+Object.defineProperty(exports, "urlVar", {
+  enumerable: true,
+  get: function () {
+    return _utils.urlVar;
   }
 });
 var _root = require("./src/core/root");
@@ -751,9 +751,18 @@ class BaseSafir {
    * Multi language system is already deep integrated like common feature
    * in developing apps proccess.
    */
-  emitML = async function (r) {
-    const x = await r.loadMultilang();
+
+  T = {};
+  emitML = async (r, path) => {
+    let x = null;
+    if (path) {
+      x = await r.loadMultilang(path);
+    } else {
+      x = await r.loadMultilang();
+    }
+
     // Internal exspose to the global obj
+    this.T = x;
     exports.T = T = x;
     dispatchEvent(new CustomEvent('app.ready', {
       detail: {
@@ -771,7 +780,7 @@ class BaseSafir {
     }
   };
   loadMultilang = async function (path = 'assets/multilang/en.json') {
-    console.info("Multilang integrated component... ");
+    console.info("Multilang: ", path);
     try {
       const r = await fetch(path, {
         headers: {
@@ -855,12 +864,13 @@ exports.Safir = Safir;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.colorLog2 = exports.colorLog1 = exports.byTag = exports.byID = exports.byClass = exports.QueryString = exports.Manager = exports.LocalStorageMemory = exports.LocalSessionMemory = exports.JSON_HEADER = void 0;
+exports.colorLog2 = exports.colorLog1 = exports.byTag = exports.byID = exports.byClass = exports.Manager = exports.LocalStorageMemory = exports.LocalSessionMemory = exports.JSON_HEADER = void 0;
 exports.degToRad = degToRad;
 exports.getComp = exports.emit = void 0;
 exports.isMobile = isMobile;
 exports.loadImage = loadImage;
 exports.radToDeg = radToDeg;
+exports.urlVar = void 0;
 /**
  * Top priory!
  */
@@ -935,7 +945,7 @@ let Manager = {
   }
 };
 exports.Manager = Manager;
-let QueryString = function () {
+let urlVar = function () {
   var query_string = {};
   var query = window.location.search.substring(1);
   var vars = query.split('&');
@@ -952,7 +962,7 @@ let QueryString = function () {
   }
   return query_string;
 }();
-exports.QueryString = QueryString;
+exports.urlVar = urlVar;
 const getComp = function (id) {
   return document.getElementById(id);
 };
@@ -1294,11 +1304,15 @@ class Home extends _safir.BaseComponent {
     }, {
       action: 'platformer-multiplayer',
       name: "Multiplayer platformer",
-      link: 'https://maximumroulette.com/apps/visual-ts/basket-ball-chat/app.html'
+      link: 'https://maximumroulette.com/apps/visual-ts/multiplayer/app.html'
     }, {
       action: 'hang3d',
       name: "Hang3d Nightmare",
       link: 'https://maximumroulette.com/apps/hang3d/'
+    }, {
+      action: 'magic-three',
+      name: "Magic three project",
+      link: 'https://maximumroulette.com/apps/magic-three/'
     }];
     (0, _safir.On)('pointsPlus10', () => {
       console.log('POINTS PLUS');
@@ -1484,13 +1498,19 @@ class SimpleBtn extends _safir.BaseComponent {
   id = '';
   text = '';
   ready = () => {};
+  setDisabled = () => {
+    (0, _safir.byID)(this.id).disabled = true;
+  };
+  removeDisabled = () => {
+    (0, _safir.byID)(this.id).disabled = false;
+  };
   constructor(arg, arg2 = '') {
     super(arg);
     this.initial(arg, arg2);
   }
   onClick = this.clickBind;
   render = () => `
-    <button class="fill bg-transparent" onclick="(${this.onClick})('${this.id}')">
+    <button id="${this.id}-real" class="fill bg-transparent" onclick="(${this.onClick})('${this.id}')">
       ${this.text}
     </button>
   `;
@@ -1596,9 +1616,7 @@ class MyHeader extends _safir.BaseComponent {
     <div class="middle h5">
        <div class="heder">
           <img src="assets/icons/96.png" class="h5" />
-          <button class="fill" onclick="(${this.change})('change-theme')">
-            Change Theme
-          </button>
+          <button class="fill" onclick="(${this.change})('change-theme')" data-label="changeTheme" ></button>
           ${this.gotoLeaderboardBtn.renderId()}
           ${this.gotoAccount.renderId()}
           ${this.gotoHomePage.renderId()}
@@ -1645,6 +1663,7 @@ class RocketCraftingLayout extends _safir.BaseComponent {
   email = null;
   token = null;
   photo = null;
+  preventDBREG = false;
   constructor(arg) {
     super(arg);
     this.apiDomain = arg;
@@ -1662,8 +1681,11 @@ class RocketCraftingLayout extends _safir.BaseComponent {
       this.apiAccount('login');
     });
     (0, _safir.On)('registerBtn', data => {
-      console.info('[register] Trigger Btn', data.detail);
-      this.apiAccount('register');
+      if (this.preventDBREG == false) {
+        this.preventDBREG = true;
+        console.info('[register] Trigger Btn', data.detail);
+        this.apiAccount('register');
+      }
     });
     (0, _safir.On)('pagNext', () => {
       this.runApiLeaderBoard();
@@ -1718,17 +1740,26 @@ class RocketCraftingLayout extends _safir.BaseComponent {
   }
   async apiAccount(apiCallFlag) {
     let route = this.apiDomain || location.origin;
-    const args = {
+    let args = {
       emailField: (0, _safir.byID)('arg-username').value,
       passwordField: (0, _safir.byID)('arg-password').value
     };
-    const rawResponse = await fetch(route + '/rocket/' + apiCallFlag, {
+    if (apiCallFlag == 'confirmation') {
+      delete args.passwordField;
+      args.tokenField = (0, _safir.byID)('arg-password').value;
+    }
+    var response = fetch(route + '/rocket/' + apiCallFlag, {
       method: 'POST',
       headers: _safir.JSON_HEADER,
       body: JSON.stringify(args)
+    }).then(d => {
+      return d.json();
+    }).then(r => {
+      this.exploreResponse(r);
+    }).catch(err => {
+      alert('ERR', err);
+      return;
     });
-    var response = await rawResponse.json();
-    this.exploreResponse(response);
   }
   async runApiFastLogin() {
     // must be fixed this.email at this moment
@@ -1753,7 +1784,7 @@ class RocketCraftingLayout extends _safir.BaseComponent {
       token: _safir.LocalSessionMemory.load('my-body-token'),
       criterium: {
         description: 'paginator',
-        limitValue: 50,
+        limitValue: 12,
         currentPagIndex: this.leaderBoard.currentPagIndex
       }
     };
@@ -1796,6 +1827,7 @@ class RocketCraftingLayout extends _safir.BaseComponent {
     this.exploreResponse(response);
   }
   exploreResponse(res) {
+    var isLogged = false;
     (0, _safir.byID)('apiResponse').innerHTML = '';
     for (let key in res) {
       let color = 'white';
@@ -1808,12 +1840,44 @@ class RocketCraftingLayout extends _safir.BaseComponent {
         if (key == 'message' && res[key] == 'Wrong Password') {
           color = 'color:red;text-shadow: 0px 0px 1px #52f2ff, 1px 1px 1px #11ffff;';
           (0, _safir.byID)('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]}</div>`;
+          return;
+        } else if (res[key] == 'Confirmation done.') {
+          // pass
+          (0, _safir.byID)('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]}</div>`;
+          (0, _safir.byID)('apiResponse').innerHTML += `<div style='${color}' > YOUR ACCOUNT IS READY </div>`;
+          (0, _safir.byID)('apiResponse').innerHTML += `<div style='${color}' > RELOAD FOR 2 SEC </div>`;
+          setTimeout(() => {
+            location.reload();
+          }, 2000);
+          return;
         } else if (res[key] == 'USER_LOGGED') {
-          // byID('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]} 👨‍🚀</div>`;
+          // pass
+          isLogged = true;
+        } else if (res[key] == 'Wrong confirmation code.') {
+          (0, _safir.byID)('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]}</div>`;
+          return;
+        } else if (res[key] == 'Check email for conmfirmation key.') {
+          (0, _safir.byID)('loginBtn-real').remove();
+          (0, _safir.byID)('arg-username').setAttribute('style', 'display:none');
+          (0, _safir.byID)('registerBtn-real').innerText = 'COMFIRM CODE';
+          (0, _safir.byID)('arg-password').value = '';
+          (0, _safir.byID)('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]}</div>`;
+          (0, _safir.byID)('registerBtn-real').onclick = () => {
+            console.info('[confirmationBtn] Trigger');
+            this.apiAccount('confirmation');
+          };
+          return;
+        } else if (res[key] == 'You are already registred.') {
+          (0, _safir.byID)('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]}</div>`;
+          // forgot
+          return;
         }
       }
     }
-    console.log('TEST this.testSafirSlot ', this.testSafirSlot);
+    if (isLogged != true) {
+      console.log('USER_LOGGED = FALSE ');
+      return;
+    }
     if (this.testSafirSlot == null) {
       // NOTE SAFIRSLOT NEED RENDER DOM IN MOMENT OF INSTANCING
       this.testSafirSlot = new _safir.SafirBuildInPlugins.SafirSlot({
@@ -1897,8 +1961,8 @@ class RocketCraftingLayout extends _safir.BaseComponent {
     <div class="paddingtop20 animate-jello2 bg-transparent textCenter">
       <h2 class='blackText'>RocketCraft Platform - Free Games 🌍</h2>
       <br>
-      <h2 class='blackText'>Be first on leadrboard</h2>
-      <p class="textColorWhite">Backend based on <a href="https://github.com/RocketCraftingServer/rocket-craft-server" >rocketCraftingServer</a></p>
+      <h2 class='blackText'>Be first on leaderboard</h2>
+      <h2 class='blackText'>This is no ordinary platform. We provide a colorful journey through wide spheres of interest.</h2>
       <br>
     </div>
     <div class="midWrapper animate-jello2 bg-transparent">
@@ -1909,6 +1973,10 @@ class RocketCraftingLayout extends _safir.BaseComponent {
     </div>
     <div class='midWrapper bg-transparent' >
       <span id="apiResponse"></span>
+    </div>
+    <div class='midWrapper bg-transparent' >
+    <p class="textColorWhite">Backend based on <a href="https://github.com/RocketCraftingServer/rocket-craft-server" >rocketCraftingServer</a></p>
+      <p class="textColorWhite">Frontend based on <a href="https://github.com/RocketCraftingServer/safir" >Safir mini virtual DOM</a></p>
     </div>
   `;
 }
@@ -1922,7 +1990,8 @@ var _rocketCraftingAccount = _interopRequireDefault(require("./layouts/rocket-cr
 var _heder = _interopRequireDefault(require("./layouts/heder"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 let app = new _safir.Safir();
-console.info('READY APP ????????????????', app.listeners);
+console.info('<listeners>', app.listeners);
+console.info('<T>', app.T);
 (0, _safir.On)("app.trans.update", () => {
   app.translate.update();
 });
@@ -1938,7 +2007,13 @@ console.info('READY APP ????????????????', app.listeners);
   let apiDomain = 'https://maximumroulette.com';
   // let apiDomain = 'http://localhost';
   app.loadComponent(new _rocketCraftingAccount.default(apiDomain), 'bg-transparent');
+  if (_safir.urlVar.lang !== 'en') {
+    app.emitML(app, _safir.urlVar.lang);
+  }
+  app.translate.update();
   document.body.classList.add('funnyBg2');
+}, {
+  once: true
 });
 window.app = app;
 

@@ -39,9 +39,7 @@ export default class MyHeader extends BaseComponent {
     <div class="middle h5">
        <div class="heder">
           <img src="assets/icons/96.png" class="h5" />
-          <button class="fill" onclick="(${this.change})('change-theme')">
-            Change Theme
-          </button>
+          <button class="fill" onclick="(${this.change})('change-theme')" data-label="changeTheme" ></button>
           ${(this.gotoLeaderboardBtn).renderId()}
           ${(this.gotoAccount).renderId()}
           ${(this.gotoHomePage).renderId()}

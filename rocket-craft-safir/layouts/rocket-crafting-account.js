@@ -22,6 +22,8 @@ export default class RocketCraftingLayout extends BaseComponent {
   token = null;
   photo = null;
 
+  preventDBREG = false;
+
   constructor(arg) {
     super(arg);
     this.apiDomain = arg;
@@ -42,8 +44,11 @@ export default class RocketCraftingLayout extends BaseComponent {
     });
 
     On('registerBtn', (data) => {
-      console.info('[register] Trigger Btn', (data).detail);
-      this.apiAccount('register');
+      if(this.preventDBREG == false) {
+        this.preventDBREG = true;
+        console.info('[register] Trigger Btn', (data).detail);
+        this.apiAccount('register');
+      }
     });
 
     On('pagNext', () => {
@@ -99,17 +104,28 @@ export default class RocketCraftingLayout extends BaseComponent {
 
   async apiAccount(apiCallFlag) {
     let route = this.apiDomain || location.origin;
-    const args = {
+    let args = {
       emailField: byID('arg-username').value,
       passwordField: byID('arg-password').value
     }
-    const rawResponse = await fetch(route + '/rocket/' + apiCallFlag, {
+
+    if(apiCallFlag == 'confirmation') {
+      delete args.passwordField;
+      args.tokenField = byID('arg-password').value
+    }
+
+    var response = fetch(route + '/rocket/' + apiCallFlag, {
       method: 'POST',
       headers: JSON_HEADER,
       body: JSON.stringify(args)
+    }).then((d) => {
+      return d.json();
+    }).then((r)=>{
+      this.exploreResponse(r);
+    }).catch((err) => {
+      alert('ERR', err)
+      return;
     })
-    var response = await rawResponse.json();
-    this.exploreResponse(response);
   }
 
   async runApiFastLogin() {
@@ -136,7 +152,7 @@ export default class RocketCraftingLayout extends BaseComponent {
       token: LocalSessionMemory.load('my-body-token'),
       criterium: {
         description: 'paginator',
-        limitValue: 50,
+        limitValue: 12,
         currentPagIndex: this.leaderBoard.currentPagIndex
       }
     }
@@ -182,6 +198,7 @@ export default class RocketCraftingLayout extends BaseComponent {
   }
 
   exploreResponse(res) {
+    var isLogged = false;
     byID('apiResponse').innerHTML = '';
     for(let key in res) {
       let color = 'white';
@@ -194,14 +211,48 @@ export default class RocketCraftingLayout extends BaseComponent {
         if(key == 'message' && res[key] == 'Wrong Password') {
           color = 'color:red;text-shadow: 0px 0px 1px #52f2ff, 1px 1px 1px #11ffff;';
           byID('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]}</div>`;
+          return;
+        } else if(res[key] == 'Confirmation done.') {
+          // pass
+          byID('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]}</div>`;
+          byID('apiResponse').innerHTML += `<div style='${color}' > YOUR ACCOUNT IS READY </div>`;
+          byID('apiResponse').innerHTML += `<div style='${color}' > RELOAD FOR 2 SEC </div>`;
+          setTimeout(() => { location.reload() }, 2000)
+          return;
         } else if(res[key] == 'USER_LOGGED') {
-          // byID('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]} 👨‍🚀</div>`;
+          // pass
+          isLogged = true;
+        } else if(res[key] == 'Wrong confirmation code.') {
+          byID('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]}</div>`;
+          return;
+        } else if(res[key] == 'Check email for conmfirmation key.') {
+          byID('loginBtn-real').remove()
+          byID('arg-username').setAttribute('style', 'display:none')
+          byID('registerBtn-real').innerText = 'COMFIRM CODE';
+          byID('arg-password').value = '';
+          byID('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]}</div>`;
+
+          byID('registerBtn-real').onclick = () => {
+            console.info('[confirmationBtn] Trigger');
+            this.apiAccount('confirmation');
+          }
+
+          return;
+        } else if(res[key] == 'You are already registred.') {
+          byID('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]}</div>`;
+          // forgot
+          return;
         }
       }
     }
 
-    console.log('TEST this.testSafirSlot ', this.testSafirSlot)
+    if(isLogged != true) {
+      console.log('USER_LOGGED = FALSE ')
+      return;
+    }
+
     if(this.testSafirSlot == null) {
+      
       // NOTE SAFIRSLOT NEED RENDER DOM IN MOMENT OF INSTANCING
       this.testSafirSlot = new SafirBuildInPlugins.SafirSlot({id: 'userPoints', rootDom: 'userPoints'}, 'horCenter bg-transparent');
     }
@@ -280,8 +331,8 @@ export default class RocketCraftingLayout extends BaseComponent {
     <div class="paddingtop20 animate-jello2 bg-transparent textCenter">
       <h2 class='blackText'>RocketCraft Platform - Free Games 🌍</h2>
       <br>
-      <h2 class='blackText'>Be first on leadrboard</h2>
-      <p class="textColorWhite">Backend based on <a href="https://github.com/RocketCraftingServer/rocket-craft-server" >rocketCraftingServer</a></p>
+      <h2 class='blackText'>Be first on leaderboard</h2>
+      <h2 class='blackText'>This is no ordinary platform. We provide a colorful journey through wide spheres of interest.</h2>
       <br>
     </div>
     <div class="midWrapper animate-jello2 bg-transparent">
@@ -292,6 +343,10 @@ export default class RocketCraftingLayout extends BaseComponent {
     </div>
     <div class='midWrapper bg-transparent' >
       <span id="apiResponse"></span>
+    </div>
+    <div class='midWrapper bg-transparent' >
+    <p class="textColorWhite">Backend based on <a href="https://github.com/RocketCraftingServer/rocket-craft-server" >rocketCraftingServer</a></p>
+      <p class="textColorWhite">Frontend based on <a href="https://github.com/RocketCraftingServer/safir" >Safir mini virtual DOM</a></p>
     </div>
   `;
 }

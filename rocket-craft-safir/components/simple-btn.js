@@ -1,10 +1,18 @@
-import {BaseComponent} from "safir";
+import {BaseComponent, byID} from "safir";
 
 export default class SimpleBtn extends BaseComponent {
 
   id = '';
   text = '';
   ready = () => {};
+
+  setDisabled = () => {
+    byID(this.id).disabled = true
+  }
+
+  removeDisabled = () => {
+    byID(this.id).disabled = false;
+  }
 
   constructor(arg, arg2 = '') {
     super(arg);
@@ -14,7 +22,7 @@ export default class SimpleBtn extends BaseComponent {
   onClick = this.clickBind;
 
   render = () => `
-    <button class="fill bg-transparent" onclick="(${this.onClick})('${this.id}')">
+    <button id="${this.id}-real" class="fill bg-transparent" onclick="(${this.onClick})('${this.id}')">
       ${this.text}
     </button>
   `;

@@ -28,7 +28,8 @@ export default class Home extends BaseComponent {
     this.links = [
       {action: 'platformer', name: "Nidzica", link: 'https://maximumroulette.com/apps/visual-ts/singleplayer/app.html'},
       {action: 'platformer-multiplayer', name: "Multiplayer platformer", link: 'https://maximumroulette.com/apps/visual-ts/multiplayer/app.html'},
-      {action: 'hang3d', name: "Hang3d Nightmare", link: 'https://maximumroulette.com/apps/hang3d/'}
+      {action: 'hang3d', name: "Hang3d Nightmare", link: 'https://maximumroulette.com/apps/hang3d/'},
+      {action: 'magic-three', name: "Magic three project", link: 'https://maximumroulette.com/apps/magic-three/'}
     ];
     On('pointsPlus10', () => {
       console.log('POINTS PLUS')
