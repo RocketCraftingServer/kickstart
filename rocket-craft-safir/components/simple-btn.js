@@ -1,10 +1,14 @@
-import {BaseComponent, byID} from "safir";
+import {BaseComponent, byID, T} from "safir";
 
 export default class SimpleBtn extends BaseComponent {
 
   id = '';
   text = '';
-  ready = () => {};
+  ready = () => {
+    if (this.args.label) {
+      console.log('ml:', byID(this.id+'-real').setAttribute('data-label', this.args.label))
+    }
+  };
 
   setDisabled = () => {
     byID(this.id).disabled = true
@@ -17,6 +21,7 @@ export default class SimpleBtn extends BaseComponent {
   constructor(arg, arg2 = '') {
     super(arg);
     this.initial(arg, arg2);
+    this.args = arg;
   }
 
   onClick = this.clickBind;

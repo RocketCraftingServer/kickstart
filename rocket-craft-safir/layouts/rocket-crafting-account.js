@@ -1,4 +1,4 @@
-import {BaseComponent, On, emit, JSON_HEADER, byID, getComp, LocalSessionMemory, SafirBuildInPlugins} from "safir";
+import {BaseComponent, On, T, emit, JSON_HEADER, byID, getComp, LocalSessionMemory, SafirBuildInPlugins} from "safir";
 import SimpleBtn from "../components/simple-btn";
 import {Avatar} from "../direct-render/imageProfile";
 import LeaderBoard from "../components/leaderboard";
@@ -10,8 +10,9 @@ export default class RocketCraftingLayout extends BaseComponent {
   id = 'my-body';
 
   apiDomain = '';
-  loginBtn = new SimpleBtn({text: 'Login', id: 'loginBtn'}, 'w30');
-  registerBtn = new SimpleBtn({text: 'Register', id: 'registerBtn'}, 'w30');
+  loginBtn = new SimpleBtn({label: 'loginBtn', id: 'loginBtn'}, 'w30 h5');
+  registerBtn = new SimpleBtn({label: 'registerBtn', id: 'registerBtn'}, 'w30 h5');
+  signoutBtn = new SimpleBtn({text: 'Sign Out', id: 'signoutBtn'}, 'w30 h5');
   leaderBoard = null;
   activeGamesList = null;
   home = new Home({id: 'homepage'})
@@ -23,10 +24,15 @@ export default class RocketCraftingLayout extends BaseComponent {
   photo = null;
 
   preventDBREG = false;
+  preventDBLOG = false;
 
   constructor(arg) {
     super(arg);
     this.apiDomain = arg;
+
+    console.log('T', T)
+    console.log('T.loginBtn', T.loginBtn)
+
   }
 
   ready = () => {
@@ -39,8 +45,16 @@ export default class RocketCraftingLayout extends BaseComponent {
 
   attach() {
     On('loginBtn', (data) => {
-      console.info('[login] Trigger Btn', (data).detail);
-      this.apiAccount('login');
+
+
+      console.log('data.target.disabled = true')
+
+      if(this.preventDBLOG == false) {
+        data.target.disabled = true;
+        this.preventDBLOG = true;
+        console.info('[login] Trigger Btn', (data).detail);
+        this.apiAccount('login');
+      }
     });
 
     On('registerBtn', (data) => {
@@ -120,10 +134,16 @@ export default class RocketCraftingLayout extends BaseComponent {
       body: JSON.stringify(args)
     }).then((d) => {
       return d.json();
-    }).then((r)=>{
+    }).then((r) => {
       this.exploreResponse(r);
     }).catch((err) => {
       alert('ERR', err)
+      setTimeout(() => {
+        this.preventDBLOG = false;
+        this.preventDBREG = false;
+        byID('loginBtn-real').disabled = false;
+        byID('registerBtn-real').disabled = false;
+      }, 500)
       return;
     })
   }
@@ -209,21 +229,31 @@ export default class RocketCraftingLayout extends BaseComponent {
         }
       } else {
         if(key == 'message' && res[key] == 'Wrong Password') {
-          color = 'color:red;text-shadow: 0px 0px 1px #52f2ff, 1px 1px 1px #11ffff;';
+          color = 'text-shadow: 0px 0px 1px #52f2ff, 1px 1px 1px #11ffff;';
           byID('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]}</div>`;
+          setTimeout(() => {
+            this.preventDBLOG = false
+            byID('loginBtn-real').disabled = false;
+          }, 500)
           return;
         } else if(res[key] == 'Confirmation done.') {
-          // pass
+          // pass for reg
           byID('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]}</div>`;
           byID('apiResponse').innerHTML += `<div style='${color}' > YOUR ACCOUNT IS READY </div>`;
-          byID('apiResponse').innerHTML += `<div style='${color}' > RELOAD FOR 2 SEC </div>`;
-          setTimeout(() => { location.reload() }, 2000)
+          byID('apiResponse').innerHTML += `<div style='${color}' > ${T.rin2} </div>`;
+          setTimeout(() => {location.reload()}, 2000)
           return;
         } else if(res[key] == 'USER_LOGGED') {
-          // pass
+          // pass for login
           isLogged = true;
         } else if(res[key] == 'Wrong confirmation code.') {
           byID('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]}</div>`;
+
+          setTimeout(() => {
+            this.preventDBREG = false
+            byID('registerBtn-real').disabled = false;
+          }, 500)
+
           return;
         } else if(res[key] == 'Check email for conmfirmation key.') {
           byID('loginBtn-real').remove()
@@ -236,11 +266,11 @@ export default class RocketCraftingLayout extends BaseComponent {
             console.info('[confirmationBtn] Trigger');
             this.apiAccount('confirmation');
           }
-
           return;
         } else if(res[key] == 'You are already registred.') {
           byID('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]}</div>`;
           // forgot
+          setTimeout(() => {this.preventDBREG = false}, 500)
           return;
         }
       }
@@ -252,7 +282,7 @@ export default class RocketCraftingLayout extends BaseComponent {
     }
 
     if(this.testSafirSlot == null) {
-      
+
       // NOTE SAFIRSLOT NEED RENDER DOM IN MOMENT OF INSTANCING
       this.testSafirSlot = new SafirBuildInPlugins.SafirSlot({id: 'userPoints', rootDom: 'userPoints'}, 'horCenter bg-transparent');
     }
@@ -317,22 +347,23 @@ export default class RocketCraftingLayout extends BaseComponent {
   accountRender = () => `
     <div class='midWrapper bg-transparent'>
       <div class='middle topHeader'>
-        <h2>Welcome, <h2 id='nickname'>${this.nickname}</h2></h2>
+        <h2>Welcome , <h2 id='nickname'> ${this.nickname} </h2> </h2>
         <span style="margin:40px;">${this.testSafirSlot.renderId()}</span>
+        ${this.signoutBtn.renderId()}
       </div>
       <span id="apiResponse"></span>
-      <div class='midWrapper bg-transparent'>
-      <h5> <small> Safir VS RocketCraftingServer </small></h5>
+      <div class='midWrapper bg-transparent makeBottomABS'>
+      <small data-label="accountBottomText"></small>
       </div>
     </div>
   `;
 
   render = () => `
     <div class="paddingtop20 animate-jello2 bg-transparent textCenter">
-      <h2 class='blackText'>RocketCraft Platform - Free Games 🌍</h2>
+      <h2 class='blackText' data-label="landingTitle">RocketCraft Platform - Free Games 🌍</h2>
       <br>
-      <h2 class='blackText'>Be first on leaderboard</h2>
-      <h2 class='blackText'>This is no ordinary platform. We provide a colorful journey through wide spheres of interest.</h2>
+      <h2 class='blackText' data-label="welcomeNote1" ></h2>
+      <h2 class='blackText' data-label="beFirst"></h2>
       <br>
     </div>
     <div class="midWrapper animate-jello2 bg-transparent">
@@ -341,12 +372,13 @@ export default class RocketCraftingLayout extends BaseComponent {
         ${this.loginBtn.renderId()}
         ${this.registerBtn.renderId()}
     </div>
-    <div class='midWrapper bg-transparent' >
+    <div class='midWrapper bg-transparent'>
       <span id="apiResponse"></span>
     </div>
-    <div class='midWrapper bg-transparent' >
-    <p class="textColorWhite">Backend based on <a href="https://github.com/RocketCraftingServer/rocket-craft-server" >rocketCraftingServer</a></p>
-      <p class="textColorWhite">Frontend based on <a href="https://github.com/RocketCraftingServer/safir" >Safir mini virtual DOM</a></p>
+    <div class='midWrapper bg-transparent makeBottomABS'>
+    <img src="assets/icons/96.png" class="" />
+      <small class="textColorWhite" data-label="beText"></small>
+      <small class="textColorWhite" data-label="feText"></small>
     </div>
   `;
 }

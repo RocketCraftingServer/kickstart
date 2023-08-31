@@ -38,7 +38,7 @@ body {
 }
 
 a {
-  color: #08b9ff;
+  color: #002635;
 }
 
 a:hover {
@@ -102,7 +102,11 @@ button {
   margin: 1px 1px 1px 1px;
 
   @media only screen and (min-width: 780px) {
-    font-size: 20px !important;
+    font-size: 18px !important;
+  }
+
+  &:disabled {
+    color: gray;
   }
 
   &:active {
@@ -116,6 +120,11 @@ button {
       color: themed('buttonTextHoverColor');
       border: themed('buttonBorderHover')
     }
+
+    &:disabled {
+      color: gray;
+    }
+    
   }
 }
 
@@ -126,6 +135,14 @@ input {
     background-color: themed('backgroundColor2');
     border: themed('inputBorder');
     font-size: themed('fontSize');
+  }
+
+  @media only screen and (min-width: 780px) {
+    font-size: 18px !important;
+  }
+
+  @media only screen and (max-width: 420px) {
+    font-size: 10px !important;
   }
 
   mix-blend-mode: color-burn;
@@ -293,6 +310,8 @@ p {
 
 .w30 {
   width: 30vw;
+  min-width: 200px;
+  min-height: 35px;
 }
 
 .paddingtop20 {
@@ -372,6 +391,15 @@ p {
   flex-direction: column !important;;
 }
 
-.home {
-  // height: 100vh !important;
+.makeBottomABS {
+  position: absolute;
+  bottom: 50px;
+}
+
+#apiResponse {
+  margin: 10px 10px 10px 10px;
+
+  border: 30px solid;
+  border-image: url(../assets/block.png) 23 / 30px / 0px round;
+
 }

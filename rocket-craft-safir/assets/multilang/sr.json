@@ -1,10 +1,17 @@
 {
-  "changeTheme": "Promeni temu",
+  "changeTheme": "Teme",
   "gotoLeaderboard": "Lider lista",
   "yes": "Yes",
   "no": "No",
   "destroyer": "Safir",
   "welcome":"Dobrodosao/la ",
   "textAlert": "This is modal ! Why not !",
-  "userPointsSlotTitle": "POINTS"
+  "userPointsSlotTitle": "POINTS",
+  "beFirst": "Budi prvi na listi!",
+  "beText": "Server deo baziran na <a href='https://github.com/RocketCraftingServer/rocket-craft-server'>rocketCraftingServer</a>",
+  "feText": "Client deo baziran na <a href='https://github.com/RocketCraftingServer/safir'>Safir Virtuelni DOM biblioteka</a>",
+  "welcomeNote1":"Dobrodosao ovde!",
+  "landingTitle": "GamePlay Platform <b>ROCKET-CRAFTING</b> - Besplatne igre 🌍",
+  "loginBtn":"Udji",
+  "registerBtn":"Registruj se"
 }

@@ -1,10 +1,18 @@
 {
-  "changeTheme": "Change Theme",
+  "changeTheme": "Theme",
   "gotoLeaderboard": "Leaderboard",
   "yes": "Yes",
   "no": "No",
   "destroyer": "Safir",
-  "welcome":"Welcome",
+  "welcome": "Welcome",
   "textAlert": "No emit",
-  "userPointsSlotTitle": "POINTS"
+  "userPointsSlotTitle": "POINTS",
+  "beFirst": "Be first on board!",
+  "beText": "Backend based on <a href='https://github.com/RocketCraftingServer/rocket-craft-server'>rocketCraftingServer</a>",
+  "feText": "Frontend based on <a href='https://github.com/RocketCraftingServer/safir'>Safir mini virtual DOM</a>",
+  "welcomeNote1":"Welcome here!",
+  "landingTitle": "RocketCraft Platform - Free Games 🌍",
+  "loginBtn":"Login",
+  "registerBtn":"Register",
+  "accountBottomText": ""
 }

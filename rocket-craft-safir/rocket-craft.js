@@ -3,9 +3,7 @@ import RocketCraftingLayout from "./layouts/rocket-crafting-account";
 import MyHeader from "./layouts/heder";
 
 let app = new Safir();
-
 console.info('<listeners>', app.listeners);
-console.info('<T>', app.T);
 
 On("app.trans.update", () => {
   app.translate.update()
@@ -21,18 +19,19 @@ On("app.ready", () => {
   app.loadComponent(new MyHeader('my-header'));
   app.loadVanillaComp("vanilla-components/footer.html");
 
-
-
   let apiDomain = 'https://maximumroulette.com';
   // let apiDomain = 'http://localhost';
   app.loadComponent(new RocketCraftingLayout(apiDomain), 'bg-transparent');
 
-  if (urlVar.lang !== 'en') {
-    app.emitML(app, urlVar.lang)
+  if (urlVar.lang && urlVar.lang !== 'en') {
+    app.emitML(app, './assets/multilang/' + urlVar.lang + '.json').then(() => {
+      app.translate.update()
+    })
   }
-  app.translate.update()
 
   document.body.classList.add('funnyBg2');
+
+  app.translate.update()
 }, {once: true});
 
 window.app = app;
