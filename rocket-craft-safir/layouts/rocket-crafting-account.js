@@ -60,6 +60,7 @@ export default class RocketCraftingLayout extends BaseComponent {
     On('registerBtn', (data) => {
       if(this.preventDBREG == false) {
         this.preventDBREG = true;
+        byID('registerBtn-real').disabled = true;
         console.info('[register] Trigger Btn', (data).detail);
         this.apiAccount('register');
       }
@@ -262,6 +263,7 @@ export default class RocketCraftingLayout extends BaseComponent {
           byID('arg-password').value = '';
           byID('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]}</div>`;
 
+          byID('registerBtn-real').disabled = false;
           byID('registerBtn-real').onclick = () => {
             console.info('[confirmationBtn] Trigger');
             this.apiAccount('confirmation');
@@ -272,6 +274,16 @@ export default class RocketCraftingLayout extends BaseComponent {
           // forgot
           setTimeout(() => {this.preventDBREG = false}, 500)
           return;
+        }else if(res[key] == 'TOO_SHORT_PASSW') {
+          // pass for login
+          byID('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]}</div>`;
+          setTimeout(() => {
+            this.preventDBREG = false
+            byID('registerBtn-real').disabled = false;
+          }, 1500)
+        } else if (key == 'avatarPath' ) {
+           console.log('IMAGE PATH ', res[key] )
+           isLogged = true
         }
       }
     }

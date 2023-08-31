@@ -404,7 +404,7 @@ body {
   }
 }
 a {
-  color: #08b9ff;
+  color: #002635;
 }
 
 a:hover {
@@ -531,8 +531,11 @@ button {
 }
 @media only screen and (min-width: 780px) {
   button {
-    font-size: 20px !important;
+    font-size: 18px !important;
   }
+}
+button:disabled {
+  color: gray;
 }
 button:active {
   box-shadow: none;
@@ -554,6 +557,9 @@ button:active {
 .theme-blue button:hover {
   color: rgb(255, 255, 255);
   border: 1px solid rgb(250, 255, 100);
+}
+button:hover:disabled {
+  color: gray;
 }
 
 input {
@@ -588,6 +594,16 @@ input {
   background-color: rgba(3, 0, 49, 0.3);
   border: 1px solid #fce14a;
   font-size: 2vw;
+}
+@media only screen and (min-width: 780px) {
+  input {
+    font-size: 18px !important;
+  }
+}
+@media only screen and (max-width: 420px) {
+  input {
+    font-size: 10px !important;
+  }
 }
 input:active {
   box-shadow: none;
@@ -800,6 +816,8 @@ p {
 
 .w30 {
   width: 30vw;
+  min-width: 200px;
+  min-height: 35px;
 }
 
 .paddingtop20 {
@@ -875,4 +893,15 @@ p {
   width: 90vw;
   height: 50vh;
   flex-direction: column !important;
+}
+
+.makeBottomABS {
+  position: absolute;
+  bottom: 50px;
+}
+
+#apiResponse {
+  margin: 10px 10px 10px 10px;
+  padding: 15px 15px 15px 15px;
+  background-image: url(../assets/imgs/a.png);
 }/*# sourceMappingURL=style.css.map */

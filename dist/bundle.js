@@ -1497,7 +1497,11 @@ var _safir = require("safir");
 class SimpleBtn extends _safir.BaseComponent {
   id = '';
   text = '';
-  ready = () => {};
+  ready = () => {
+    if (this.args.label) {
+      console.log('ml:', (0, _safir.byID)(this.id + '-real').setAttribute('data-label', this.args.label));
+    }
+  };
   setDisabled = () => {
     (0, _safir.byID)(this.id).disabled = true;
   };
@@ -1507,6 +1511,7 @@ class SimpleBtn extends _safir.BaseComponent {
   constructor(arg, arg2 = '') {
     super(arg);
     this.initial(arg, arg2);
+    this.args = arg;
   }
   onClick = this.clickBind;
   render = () => `
@@ -1573,7 +1578,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-var _activegames = _interopRequireDefault(require("../components/activegames"));
 var _simpleBtn = _interopRequireDefault(require("../components/simple-btn"));
 var _safir = require("safir");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -1615,7 +1619,6 @@ class MyHeader extends _safir.BaseComponent {
   render = () => `
     <div class="middle h5">
        <div class="heder">
-          <img src="assets/icons/96.png" class="h5" />
           <button class="fill" onclick="(${this.change})('change-theme')" data-label="changeTheme" ></button>
           ${this.gotoLeaderboardBtn.renderId()}
           ${this.gotoAccount.renderId()}
@@ -1627,7 +1630,7 @@ class MyHeader extends _safir.BaseComponent {
 }
 exports.default = MyHeader;
 
-},{"../components/activegames":9,"../components/simple-btn":12,"safir":1}],17:[function(require,module,exports){
+},{"../components/simple-btn":12,"safir":1}],17:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1645,13 +1648,17 @@ class RocketCraftingLayout extends _safir.BaseComponent {
   id = 'my-body';
   apiDomain = '';
   loginBtn = new _simpleBtn.default({
-    text: 'Login',
+    label: 'loginBtn',
     id: 'loginBtn'
-  }, 'w30');
+  }, 'w30 h5');
   registerBtn = new _simpleBtn.default({
-    text: 'Register',
+    label: 'registerBtn',
     id: 'registerBtn'
-  }, 'w30');
+  }, 'w30 h5');
+  signoutBtn = new _simpleBtn.default({
+    text: 'Sign Out',
+    id: 'signoutBtn'
+  }, 'w30 h5');
   leaderBoard = null;
   activeGamesList = null;
   home = new _home.default({
@@ -1664,9 +1671,12 @@ class RocketCraftingLayout extends _safir.BaseComponent {
   token = null;
   photo = null;
   preventDBREG = false;
+  preventDBLOG = false;
   constructor(arg) {
     super(arg);
     this.apiDomain = arg;
+    console.log('T', _safir.T);
+    console.log('T.loginBtn', _safir.T.loginBtn);
   }
   ready = () => {
     if (sessionStorage.getItem('my-body-email') != null && sessionStorage.getItem('my-body-token') != null) {
@@ -1677,12 +1687,18 @@ class RocketCraftingLayout extends _safir.BaseComponent {
   };
   attach() {
     (0, _safir.On)('loginBtn', data => {
-      console.info('[login] Trigger Btn', data.detail);
-      this.apiAccount('login');
+      console.log('data.target.disabled = true');
+      if (this.preventDBLOG == false) {
+        data.target.disabled = true;
+        this.preventDBLOG = true;
+        console.info('[login] Trigger Btn', data.detail);
+        this.apiAccount('login');
+      }
     });
     (0, _safir.On)('registerBtn', data => {
       if (this.preventDBREG == false) {
         this.preventDBREG = true;
+        (0, _safir.byID)('registerBtn-real').disabled = true;
         console.info('[register] Trigger Btn', data.detail);
         this.apiAccount('register');
       }
@@ -1758,6 +1774,12 @@ class RocketCraftingLayout extends _safir.BaseComponent {
       this.exploreResponse(r);
     }).catch(err => {
       alert('ERR', err);
+      setTimeout(() => {
+        this.preventDBLOG = false;
+        this.preventDBREG = false;
+        (0, _safir.byID)('loginBtn-real').disabled = false;
+        (0, _safir.byID)('registerBtn-real').disabled = false;
+      }, 500);
       return;
     });
   }
@@ -1838,23 +1860,31 @@ class RocketCraftingLayout extends _safir.BaseComponent {
         }
       } else {
         if (key == 'message' && res[key] == 'Wrong Password') {
-          color = 'color:red;text-shadow: 0px 0px 1px #52f2ff, 1px 1px 1px #11ffff;';
+          color = 'text-shadow: 0px 0px 1px #52f2ff, 1px 1px 1px #11ffff;';
           (0, _safir.byID)('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]}</div>`;
+          setTimeout(() => {
+            this.preventDBLOG = false;
+            (0, _safir.byID)('loginBtn-real').disabled = false;
+          }, 500);
           return;
         } else if (res[key] == 'Confirmation done.') {
-          // pass
+          // pass for reg
           (0, _safir.byID)('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]}</div>`;
           (0, _safir.byID)('apiResponse').innerHTML += `<div style='${color}' > YOUR ACCOUNT IS READY </div>`;
-          (0, _safir.byID)('apiResponse').innerHTML += `<div style='${color}' > RELOAD FOR 2 SEC </div>`;
+          (0, _safir.byID)('apiResponse').innerHTML += `<div style='${color}' > ${_safir.T.rin2} </div>`;
           setTimeout(() => {
             location.reload();
           }, 2000);
           return;
         } else if (res[key] == 'USER_LOGGED') {
-          // pass
+          // pass for login
           isLogged = true;
         } else if (res[key] == 'Wrong confirmation code.') {
           (0, _safir.byID)('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]}</div>`;
+          setTimeout(() => {
+            this.preventDBREG = false;
+            (0, _safir.byID)('registerBtn-real').disabled = false;
+          }, 500);
           return;
         } else if (res[key] == 'Check email for conmfirmation key.') {
           (0, _safir.byID)('loginBtn-real').remove();
@@ -1862,6 +1892,7 @@ class RocketCraftingLayout extends _safir.BaseComponent {
           (0, _safir.byID)('registerBtn-real').innerText = 'COMFIRM CODE';
           (0, _safir.byID)('arg-password').value = '';
           (0, _safir.byID)('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]}</div>`;
+          (0, _safir.byID)('registerBtn-real').disabled = false;
           (0, _safir.byID)('registerBtn-real').onclick = () => {
             console.info('[confirmationBtn] Trigger');
             this.apiAccount('confirmation');
@@ -1870,7 +1901,20 @@ class RocketCraftingLayout extends _safir.BaseComponent {
         } else if (res[key] == 'You are already registred.') {
           (0, _safir.byID)('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]}</div>`;
           // forgot
+          setTimeout(() => {
+            this.preventDBREG = false;
+          }, 500);
           return;
+        } else if (res[key] == 'TOO_SHORT_PASSW') {
+          // pass for login
+          (0, _safir.byID)('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]}</div>`;
+          setTimeout(() => {
+            this.preventDBREG = false;
+            (0, _safir.byID)('registerBtn-real').disabled = false;
+          }, 1500);
+        } else if (key == 'avatarPath') {
+          console.log('IMAGE PATH ', res[key]);
+          isLogged = true;
         }
       }
     }
@@ -1948,21 +1992,22 @@ class RocketCraftingLayout extends _safir.BaseComponent {
   accountRender = () => `
     <div class='midWrapper bg-transparent'>
       <div class='middle topHeader'>
-        <h2>Welcome, <h2 id='nickname'>${this.nickname}</h2></h2>
+        <h2>Welcome , <h2 id='nickname'> ${this.nickname} </h2> </h2>
         <span style="margin:40px;">${this.testSafirSlot.renderId()}</span>
+        ${this.signoutBtn.renderId()}
       </div>
       <span id="apiResponse"></span>
-      <div class='midWrapper bg-transparent'>
-      <h5> <small> Safir VS RocketCraftingServer </small></h5>
+      <div class='midWrapper bg-transparent makeBottomABS'>
+      <small data-label="accountBottomText"></small>
       </div>
     </div>
   `;
   render = () => `
     <div class="paddingtop20 animate-jello2 bg-transparent textCenter">
-      <h2 class='blackText'>RocketCraft Platform - Free Games 🌍</h2>
+      <h2 class='blackText' data-label="landingTitle">RocketCraft Platform - Free Games 🌍</h2>
       <br>
-      <h2 class='blackText'>Be first on leaderboard</h2>
-      <h2 class='blackText'>This is no ordinary platform. We provide a colorful journey through wide spheres of interest.</h2>
+      <h2 class='blackText' data-label="welcomeNote1" ></h2>
+      <h2 class='blackText' data-label="beFirst"></h2>
       <br>
     </div>
     <div class="midWrapper animate-jello2 bg-transparent">
@@ -1971,12 +2016,13 @@ class RocketCraftingLayout extends _safir.BaseComponent {
         ${this.loginBtn.renderId()}
         ${this.registerBtn.renderId()}
     </div>
-    <div class='midWrapper bg-transparent' >
+    <div class='midWrapper bg-transparent'>
       <span id="apiResponse"></span>
     </div>
-    <div class='midWrapper bg-transparent' >
-    <p class="textColorWhite">Backend based on <a href="https://github.com/RocketCraftingServer/rocket-craft-server" >rocketCraftingServer</a></p>
-      <p class="textColorWhite">Frontend based on <a href="https://github.com/RocketCraftingServer/safir" >Safir mini virtual DOM</a></p>
+    <div class='midWrapper bg-transparent makeBottomABS'>
+    <img src="assets/icons/96.png" class="" />
+      <small class="textColorWhite" data-label="beText"></small>
+      <small class="textColorWhite" data-label="feText"></small>
     </div>
   `;
 }
@@ -1991,7 +2037,6 @@ var _heder = _interopRequireDefault(require("./layouts/heder"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 let app = new _safir.Safir();
 console.info('<listeners>', app.listeners);
-console.info('<T>', app.T);
 (0, _safir.On)("app.trans.update", () => {
   app.translate.update();
 });
@@ -2007,11 +2052,13 @@ console.info('<T>', app.T);
   let apiDomain = 'https://maximumroulette.com';
   // let apiDomain = 'http://localhost';
   app.loadComponent(new _rocketCraftingAccount.default(apiDomain), 'bg-transparent');
-  if (_safir.urlVar.lang !== 'en') {
-    app.emitML(app, _safir.urlVar.lang);
+  if (_safir.urlVar.lang && _safir.urlVar.lang !== 'en') {
+    app.emitML(app, './assets/multilang/' + _safir.urlVar.lang + '.json').then(() => {
+      app.translate.update();
+    });
   }
-  app.translate.update();
   document.body.classList.add('funnyBg2');
+  app.translate.update();
 }, {
   once: true
 });
