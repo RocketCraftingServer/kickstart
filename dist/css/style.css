@@ -121,6 +121,19 @@
     background-position: 0% 50%;
   }
 }
+.zzBg {
+  animation: zigzagBg 5s ease-in-out 0s infinite alternate-reverse both;
+  background-image: url(../assets/imgs/a.png);
+}
+
+@keyframes zigzagBg {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
 .numAnimHolder {
   overflow: hidden;
 }
@@ -903,5 +916,4 @@ p {
 #apiResponse {
   margin: 10px 10px 10px 10px;
   padding: 15px 15px 15px 15px;
-  background-image: url(../assets/imgs/a.png);
 }/*# sourceMappingURL=style.css.map */

@@ -144,3 +144,18 @@
 		background-position: 0% 50%;
 	}
 }
+
+.zzBg {
+  animation: zigzagBg 5s ease-in-out 0s infinite alternate-reverse both;
+  background-image: url(../assets/imgs/a.png);
+}
+
+@keyframes zigzagBg {
+	0% {
+		background-position: 100% 50%;
+	}
+
+	100% {
+		background-position: 0% 50%;
+	}
+}

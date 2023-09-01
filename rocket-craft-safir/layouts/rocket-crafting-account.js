@@ -425,7 +425,7 @@ export default class RocketCraftingLayout extends BaseComponent {
         <span style="margin:40px;">${this.testSafirSlot.renderId()}</span>
         ${this.signoutBtn.renderId()}
       </div>
-      <span id="apiResponse"></span>
+      <span id="apiResponse" class="zzBg"></span>
       <div class='midWrapper bg-transparent makeBottomABS'>
       <small data-label="accountBottomText"></small>
       </div>
