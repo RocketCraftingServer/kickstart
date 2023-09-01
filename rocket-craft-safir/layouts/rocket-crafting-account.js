@@ -8,7 +8,6 @@ import ActiveGames from "../components/activegames";
 export default class RocketCraftingLayout extends BaseComponent {
 
   id = 'my-body';
-
   apiDomain = '';
   loginBtn = new SimpleBtn({label: 'loginBtn', id: 'loginBtn'}, 'w30 h5');
   registerBtn = new SimpleBtn({label: 'registerBtn', id: 'registerBtn'}, 'w30 h5');
@@ -16,39 +15,35 @@ export default class RocketCraftingLayout extends BaseComponent {
   leaderBoard = null;
   activeGamesList = null;
   home = new Home({id: 'homepage'})
-  // NOTE SAFIRSLOT NEED RENDER DOM IN MOMENT OF INSTANCING
   testSafirSlot = null;
   nickname = null;
   email = null;
   token = null;
   photo = null;
-
   preventDBREG = false;
   preventDBLOG = false;
 
   constructor(arg) {
     super(arg);
     this.apiDomain = arg;
-
-    console.log('T', T)
-    console.log('T.loginBtn', T.loginBtn)
-
   }
 
   ready = () => {
     if(sessionStorage.getItem('my-body-email') != null && sessionStorage.getItem('my-body-token') != null) {
       this.runApiFastLogin();
-      console.info('RocketCrafting fast login.');
+      console.info('Fast login');
     }
     this.attach()
+    setTimeout(() => { app.translate.update() }, 1)
   }
 
   attach() {
     On('loginBtn', (data) => {
-
-
-      console.log('data.target.disabled = true')
-
+      if (byID('arg-password').value.length < 8) {
+        console.log('valdation: ', byID('arg-password').value.length)
+        alert('GAMEPLAY PLATFORM : Password length must minimum 8 chars!');
+        return;
+      }
       if(this.preventDBLOG == false) {
         data.target.disabled = true;
         this.preventDBLOG = true;
@@ -58,6 +53,11 @@ export default class RocketCraftingLayout extends BaseComponent {
     });
 
     On('registerBtn', (data) => {
+      if (byID('arg-password').value.length < 8) {
+        console.log('valdation: ', byID('arg-password').getAttribute('value'))
+        alert('GAMEPLAY PLATFORM : Password length must minimum 8 chars!');
+        return;
+      }
       if(this.preventDBREG == false) {
         this.preventDBREG = true;
         byID('registerBtn-real').disabled = true;

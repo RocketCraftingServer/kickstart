@@ -30,8 +30,6 @@ On("app.ready", () => {
   }
 
   document.body.classList.add('funnyBg2');
-
-  app.translate.update()
 }, {once: true});
 
 window.app = app;
