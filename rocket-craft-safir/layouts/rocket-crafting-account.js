@@ -12,6 +12,9 @@ export default class RocketCraftingLayout extends BaseComponent {
   loginBtn = new SimpleBtn({label: 'loginBtn', id: 'loginBtn'}, 'w30 h5');
   registerBtn = new SimpleBtn({label: 'registerBtn', id: 'registerBtn'}, 'w30 h5');
   signoutBtn = new SimpleBtn({text: 'Sign Out', id: 'signoutBtn'}, 'w30 h5');
+  forgotBtn = new SimpleBtn({text: 'Forgot password', id: 'forgotBtn'}, 'w30 h5');
+  forgotAskBtn = new SimpleBtn({text: 'Ask for new password', id: 'forgotAskBtn'}, 'w30 h5');
+  setNewPassBtn = new SimpleBtn({text: 'Set new password', id: 'setNewPassBtn'}, 'w30 h5');
   leaderBoard = null;
   activeGamesList = null;
   home = new Home({id: 'homepage'})
@@ -34,12 +37,12 @@ export default class RocketCraftingLayout extends BaseComponent {
       console.info('Fast login');
     }
     this.attach()
-    setTimeout(() => { app.translate.update() }, 1)
+    setTimeout(() => {app.translate.update()}, 1)
   }
 
   attach() {
     On('loginBtn', (data) => {
-      if (byID('arg-password').value.length < 8) {
+      if(byID('arg-password').value.length < 8) {
         console.log('valdation: ', byID('arg-password').value.length)
         alert('GAMEPLAY PLATFORM : Password length must minimum 8 chars!');
         return;
@@ -52,8 +55,40 @@ export default class RocketCraftingLayout extends BaseComponent {
       }
     });
 
+    On('forgotBtn', (data) => {
+      if(this.preventDBLOG == false) {
+        data.target.disabled = true;
+        // this.preventDBLOG = true;
+        console.info('[forgotBtn] Trigger Btn', (data).detail);
+        this.render = this.forgotPassRender;
+        getComp(this.id).innerHTML = this.render();
+        emit('app.trans.update', {f: 'f'});
+        // this.apiAccount('forgot-pass');
+      }
+    });
+
+    On('forgotAskBtn', (data) => {
+      if(this.preventDBLOG == false) {
+        data.target.disabled = true;
+        // this.preventDBLOG = true;
+        console.info('[forgotAskBtn] Trigger Btn', (data).detail);
+        this.apiAccount('forgot-pass');
+      }
+    });
+
+    On('setNewPassBtn', (data) => {
+      if(this.preventDBLOG == false) {
+        data.target.disabled = true;
+        console.info('[setNewPassBtn] Trigger Btn', (data).detail);
+        // this.render = this.forgotPassRender;
+        // getComp(this.id).innerHTML = this.render();
+        // emit('app.trans.update', {f: 'f'});
+        this.apiAccount('set-new-pass');
+      }
+    });
+
     On('registerBtn', (data) => {
-      if (byID('arg-password').value.length < 8) {
+      if(byID('arg-password').value.length < 8) {
         console.log('valdation: ', byID('arg-password').getAttribute('value'))
         alert('GAMEPLAY PLATFORM : Password length must minimum 8 chars!');
         return;
@@ -119,14 +154,29 @@ export default class RocketCraftingLayout extends BaseComponent {
 
   async apiAccount(apiCallFlag) {
     let route = this.apiDomain || location.origin;
+
     let args = {
       emailField: byID('arg-username').value,
-      passwordField: byID('arg-password').value
+      passwordField: (byID('arg-password') != null ? byID('arg-password').value : null)
     }
 
     if(apiCallFlag == 'confirmation') {
       delete args.passwordField;
       args.tokenField = byID('arg-password').value
+    }
+
+    if(apiCallFlag == 'forgot-pass') {
+      delete args.passwordField;
+      console.log("TEST ARG ", args)
+    }
+
+    if (apiCallFlag == 'set-new-pass') {
+      args = {
+        emailField: byID('arg-username').value,
+        newPassword: byID('arg-new-password').value,
+        ftoken: byID('arg-ftoken').value
+      }
+      console.log("TEST SETNEWPASW ", args)
     }
 
     var response = fetch(route + '/rocket/' + apiCallFlag, {
@@ -274,16 +324,28 @@ export default class RocketCraftingLayout extends BaseComponent {
           // forgot
           setTimeout(() => {this.preventDBREG = false}, 500)
           return;
-        }else if(res[key] == 'TOO_SHORT_PASSW') {
+        } else if(res[key] == 'TOO_SHORT_PASSW') {
           // pass for login
           byID('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]}</div>`;
           setTimeout(() => {
             this.preventDBREG = false
             byID('registerBtn-real').disabled = false;
           }, 1500)
-        } else if (key == 'avatarPath' ) {
-           console.log('IMAGE PATH ', res[key] )
-           isLogged = true
+        } else if(res[key] == 'Avatar image saved!') {
+          console.log('IMAGE PATH ', res[key])
+          isLogged = true
+          //
+          // from global app object - fast fix - hardc
+          app.subComponents[0].gotoAccount.onClick('gotoAccount')
+
+        } else if(res[key] == 'CHECK_EMAIL_FORGOT_PASSWORD_CODE') {
+          this.render = this.setNewPassRender;
+          getComp(this.id).innerHTML = this.render();
+          emit('app.trans.update', {f: 'f'});
+        } else if (res[key] == 'NEW_PASSWORD_DONE') {
+          byID('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]}</div>`;
+          byID('apiResponse').innerHTML += `<div style='${color}' > New password call succeed! App will be reloaded and then try new password.</div>`;
+          setTimeout(() => {location.reload()}, 3000)
         }
       }
     }
@@ -370,6 +432,38 @@ export default class RocketCraftingLayout extends BaseComponent {
     </div>
   `;
 
+  forgotPassRender = () => `
+  <div class='midWrapper bg-transparent'>
+    <div class='middle verCenter h50' style="background-color: transparent">
+      <h2>Forgot password form:</h2>
+      <input class="w30" id='arg-username' type='text' value='zlatnaspirala@gmail.com' />
+      ${this.forgotAskBtn.renderId()}
+    </div>
+    <span id="apiResponse"></span>
+    <div class='midWrapper bg-transparent makeBottomABS'>
+    <small data-label="accountBottomText"></small>
+    </div>
+  </div>`;
+
+  setNewPassRender = () => `
+  <div class='midWrapper bg-transparent'>
+    <div class='middle verCenter h50' style="background-color: transparent">
+      <h2>Set new password form:</h2>
+      <p>Email:</p>
+      <input class="w30" id='arg-username' type='text' value='' />
+      <p>New password:</p>
+      <input class="w30" id='arg-new-password' type='text' value='' />
+      <p>Token from email:</p>
+      <input class="w30" id='arg-ftoken' type='text' value='' />
+      ${this.setNewPassBtn.renderId()}
+    </div>
+    <span id="apiResponse"></span>
+    <div class='midWrapper bg-transparent makeBottomABS'>
+    <small data-label="accountBottomText"></small>
+    </div>
+  </div>`;
+
+  // Landing page
   render = () => `
     <div class="paddingtop20 animate-jello2 bg-transparent textCenter">
       <h2 class='blackText' data-label="landingTitle">RocketCraft Platform - Free Games 🌍</h2>
@@ -383,6 +477,7 @@ export default class RocketCraftingLayout extends BaseComponent {
         <input class="w30" id='arg-password' type='password' value='12345678' />
         ${this.loginBtn.renderId()}
         ${this.registerBtn.renderId()}
+        ${this.forgotBtn.renderId()}
     </div>
     <div class='midWrapper bg-transparent'>
       <span id="apiResponse"></span>

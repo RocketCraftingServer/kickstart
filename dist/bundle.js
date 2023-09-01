@@ -1659,12 +1659,23 @@ class RocketCraftingLayout extends _safir.BaseComponent {
     text: 'Sign Out',
     id: 'signoutBtn'
   }, 'w30 h5');
+  forgotBtn = new _simpleBtn.default({
+    text: 'Forgot password',
+    id: 'forgotBtn'
+  }, 'w30 h5');
+  forgotAskBtn = new _simpleBtn.default({
+    text: 'Ask for new password',
+    id: 'forgotAskBtn'
+  }, 'w30 h5');
+  setNewPassBtn = new _simpleBtn.default({
+    text: 'Set new password',
+    id: 'setNewPassBtn'
+  }, 'w30 h5');
   leaderBoard = null;
   activeGamesList = null;
   home = new _home.default({
     id: 'homepage'
   });
-  // NOTE SAFIRSLOT NEED RENDER DOM IN MOMENT OF INSTANCING
   testSafirSlot = null;
   nickname = null;
   email = null;
@@ -1675,19 +1686,24 @@ class RocketCraftingLayout extends _safir.BaseComponent {
   constructor(arg) {
     super(arg);
     this.apiDomain = arg;
-    console.log('T', _safir.T);
-    console.log('T.loginBtn', _safir.T.loginBtn);
   }
   ready = () => {
     if (sessionStorage.getItem('my-body-email') != null && sessionStorage.getItem('my-body-token') != null) {
       this.runApiFastLogin();
-      console.info('RocketCrafting fast login.');
+      console.info('Fast login');
     }
     this.attach();
+    setTimeout(() => {
+      app.translate.update();
+    }, 1);
   };
   attach() {
     (0, _safir.On)('loginBtn', data => {
-      console.log('data.target.disabled = true');
+      if ((0, _safir.byID)('arg-password').value.length < 8) {
+        console.log('valdation: ', (0, _safir.byID)('arg-password').value.length);
+        alert('GAMEPLAY PLATFORM : Password length must minimum 8 chars!');
+        return;
+      }
       if (this.preventDBLOG == false) {
         data.target.disabled = true;
         this.preventDBLOG = true;
@@ -1695,7 +1711,44 @@ class RocketCraftingLayout extends _safir.BaseComponent {
         this.apiAccount('login');
       }
     });
+    (0, _safir.On)('forgotBtn', data => {
+      if (this.preventDBLOG == false) {
+        data.target.disabled = true;
+        // this.preventDBLOG = true;
+        console.info('[forgotBtn] Trigger Btn', data.detail);
+        this.render = this.forgotPassRender;
+        (0, _safir.getComp)(this.id).innerHTML = this.render();
+        (0, _safir.emit)('app.trans.update', {
+          f: 'f'
+        });
+        // this.apiAccount('forgot-pass');
+      }
+    });
+
+    (0, _safir.On)('forgotAskBtn', data => {
+      if (this.preventDBLOG == false) {
+        data.target.disabled = true;
+        // this.preventDBLOG = true;
+        console.info('[forgotAskBtn] Trigger Btn', data.detail);
+        this.apiAccount('forgot-pass');
+      }
+    });
+    (0, _safir.On)('setNewPassBtn', data => {
+      if (this.preventDBLOG == false) {
+        data.target.disabled = true;
+        console.info('[setNewPassBtn] Trigger Btn', data.detail);
+        // this.render = this.forgotPassRender;
+        // getComp(this.id).innerHTML = this.render();
+        // emit('app.trans.update', {f: 'f'});
+        this.apiAccount('set-new-pass');
+      }
+    });
     (0, _safir.On)('registerBtn', data => {
+      if ((0, _safir.byID)('arg-password').value.length < 8) {
+        console.log('valdation: ', (0, _safir.byID)('arg-password').getAttribute('value'));
+        alert('GAMEPLAY PLATFORM : Password length must minimum 8 chars!');
+        return;
+      }
       if (this.preventDBREG == false) {
         this.preventDBREG = true;
         (0, _safir.byID)('registerBtn-real').disabled = true;
@@ -1758,11 +1811,23 @@ class RocketCraftingLayout extends _safir.BaseComponent {
     let route = this.apiDomain || location.origin;
     let args = {
       emailField: (0, _safir.byID)('arg-username').value,
-      passwordField: (0, _safir.byID)('arg-password').value
+      passwordField: (0, _safir.byID)('arg-password') != null ? (0, _safir.byID)('arg-password').value : null
     };
     if (apiCallFlag == 'confirmation') {
       delete args.passwordField;
       args.tokenField = (0, _safir.byID)('arg-password').value;
+    }
+    if (apiCallFlag == 'forgot-pass') {
+      delete args.passwordField;
+      console.log("TEST ARG ", args);
+    }
+    if (apiCallFlag == 'set-new-pass') {
+      args = {
+        emailField: (0, _safir.byID)('arg-username').value,
+        newPassword: (0, _safir.byID)('arg-new-password').value,
+        ftoken: (0, _safir.byID)('arg-ftoken').value
+      };
+      console.log("TEST SETNEWPASW ", args);
     }
     var response = fetch(route + '/rocket/' + apiCallFlag, {
       method: 'POST',
@@ -1912,9 +1977,24 @@ class RocketCraftingLayout extends _safir.BaseComponent {
             this.preventDBREG = false;
             (0, _safir.byID)('registerBtn-real').disabled = false;
           }, 1500);
-        } else if (key == 'avatarPath') {
+        } else if (res[key] == 'Avatar image saved!') {
           console.log('IMAGE PATH ', res[key]);
           isLogged = true;
+          //
+          // from global app object - fast fix - hardc
+          app.subComponents[0].gotoAccount.onClick('gotoAccount');
+        } else if (res[key] == 'CHECK_EMAIL_FORGOT_PASSWORD_CODE') {
+          this.render = this.setNewPassRender;
+          (0, _safir.getComp)(this.id).innerHTML = this.render();
+          (0, _safir.emit)('app.trans.update', {
+            f: 'f'
+          });
+        } else if (res[key] == 'NEW_PASSWORD_DONE') {
+          (0, _safir.byID)('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]}</div>`;
+          (0, _safir.byID)('apiResponse').innerHTML += `<div style='${color}' > New password call succeed! App will be reloaded and then try new password.</div>`;
+          setTimeout(() => {
+            location.reload();
+          }, 3000);
         }
       }
     }
@@ -2002,6 +2082,37 @@ class RocketCraftingLayout extends _safir.BaseComponent {
       </div>
     </div>
   `;
+  forgotPassRender = () => `
+  <div class='midWrapper bg-transparent'>
+    <div class='middle verCenter h50' style="background-color: transparent">
+      <h2>Forgot password form:</h2>
+      <input class="w30" id='arg-username' type='text' value='zlatnaspirala@gmail.com' />
+      ${this.forgotAskBtn.renderId()}
+    </div>
+    <span id="apiResponse"></span>
+    <div class='midWrapper bg-transparent makeBottomABS'>
+    <small data-label="accountBottomText"></small>
+    </div>
+  </div>`;
+  setNewPassRender = () => `
+  <div class='midWrapper bg-transparent'>
+    <div class='middle verCenter h50' style="background-color: transparent">
+      <h2>Set new password form:</h2>
+      <p>Email:</p>
+      <input class="w30" id='arg-username' type='text' value='' />
+      <p>New password:</p>
+      <input class="w30" id='arg-new-password' type='text' value='' />
+      <p>Token from email:</p>
+      <input class="w30" id='arg-ftoken' type='text' value='' />
+      ${this.setNewPassBtn.renderId()}
+    </div>
+    <span id="apiResponse"></span>
+    <div class='midWrapper bg-transparent makeBottomABS'>
+    <small data-label="accountBottomText"></small>
+    </div>
+  </div>`;
+
+  // Landing page
   render = () => `
     <div class="paddingtop20 animate-jello2 bg-transparent textCenter">
       <h2 class='blackText' data-label="landingTitle">RocketCraft Platform - Free Games 🌍</h2>
@@ -2015,6 +2126,7 @@ class RocketCraftingLayout extends _safir.BaseComponent {
         <input class="w30" id='arg-password' type='password' value='12345678' />
         ${this.loginBtn.renderId()}
         ${this.registerBtn.renderId()}
+        ${this.forgotBtn.renderId()}
     </div>
     <div class='midWrapper bg-transparent'>
       <span id="apiResponse"></span>
@@ -2058,7 +2170,6 @@ console.info('<listeners>', app.listeners);
     });
   }
   document.body.classList.add('funnyBg2');
-  app.translate.update();
 }, {
   once: true
 });

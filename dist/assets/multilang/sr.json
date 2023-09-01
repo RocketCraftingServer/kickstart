@@ -13,5 +13,6 @@
   "welcomeNote1":"Dobrodosao ovde!",
   "landingTitle": "GamePlay Platform <b>ROCKET-CRAFTING</b> - Besplatne igre 🌍",
   "loginBtn":"Udji",
-  "registerBtn":"Registruj se"
+  "registerBtn":"Registruj se",
+  "accountBottomText": ""
 }
