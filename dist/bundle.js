@@ -1820,7 +1820,7 @@ class RocketCraftingLayout extends _safir.BaseComponent {
   async apiAccount(apiCallFlag) {
     let route = this.apiDomain || location.origin;
     let args = {
-      emailField: (0, _safir.byID)('arg-username').value,
+      emailField: (0, _safir.byID)('arg-username') != null ? (0, _safir.byID)('arg-username').value : null,
       passwordField: (0, _safir.byID)('arg-password') != null ? (0, _safir.byID)('arg-password').value : null
     };
     if (apiCallFlag == 'confirmation') {
@@ -1838,6 +1838,12 @@ class RocketCraftingLayout extends _safir.BaseComponent {
         ftoken: (0, _safir.byID)('arg-ftoken').value
       };
       console.log("TEST SETNEWPASW ", args);
+    }
+    if (apiCallFlag == 'logout') {
+      args = {
+        email: _safir.LocalSessionMemory.load('my-body-email'),
+        token: _safir.LocalSessionMemory.load('my-body-token')
+      };
     }
     var response = fetch(route + '/rocket/' + apiCallFlag, {
       method: 'POST',
@@ -1952,7 +1958,10 @@ class RocketCraftingLayout extends _safir.BaseComponent {
           }, 2000);
           return;
         } else if (res[key] == 'USER_LOGGED') {
-          // pass for login
+          (0, _safir.On)("signoutBtn", e => {
+            // signoutBtn
+            this.apiAccount('logout');
+          });
           isLogged = true;
         } else if (res[key] == 'Wrong confirmation code.') {
           (0, _safir.byID)('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]}</div>`;
@@ -2005,6 +2014,12 @@ class RocketCraftingLayout extends _safir.BaseComponent {
           setTimeout(() => {
             location.reload();
           }, 3000);
+        } else if (res[key] == 'USER_LOGOUT') {
+          console.log('USer logout!');
+          sessionStorage.clear();
+          setTimeout(() => {
+            location.reload();
+          }, 1000);
         }
       }
     }

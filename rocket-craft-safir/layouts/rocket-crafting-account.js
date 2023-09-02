@@ -166,7 +166,7 @@ export default class RocketCraftingLayout extends BaseComponent {
     let route = this.apiDomain || location.origin;
 
     let args = {
-      emailField: byID('arg-username').value,
+      emailField: (byID('arg-username') != null ? byID('arg-username').value : null),
       passwordField: (byID('arg-password') != null ? byID('arg-password').value : null)
     }
 
@@ -187,6 +187,13 @@ export default class RocketCraftingLayout extends BaseComponent {
         ftoken: byID('arg-ftoken').value
       }
       console.log("TEST SETNEWPASW ", args)
+    }
+
+    if (apiCallFlag == 'logout') {
+      args = {
+        email: LocalSessionMemory.load('my-body-email'),
+        token: LocalSessionMemory.load('my-body-token')
+      }
     }
 
     var response = fetch(route + '/rocket/' + apiCallFlag, {
@@ -305,16 +312,17 @@ export default class RocketCraftingLayout extends BaseComponent {
           setTimeout(() => {location.reload()}, 2000)
           return;
         } else if(res[key] == 'USER_LOGGED') {
-          // pass for login
+          On("signoutBtn", (e) => {
+            // signoutBtn
+            this.apiAccount('logout');
+          })
           isLogged = true;
         } else if(res[key] == 'Wrong confirmation code.') {
           byID('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]}</div>`;
-
           setTimeout(() => {
             this.preventDBREG = false
             byID('registerBtn-real').disabled = false;
           }, 500)
-
           return;
         } else if(res[key] == 'Check email for conmfirmation key.') {
           byID('loginBtn-real').remove()
@@ -356,6 +364,12 @@ export default class RocketCraftingLayout extends BaseComponent {
           byID('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]}</div>`;
           byID('apiResponse').innerHTML += `<div style='${color}' > New password call succeed! App will be reloaded and then try new password.</div>`;
           setTimeout(() => {location.reload()}, 3000)
+        } else if (res[key] == 'USER_LOGOUT') {
+          console.log('USer logout!')
+          sessionStorage.clear()
+          setTimeout(()=> {
+            location.reload()
+          }, 1000)
         }
       }
     }
