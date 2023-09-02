@@ -31,8 +31,16 @@ export default class RocketCraftingLayout extends BaseComponent {
     this.apiDomain = arg;
   }
 
-  ready = () => {
+  checkSession() {
     if(sessionStorage.getItem('my-body-email') != null && sessionStorage.getItem('my-body-token') != null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  ready = () => {
+    if(this.checkSession() == true) {
       this.runApiFastLogin();
       console.info('Fast login');
     }
@@ -110,7 +118,7 @@ export default class RocketCraftingLayout extends BaseComponent {
     });
 
     On('gotoLeaderboard', () => {
-      if(LocalSessionMemory.load('my-body-email') !== false && LocalSessionMemory.load('my-body-token') !== false) {
+      if(this.checkSession() == true) {
         this.leaderBoard = new LeaderBoard({id: 'leaderboard', currentPagIndex: '0'}, 'middle overflowAuto');
         this.runApiLeaderBoard();
         this.leaderBoardRender = () => this.leaderBoard.renderId();
@@ -123,7 +131,7 @@ export default class RocketCraftingLayout extends BaseComponent {
     });
 
     On('gotoAGL', () => {
-      if(LocalSessionMemory.load('my-body-email') !== false && LocalSessionMemory.load('my-body-token') !== false) {
+      if(this.checkSession() == true) {
         this.activeGamesList = new ActiveGames({id: 'activeGamesList', currentPagIndex: '0'}, 'middle overflowAuto');
         this.runApiAGL();
         this.activeGamesListRender = () => this.activeGamesList.renderId();
@@ -136,11 +144,13 @@ export default class RocketCraftingLayout extends BaseComponent {
     });
 
     On('gotoHome', () => {
-      // Home
-      this.home.apiDomain = this.apiDomain;
-      this.homeRender = () => this.home.renderId();
-      this.render = this.homeRender;
-      getComp(this.id).innerHTML = this.render();
+      if(this.checkSession() == true) {
+        // Home
+        this.home.apiDomain = this.apiDomain;
+        this.homeRender = () => this.home.renderId();
+        this.render = this.homeRender;
+        getComp(this.id).innerHTML = this.render();
+      }
     })
 
     On('gotoAccount', () => {
@@ -170,7 +180,7 @@ export default class RocketCraftingLayout extends BaseComponent {
       console.log("TEST ARG ", args)
     }
 
-    if (apiCallFlag == 'set-new-pass') {
+    if(apiCallFlag == 'set-new-pass') {
       args = {
         emailField: byID('arg-username').value,
         newPassword: byID('arg-new-password').value,
@@ -342,7 +352,7 @@ export default class RocketCraftingLayout extends BaseComponent {
           this.render = this.setNewPassRender;
           getComp(this.id).innerHTML = this.render();
           emit('app.trans.update', {f: 'f'});
-        } else if (res[key] == 'NEW_PASSWORD_DONE') {
+        } else if(res[key] == 'NEW_PASSWORD_DONE') {
           byID('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]}</div>`;
           byID('apiResponse').innerHTML += `<div style='${color}' > New password call succeed! App will be reloaded and then try new password.</div>`;
           setTimeout(() => {location.reload()}, 3000)

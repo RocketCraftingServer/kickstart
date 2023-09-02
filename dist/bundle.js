@@ -1257,6 +1257,7 @@ class ActiveGames extends _safir.BaseComponent {
     });
   };
   render = () => `
+    <h2>Active server games list - It is information about your multiplayer possibility to play with others</h2>
     <div id="activegamesResponse" class="animate-born myScroll verCenter overflowAuto"></div>
     <div id="activegamesPaginator" class="middle myPaddingList">
       <button onclick="(${this.onWannaPlay})('WannaPlay')" >Wanna Play - call this from gameplay - send most important data to make multiplayer gplay</button>
@@ -1687,8 +1688,15 @@ class RocketCraftingLayout extends _safir.BaseComponent {
     super(arg);
     this.apiDomain = arg;
   }
-  ready = () => {
+  checkSession() {
     if (sessionStorage.getItem('my-body-email') != null && sessionStorage.getItem('my-body-token') != null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  ready = () => {
+    if (this.checkSession() == true) {
       this.runApiFastLogin();
       console.info('Fast login');
     }
@@ -1763,7 +1771,7 @@ class RocketCraftingLayout extends _safir.BaseComponent {
       this.runApiLeaderBoard();
     });
     (0, _safir.On)('gotoLeaderboard', () => {
-      if (_safir.LocalSessionMemory.load('my-body-email') !== false && _safir.LocalSessionMemory.load('my-body-token') !== false) {
+      if (this.checkSession() == true) {
         this.leaderBoard = new _leaderboard.default({
           id: 'leaderboard',
           currentPagIndex: '0'
@@ -1778,7 +1786,7 @@ class RocketCraftingLayout extends _safir.BaseComponent {
       }
     });
     (0, _safir.On)('gotoAGL', () => {
-      if (_safir.LocalSessionMemory.load('my-body-email') !== false && _safir.LocalSessionMemory.load('my-body-token') !== false) {
+      if (this.checkSession() == true) {
         this.activeGamesList = new _activegames.default({
           id: 'activeGamesList',
           currentPagIndex: '0'
@@ -1793,11 +1801,13 @@ class RocketCraftingLayout extends _safir.BaseComponent {
       }
     });
     (0, _safir.On)('gotoHome', () => {
-      // Home
-      this.home.apiDomain = this.apiDomain;
-      this.homeRender = () => this.home.renderId();
-      this.render = this.homeRender;
-      (0, _safir.getComp)(this.id).innerHTML = this.render();
+      if (this.checkSession() == true) {
+        // Home
+        this.home.apiDomain = this.apiDomain;
+        this.homeRender = () => this.home.renderId();
+        this.render = this.homeRender;
+        (0, _safir.getComp)(this.id).innerHTML = this.render();
+      }
     });
     (0, _safir.On)('gotoAccount', () => {
       // Account

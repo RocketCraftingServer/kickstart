@@ -130,6 +130,7 @@ export default class ActiveGames extends BaseComponent {
   }
 
   render = () => `
+    <h2>Active server games list - It is information about your multiplayer possibility to play with others</h2>
     <div id="activegamesResponse" class="animate-born myScroll verCenter overflowAuto"></div>
     <div id="activegamesPaginator" class="middle myPaddingList">
       <button onclick="(${this.onWannaPlay})('WannaPlay')" >Wanna Play - call this from gameplay - send most important data to make multiplayer gplay</button>
