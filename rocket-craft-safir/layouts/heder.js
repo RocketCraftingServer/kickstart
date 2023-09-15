@@ -8,7 +8,7 @@ export default class MyHeader extends BaseComponent {
 
   id = 'my-heder';
   gotoLeaderboardBtn = new SimpleButton({ text: T.gotoLeaderboard, id: 'gotoLeaderboard'}, 'fill');
-  gotoHomePage = new SimpleButton({ text: 'GamePlay', id: 'gotoHome'}, 'fill');
+  gotoGamesPage = new SimpleButton({ text: 'Games', id: 'gotoGames'}, 'fill');
   gotoAccount = new SimpleButton({ text: 'Account', id: 'gotoAccount'}, 'fill');
   gotoAGL = new SimpleButton({text: 'AGL', id: 'gotoAGL'}, 'fill')
 
@@ -40,7 +40,7 @@ export default class MyHeader extends BaseComponent {
           <button class="fill" onclick="(${this.change})('change-theme')" data-label="changeTheme" ></button>
           ${(this.gotoLeaderboardBtn).renderId()}
           ${(this.gotoAccount).renderId()}
-          ${(this.gotoHomePage).renderId()}
+          ${(this.gotoGamesPage).renderId()}
           ${(this.gotoAGL).renderId()}
        </div>
     </div>

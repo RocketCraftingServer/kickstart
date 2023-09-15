@@ -83,7 +83,7 @@ div {
 
 span {
   @include themify($themes) {
-    font-size: themed('fontSize');
+    // font-size: themed('fontSize');
   }
 
   padding: 5px 5px 5px 5px;
@@ -91,15 +91,18 @@ span {
 
 button {
   @include themify($themes) {
-    color: themed('textColor');
+    color: themed('buttonTextColor');
     background-color: themed('backgroundColor');
     border: themed('buttonBorder');
     font-size: themed('fontSize');
+    border-radius: themed('buttonRadius');
   }
 
+  cursor:pointer;
+
   font-family: Accuratist;
-  padding: 1px 1px 1px 1px;
-  margin: 1px 1px 1px 1px;
+  padding: 2px 2px 2px 2px;
+  margin: 2px 2px 2px 2px;
 
   @media only screen and (min-width: 780px) {
     font-size: 18px !important;
@@ -124,7 +127,7 @@ button {
     &:disabled {
       color: gray;
     }
-    
+
   }
 }
 
@@ -145,14 +148,11 @@ input {
     font-size: 10px !important;
   }
 
-  mix-blend-mode: color-burn;
   padding: 1px 1px 1px 1px;
   margin: 1px 1px 1px 1px;
 
   &:active {
-    box-shadow: none;
     transform: translateX(-5px);
-    /**transform: translateX(-1px);*/
   }
 
   &:hover {
@@ -264,8 +264,8 @@ p {
 }
 
 .fill {
-  width: 100% !important;
-  height: 100% !important;
+  width: 100%;
+  height: 100%;
 
   @include themify($themes) {
     font-family: themed('fontFamily');
@@ -312,6 +312,40 @@ p {
   width: 30vw;
   min-width: 200px;
   min-height: 35px;
+
+  @media only screen and (max-width: 780px) {
+    min-width: 130px;
+  }
+}
+
+.cardBtn {
+  width:200px;
+  left:0;
+  margin:0;
+  height:unset;
+  @media only screen and (max-width: 780px) {
+    width:250px;
+    height: auto;
+  }
+  button:hover {
+    background-color: #f58843;
+  }
+}
+
+.cardImg {
+
+}
+
+.game-card {
+  width: 200px;
+  margin: 3px 3px 3px 3px;
+  min-height: 135px;
+  height:unset;
+  @media only screen and (max-width: 780px) {
+    width:250px;
+    height: 150px;
+  }
+  background: url(../assets/imgs/a.png);
 }
 
 .paddingtop20 {
@@ -380,15 +414,22 @@ p {
 }
 
 .gameplayObj {
-  // width: 90vw;
   margin: 40px 10px 10px 10px;
-  flex-direction: column !important;;
+  display: flex;
+  flex-direction: column;
+}
+
+.gameLists {
+  margin: 40px 10px 10px 10px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
 
 .gameplay {
   width: 90vw;
   height: 50vh;
-  flex-direction: column !important;;
+  flex-direction: row !important;
 }
 
 .makeBottomABS {
@@ -399,4 +440,20 @@ p {
 #apiResponse {
   margin: 10px 10px 10px 10px;
   padding: 15px 15px 15px 15px;
+}
+
+#activeGamesList {
+  padding: 10px;
+}
+
+.AGL {
+  display: grid;
+  height: auto;
+  padding: 5px;
+}
+
+#AGL-content {
+  display: flex;
+  padding: 2px;
+  border: solid #d6164f 1px;
 }

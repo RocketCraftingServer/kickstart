@@ -1,6 +1,6 @@
 
 export let activeGamesListRender = (arg, colorFlag) => `
-  <div class="horCenter h5 myMarginList" 
+  <div class="horCenter h5 myMarginList AGL" 
        style="background-color:${(colorFlag == true ? 'rgba(0,0,0,0.1)' : 'rgba(0,0,0,0.3)' )}">
     ${arg.map((item, index) =>
       `<div

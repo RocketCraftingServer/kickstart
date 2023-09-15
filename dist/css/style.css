@@ -207,7 +207,7 @@
 .theme-light .panel9 {
   font-family: "Accuratist";
   color: #ffffff;
-  background-color: rgb(255, 88, 88) !important;
+  background-color: rgb(173, 31, 31) !important;
 }
 .theme-dark .panel0,
 .theme-dark .panel1,
@@ -256,7 +256,7 @@
   padding: 5px 5px 5px 5px;
   font-family: "Accuratist";
   color: #ffffff;
-  background-color: rgb(255, 88, 88) !important;
+  background-color: rgb(173, 31, 31) !important;
   border-bottom: solid rgba(220, 0, 0, 0.886) 1px;
   border-top: solid rgba(220, 0, 0, 0.886) 1px;
 }
@@ -308,13 +308,12 @@
 .theme-light .tableStyleMark1 {
   padding: 5px 5px 5px 5px;
   font-family: "Accuratist";
-  color: #0f2d41;
-  background-color: rgb(255, 255, 255) !important;
+  color: #ffe974;
   border-bottom: solid rgb(255, 132, 0) 1px;
   border-top: solid rgb(255, 132, 0) 1px;
 }
 .theme-light .tableStyleMark1:hover {
-  background-color: rgb(255, 88, 88) !important;
+  background-color: rgb(173, 31, 31) !important;
   color: #ffffff !important;
   border-bottom: solid rgba(220, 0, 0, 0.886) 1px;
   border-top: solid rgba(220, 0, 0, 0.886) 1px;
@@ -323,7 +322,6 @@
   padding: 5px 5px 5px 5px;
   font-family: "Accuratist";
   color: rgb(214, 214, 214);
-  background-color: #333 !important;
   border-bottom: solid rgb(71, 71, 71) 1px;
   border-top: solid rgb(71, 71, 71) 1px;
 }
@@ -337,7 +335,6 @@
   padding: 5px 5px 5px 5px;
   font-family: "Accuratist";
   color: rgb(243, 79, 43);
-  background-color: #333 !important;
   border-bottom: solid rgb(255, 77, 0) 1px;
   border-top: solid rgb(255, 77, 0) 1px;
 }
@@ -351,7 +348,6 @@
   padding: 5px 5px 5px 5px;
   font-family: "Closeness";
   color: rgb(43, 150, 243);
-  background-color: #333 !important;
   border-bottom: solid rgb(0, 94, 255) 1px;
   border-top: solid rgb(0, 94, 255) 1px;
 }
@@ -390,7 +386,7 @@ body {
 .theme-light body {
   font-family: "Accuratist";
   color: #ffffff;
-  background-color: rgb(255, 88, 88);
+  background-color: rgb(173, 31, 31);
 }
 .theme-dark html,
 .theme-dark body {
@@ -474,7 +470,7 @@ div {
 .theme-light div {
   font-family: "Accuratist";
   color: #ffffff;
-  background-color: rgb(255, 88, 88);
+  background-color: rgb(173, 31, 31);
 }
 .theme-dark div {
   font-family: "Accuratist";
@@ -500,47 +496,39 @@ div {
 span {
   padding: 5px 5px 5px 5px;
 }
-.theme-light span {
-  font-size: 3.5vw;
-}
-.theme-dark span {
-  font-size: 2vw;
-}
-.theme-orange span {
-  font-size: 2vw;
-}
-.theme-blue span {
-  font-size: 2vw;
-}
-
 button {
+  cursor: pointer;
   font-family: Accuratist;
-  padding: 1px 1px 1px 1px;
-  margin: 1px 1px 1px 1px;
+  padding: 2px 2px 2px 2px;
+  margin: 2px 2px 2px 2px;
 }
 .theme-light button {
-  color: #ffffff;
-  background-color: rgb(255, 88, 88);
-  border: 1px solid rgb(0, 148, 181);
+  color: #ffe974;
+  background-color: rgb(173, 31, 31);
+  border: 1px solid rgb(181, 83, 0);
   font-size: 3.5vw;
+  border-radius: 5px;
 }
 .theme-dark button {
-  color: rgb(255, 255, 255);
+  color: rgb(214, 214, 214);
   background-color: rgba(83, 83, 83, 0.7);
   border: 1px solid #aaa;
   font-size: 2vw;
+  border-radius: 20px;
 }
 .theme-orange button {
-  color: rgb(255, 85, 0);
+  color: rgb(243, 79, 43);
   background-color: rgb(0, 0, 0);
   border: 1px solid rgb(255, 194, 40);
   font-size: 2vw;
+  border-radius: 20px;
 }
 .theme-blue button {
-  color: rgb(181, 240, 255);
+  color: rgb(43, 150, 243);
   background-color: rgb(3, 0, 49);
   border: 1px solid rgb(255, 194, 40);
   font-size: 2vw;
+  border-radius: 20px;
 }
 @media only screen and (min-width: 780px) {
   button {
@@ -576,7 +564,6 @@ button:hover:disabled {
 }
 
 input {
-  mix-blend-mode: color-burn;
   padding: 1px 1px 1px 1px;
   margin: 1px 1px 1px 1px;
 }
@@ -584,7 +571,7 @@ input {
   font-family: "Accuratist";
   color: #ffffff;
   background-color: rgba(255, 88, 88, 0.3);
-  border: 1px solid #7c19ff;
+  border: 1px solid #ff1919;
   font-size: 3.5vw;
 }
 .theme-dark input {
@@ -619,9 +606,7 @@ input {
   }
 }
 input:active {
-  box-shadow: none;
   transform: translateX(-5px);
-  /**transform: translateX(-1px);*/
 }
 .theme-light input:hover {
   color: #000000;
@@ -728,7 +713,7 @@ p {
 }
 .theme-light .verCenter {
   color: #ffffff;
-  background-color: rgb(255, 88, 88);
+  background-color: rgb(173, 31, 31);
 }
 .theme-dark .verCenter {
   color: rgb(255, 255, 255);
@@ -753,7 +738,7 @@ p {
 }
 .theme-light .horCenter {
   color: #ffffff;
-  background-color: rgb(255, 88, 88);
+  background-color: rgb(173, 31, 31);
 }
 .theme-dark .horCenter {
   color: rgb(255, 255, 255);
@@ -773,8 +758,8 @@ p {
 }
 
 .fill {
-  width: 100% !important;
-  height: 100% !important;
+  width: 100%;
+  height: 100%;
 }
 .theme-light .fill {
   font-family: "Accuratist";
@@ -831,6 +816,41 @@ p {
   width: 30vw;
   min-width: 200px;
   min-height: 35px;
+}
+@media only screen and (max-width: 780px) {
+  .w30 {
+    min-width: 130px;
+  }
+}
+
+.cardBtn {
+  width: 200px;
+  left: 0;
+  margin: 0;
+  height: unset;
+}
+@media only screen and (max-width: 780px) {
+  .cardBtn {
+    width: 250px;
+    height: auto;
+  }
+}
+.cardBtn button:hover {
+  background-color: #f58843;
+}
+
+.game-card {
+  width: 200px;
+  margin: 3px 3px 3px 3px;
+  min-height: 135px;
+  height: unset;
+  background: url(../assets/imgs/a.png);
+}
+@media only screen and (max-width: 780px) {
+  .game-card {
+    width: 250px;
+    height: 150px;
+  }
 }
 
 .paddingtop20 {
@@ -899,13 +919,21 @@ p {
 
 .gameplayObj {
   margin: 40px 10px 10px 10px;
-  flex-direction: column !important;
+  display: flex;
+  flex-direction: column;
+}
+
+.gameLists {
+  margin: 40px 10px 10px 10px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
 
 .gameplay {
   width: 90vw;
   height: 50vh;
-  flex-direction: column !important;
+  flex-direction: row !important;
 }
 
 .makeBottomABS {
@@ -916,4 +944,20 @@ p {
 #apiResponse {
   margin: 10px 10px 10px 10px;
   padding: 15px 15px 15px 15px;
+}
+
+#activeGamesList {
+  padding: 10px;
+}
+
+.AGL {
+  display: grid;
+  height: auto;
+  padding: 5px;
+}
+
+#AGL-content {
+  display: flex;
+  padding: 2px;
+  border: solid #d6164f 1px;
 }/*# sourceMappingURL=style.css.map */

@@ -38,12 +38,16 @@ export default class ActiveGames extends BaseComponent {
     this.initial(arg, arg2);
     this.currentPagIndex = 1;
 
+    this.apiDomain = sessionStorage.getItem('domain');
     var t = app.listeners.filter((__) => __.type == 'WannaPlay');
     if(t.length == 0) {
       On('WannaPlay', this.funcWP);
       On('End', this.funcDWP);
     }
   }
+
+  onChange = this.keyUpBind;
+  onClick = this.clickBind;
 
   onWannaPlay = this.clickBind;
   onEnd = this.clickBind;
@@ -69,8 +73,9 @@ export default class ActiveGames extends BaseComponent {
     const args = {
       email: LocalSessionMemory.load('my-body-email'),
       token: LocalSessionMemory.load('my-body-token'),
-      mapName: 'this-is-channel1',
-      sessionPlatform: 'platformer-multiplayer'
+      mapName: byID('activeGamesList-map-name').value == '' ? 'level1' : byID('activeGamesList-map-name').value,
+      gameName: byID('activeGamesList-game-name').value == '' ? 'platformer' : byID('activeGamesList-game-name').value,
+      gameHostAlias: byID('activeGamesList-host').value == '' ? 'maximumroulette.com' : byID('activeGamesList-host').value
     }
     const rawResponse = await fetch(route + '/rocket/wanna-play', {
       method: 'POST',
@@ -86,8 +91,7 @@ export default class ActiveGames extends BaseComponent {
   }
 
   setData = (res) => {
-
-    byID('activegamesResponse').innerHTML = '';
+    byID('activegamesResponse').innerHTML = '<div id="AGL-content" ></div>';
     for(let key in res) {
       let color = 'white';
       if(typeof res[key] == 'object') {
@@ -102,7 +106,7 @@ export default class ActiveGames extends BaseComponent {
               prepare.push({key: key2, value: res[key][key1][key2]});
             }
           }
-          byID('activegamesResponse').innerHTML += activeGamesListRender(prepare, colorFlag);
+          byID('AGL-content').innerHTML += activeGamesListRender(prepare, colorFlag);
           colorFlag = !colorFlag;
         }
       } else {
@@ -114,7 +118,6 @@ export default class ActiveGames extends BaseComponent {
         }
       }
     }
-
     // new test
     var locCollectItems = [];
     for(var x = 0;x < byID('activegamesResponse').children.length;x++) {
@@ -130,11 +133,19 @@ export default class ActiveGames extends BaseComponent {
   }
 
   render = () => `
-    <h2>Active server games list - It is information about your multiplayer possibility to play with others</h2>
-    <div id="activegamesResponse" class="animate-born myScroll verCenter overflowAuto"></div>
-    <div id="activegamesPaginator" class="middle myPaddingList">
-      <button onclick="(${this.onWannaPlay})('WannaPlay')" >Wanna Play - call this from gameplay - send most important data to make multiplayer gplay</button>
-      <button onclick="(${this.onEnd})('End')" >I dont wanna host/play any game - remove me from list </button>
+    <h4>Active games list - It is information about your any game multiplayer info to make possibility other to find you and play with others</h4>
+    <h4>Ussualy you need two type of data. Game name and ip of server host.</h4>
+    <h3 style="color:orange" >Add my opened host multiplayer info </h3>
+    <div style="display:flex">
+      <p><span style="width:30%">Game Name: </span><input id='${this.id}-game-name' type='text' class="w30" value="platformer" /></p>
+      <p><span style="width:30%">Hosted on: </span><input id='${this.id}-host' type='text' class="w30" value="maximumroulette.com" /></p>
+      <p><span style="width:30%">Map name: </span><input id='${this.id}-map-name' type='text' class="w30" value="level1" /></p>
     </div>
+    <button onclick="(${this.onWannaPlay})('WannaPlay')" >Add my game host info:</button>
+    <button onclick="(${this.onEnd})('End')" >Remove me from list</button>
+    <div id="activegamesResponse" class="animate-born myScroll overflowAuto">
+      <div id="AGL-content" ></div>
+    </div>
+    <div id="activegamesPaginator" class="middle myPaddingList">
   `;
 }

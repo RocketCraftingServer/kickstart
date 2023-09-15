@@ -29,6 +29,7 @@ export default class RocketCraftingLayout extends BaseComponent {
   constructor(arg) {
     super(arg);
     this.apiDomain = arg;
+    sessionStorage.setItem('domain', arg)
   }
 
   checkSession() {
@@ -143,7 +144,7 @@ export default class RocketCraftingLayout extends BaseComponent {
       }
     });
 
-    On('gotoHome', () => {
+    On('gotoGames', () => {
       if(this.checkSession() == true) {
         // Home
         this.home.apiDomain = this.apiDomain;
@@ -375,12 +376,10 @@ export default class RocketCraftingLayout extends BaseComponent {
     }
 
     if(isLogged != true) {
-      console.log('USER_LOGGED = FALSE ')
       return;
     }
 
     if(this.testSafirSlot == null) {
-
       // NOTE SAFIRSLOT NEED RENDER DOM IN MOMENT OF INSTANCING
       this.testSafirSlot = new SafirBuildInPlugins.SafirSlot({id: 'userPoints', rootDom: 'userPoints'}, 'horCenter bg-transparent');
     }

@@ -1165,12 +1165,15 @@ class ActiveGames extends _safir.BaseComponent {
     super(arg);
     this.initial(arg, arg2);
     this.currentPagIndex = 1;
+    this.apiDomain = sessionStorage.getItem('domain');
     var t = app.listeners.filter(__ => __.type == 'WannaPlay');
     if (t.length == 0) {
       On('WannaPlay', this.funcWP);
       On('End', this.funcDWP);
     }
   }
+  onChange = this.keyUpBind;
+  onClick = this.clickBind;
   onWannaPlay = this.clickBind;
   onEnd = this.clickBind;
   async runApiRemoveMeFromList() {
@@ -1193,8 +1196,9 @@ class ActiveGames extends _safir.BaseComponent {
     const args = {
       email: _safir.LocalSessionMemory.load('my-body-email'),
       token: _safir.LocalSessionMemory.load('my-body-token'),
-      mapName: 'this-is-channel1',
-      sessionPlatform: 'platformer-multiplayer'
+      mapName: (0, _safir.byID)('activeGamesList-map-name').value == '' ? 'level1' : (0, _safir.byID)('activeGamesList-map-name').value,
+      gameName: (0, _safir.byID)('activeGamesList-game-name').value == '' ? 'platformer' : (0, _safir.byID)('activeGamesList-game-name').value,
+      gameHostAlias: (0, _safir.byID)('activeGamesList-host').value == '' ? 'maximumroulette.com' : (0, _safir.byID)('activeGamesList-host').value
     };
     const rawResponse = await fetch(route + '/rocket/wanna-play', {
       method: 'POST',
@@ -1208,7 +1212,7 @@ class ActiveGames extends _safir.BaseComponent {
     }, 2000);
   }
   setData = res => {
-    (0, _safir.byID)('activegamesResponse').innerHTML = '';
+    (0, _safir.byID)('activegamesResponse').innerHTML = '<div id="AGL-content" ></div>';
     for (let key in res) {
       let color = 'white';
       if (typeof res[key] == 'object') {
@@ -1229,7 +1233,7 @@ class ActiveGames extends _safir.BaseComponent {
               });
             }
           }
-          (0, _safir.byID)('activegamesResponse').innerHTML += (0, _agl.activeGamesListRender)(prepare, colorFlag);
+          (0, _safir.byID)('AGL-content').innerHTML += (0, _agl.activeGamesListRender)(prepare, colorFlag);
           colorFlag = !colorFlag;
         }
       } else {
@@ -1241,7 +1245,6 @@ class ActiveGames extends _safir.BaseComponent {
         }
       }
     }
-
     // new test
     var locCollectItems = [];
     for (var x = 0; x < (0, _safir.byID)('activegamesResponse').children.length; x++) {
@@ -1257,17 +1260,25 @@ class ActiveGames extends _safir.BaseComponent {
     });
   };
   render = () => `
-    <h2>Active server games list - It is information about your multiplayer possibility to play with others</h2>
-    <div id="activegamesResponse" class="animate-born myScroll verCenter overflowAuto"></div>
-    <div id="activegamesPaginator" class="middle myPaddingList">
-      <button onclick="(${this.onWannaPlay})('WannaPlay')" >Wanna Play - call this from gameplay - send most important data to make multiplayer gplay</button>
-      <button onclick="(${this.onEnd})('End')" >I dont wanna host/play any game - remove me from list </button>
+    <h4>Active games list - It is information about your any game multiplayer info to make possibility other to find you and play with others</h4>
+    <h4>Ussualy you need two type of data. Game name and ip of server host.</h4>
+    <h3 style="color:orange" >Add my opened host multiplayer info </h3>
+    <div style="display:flex">
+      <p><span style="width:30%">Game Name: </span><input id='${this.id}-game-name' type='text' class="w30" value="platformer" /></p>
+      <p><span style="width:30%">Hosted on: </span><input id='${this.id}-host' type='text' class="w30" value="maximumroulette.com" /></p>
+      <p><span style="width:30%">Map name: </span><input id='${this.id}-map-name' type='text' class="w30" value="level1" /></p>
     </div>
+    <button onclick="(${this.onWannaPlay})('WannaPlay')" >Add my game host info:</button>
+    <button onclick="(${this.onEnd})('End')" >Remove me from list</button>
+    <div id="activegamesResponse" class="animate-born myScroll overflowAuto">
+      <div id="AGL-content" ></div>
+    </div>
+    <div id="activegamesPaginator" class="middle myPaddingList">
   `;
 }
 exports.default = ActiveGames;
 
-},{"../direct-render/agl":13,"safir":1}],10:[function(require,module,exports){
+},{"../direct-render/agl":14,"safir":1}],10:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1275,20 +1286,60 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _safir = require("safir");
-var _leaderboard = require("../direct-render/leaderboard");
-var _simpleBtn = _interopRequireDefault(require("../components/simple-btn"));
+class GameCard extends _safir.BaseComponent {
+  id = '';
+  text = '';
+  ready = () => {
+    if (this.args.label) {
+      console.log('ml:', (0, _safir.byID)(this.id + '-real').setAttribute('data-label', this.args.label));
+    }
+  };
+  setDisabled = () => {
+    (0, _safir.byID)(this.id).disabled = true;
+  };
+  removeDisabled = () => {
+    (0, _safir.byID)(this.id).disabled = false;
+  };
+  constructor(arg, arg2 = '') {
+    super(arg);
+    this.initial(arg, arg2);
+    this.args = arg;
+  }
+  onClick = this.clickBind;
+  render = () => `
+    <div class="game-card" style="display:flex;background-image:url(${this.args.poster});    background-size: cover;">
+      <button id="${this.id}-real" 
+              style="" 
+              class="cardBtn fill bg-transparent" onclick="(${this.onClick})('${this.id}')">
+        ${this.text}
+      </button>
+    </div>
+  `;
+}
+exports.default = GameCard;
+
+},{"safir":1}],11:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _safir = require("safir");
+var _gameCard = _interopRequireDefault(require("../components/gameCard"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 class Home extends _safir.BaseComponent {
   id = '';
   btns = [];
   constructGameList() {
-    this.links.forEach(element => {
-      this.btns.push(new _simpleBtn.default({
-        text: element.name,
-        id: element.action
-      }, 'fill'));
-      (0, _safir.On)(element.action, () => {
-        this.loadGamplay(element.link);
+    this.links.forEach(e => {
+      this.btns.push(new _gameCard.default({
+        text: e.name,
+        id: e.action,
+        poster: e.poster
+      }, 'game-card'));
+      (0, _safir.On)(e.action, () => {
+        this.loadGamplay(e.link);
       });
     });
   }
@@ -1299,21 +1350,41 @@ class Home extends _safir.BaseComponent {
     super(arg);
     this.initial(arg, arg2);
     this.links = [{
-      action: 'platformer',
+      description: "Nidzica",
+      action: "platformer",
+      poster: "./assets/imgs/platformer-visual-ts.png",
       name: "Nidzica",
       link: 'https://maximumroulette.com/apps/visual-ts/singleplayer/app.html'
     }, {
+      description: "",
       action: 'platformer-multiplayer',
+      poster: "./assets/imgs/platformer-visual-ts.png",
       name: "Multiplayer platformer",
       link: 'https://maximumroulette.com/apps/visual-ts/multiplayer/app.html'
     }, {
+      description: "",
+      action: 'platformer-video-chat',
+      poster: "./assets/imgs/platformer-visual-ts.png",
+      name: "Platformer Video Chat",
+      link: 'https://maximumroulette.com/apps/visual-ts/basket-ball-chat/app.html'
+    }, {
+      description: "",
       action: 'hang3d',
+      poster: "./assets/imgs/hang3d.png",
       name: "Hang3d Nightmare",
       link: 'https://maximumroulette.com/apps/hang3d/'
     }, {
+      description: "",
       action: 'magic-three',
+      poster: "./assets/imgs/platformer-visual-ts.png",
       name: "Magic three project",
-      link: 'https://maximumroulette.com/apps/magic-three/'
+      link: 'https://maximumroulette.com/apps/magic/public/module.html'
+    }, {
+      description: "",
+      action: 'ultimate-roulette',
+      poster: "./assets/imgs/ultimate-roulette.png",
+      name: "Real Physics Roulette",
+      link: 'https://roulette.maximumroulette.com'
     }];
     (0, _safir.On)('pointsPlus10', () => {
       console.log('POINTS PLUS');
@@ -1327,10 +1398,10 @@ class Home extends _safir.BaseComponent {
     console.log('POACCESS OBJECT TAG', htmlDocument);
   }
   loadGamplay(i) {
-    var t = (0, _safir.byTag)("object")[0];
+    var t = (0, _safir.byTag)("iframe")[0];
     var htmlDocument = t.contentDocument;
     console.log('POACCESS OBJECT TAG', htmlDocument);
-    t.data = i;
+    t.src = i;
     (0, _safir.byID)('GameList').style.display = 'none';
     (0, _safir.byID)('gameplayDiv').style.display = 'flex';
   }
@@ -1375,28 +1446,25 @@ class Home extends _safir.BaseComponent {
     this.exploreResponse(response);
   }
   pointsPlus10 = this.clickBind;
-  // 
-  // point-plus10
-
   render = () => `
     <div id="homePage" class="animate-born myScroll verCenter overflowAuto">
-    <div id="GameList" class="middle gameplayObj" style="display: flex;">
+    <div id="GameList" class="middle gameLists" style="display: flex;">
       ${this.btns.map(i => `${i.renderId()}`).join('')}
     </div>
       <div id="gameplayDiv" class="middle gameplayObj" style="display: none;">
         <h2>RocketCraftingServer Platform</h2>
         <h3>Play Platformer [2d]</h3>
-        <object id="gameplay" class="gameplay" data="${this.links[0]}"></object>
+        <iframe id="gameplay" class="gameplay" src="${this.links[0]}" allow="camera; microphone" />
         <br>
-        <button onclick="(${this.pointsPlus10})('pointsPlus10')" >TEST POINTS</button>
-        <div id="testResponse"></div>
+        <button onclick="(${this.pointsPlus10})('pointsPlus10')" >TEST POINTS REST/API</button>
+        <div id="testResponse" style="text-align: center;"></div>
       </div>
     </div>
   `;
 }
 exports.default = Home;
 
-},{"../components/simple-btn":12,"../direct-render/leaderboard":15,"safir":1}],11:[function(require,module,exports){
+},{"../components/gameCard":10,"safir":1}],12:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1487,7 +1555,7 @@ class LeaderBoard extends _safir.BaseComponent {
 }
 exports.default = LeaderBoard;
 
-},{"../direct-render/leaderboard":15,"safir":1}],12:[function(require,module,exports){
+},{"../direct-render/leaderboard":16,"safir":1}],13:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1523,7 +1591,7 @@ class SimpleBtn extends _safir.BaseComponent {
 }
 exports.default = SimpleBtn;
 
-},{"safir":1}],13:[function(require,module,exports){
+},{"safir":1}],14:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1531,7 +1599,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.activeGamesListRender = void 0;
 let activeGamesListRender = (arg, colorFlag) => `
-  <div class="horCenter h5 myMarginList" 
+  <div class="horCenter h5 myMarginList AGL" 
        style="background-color:${colorFlag == true ? 'rgba(0,0,0,0.1)' : 'rgba(0,0,0,0.3)'}">
     ${arg.map((item, index) => `<div
          style="${item.key == '_id' ? 'display:none' : ""}"
@@ -1542,7 +1610,7 @@ let activeGamesListRender = (arg, colorFlag) => `
 `;
 exports.activeGamesListRender = activeGamesListRender;
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1554,7 +1622,7 @@ let Avatar = arg => `
 `;
 exports.Avatar = Avatar;
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1572,7 +1640,7 @@ let LeaderBoardRender = (arg, colorFlag) => `
 `;
 exports.LeaderBoardRender = LeaderBoardRender;
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1588,9 +1656,9 @@ class MyHeader extends _safir.BaseComponent {
     text: _safir.T.gotoLeaderboard,
     id: 'gotoLeaderboard'
   }, 'fill');
-  gotoHomePage = new _simpleBtn.default({
-    text: 'GamePlay',
-    id: 'gotoHome'
+  gotoGamesPage = new _simpleBtn.default({
+    text: 'Games',
+    id: 'gotoGames'
   }, 'fill');
   gotoAccount = new _simpleBtn.default({
     text: 'Account',
@@ -1623,7 +1691,7 @@ class MyHeader extends _safir.BaseComponent {
           <button class="fill" onclick="(${this.change})('change-theme')" data-label="changeTheme" ></button>
           ${this.gotoLeaderboardBtn.renderId()}
           ${this.gotoAccount.renderId()}
-          ${this.gotoHomePage.renderId()}
+          ${this.gotoGamesPage.renderId()}
           ${this.gotoAGL.renderId()}
        </div>
     </div>
@@ -1631,7 +1699,7 @@ class MyHeader extends _safir.BaseComponent {
 }
 exports.default = MyHeader;
 
-},{"../components/simple-btn":12,"safir":1}],17:[function(require,module,exports){
+},{"../components/simple-btn":13,"safir":1}],18:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1687,6 +1755,7 @@ class RocketCraftingLayout extends _safir.BaseComponent {
   constructor(arg) {
     super(arg);
     this.apiDomain = arg;
+    sessionStorage.setItem('domain', arg);
   }
   checkSession() {
     if (sessionStorage.getItem('my-body-email') != null && sessionStorage.getItem('my-body-token') != null) {
@@ -1800,7 +1869,7 @@ class RocketCraftingLayout extends _safir.BaseComponent {
         console.info('no session');
       }
     });
-    (0, _safir.On)('gotoHome', () => {
+    (0, _safir.On)('gotoGames', () => {
       if (this.checkSession() == true) {
         // Home
         this.home.apiDomain = this.apiDomain;
@@ -2024,7 +2093,6 @@ class RocketCraftingLayout extends _safir.BaseComponent {
       }
     }
     if (isLogged != true) {
-      console.log('USER_LOGGED = FALSE ');
       return;
     }
     if (this.testSafirSlot == null) {
@@ -2165,7 +2233,7 @@ class RocketCraftingLayout extends _safir.BaseComponent {
 }
 exports.default = RocketCraftingLayout;
 
-},{"../components/activegames":9,"../components/home":10,"../components/leaderboard":11,"../components/simple-btn":12,"../direct-render/imageProfile":14,"safir":1}],18:[function(require,module,exports){
+},{"../components/activegames":9,"../components/home":11,"../components/leaderboard":12,"../components/simple-btn":13,"../direct-render/imageProfile":15,"safir":1}],19:[function(require,module,exports){
 "use strict";
 
 var _safir = require("safir");
@@ -2200,4 +2268,4 @@ console.info('<listeners>', app.listeners);
 });
 window.app = app;
 
-},{"./layouts/heder":16,"./layouts/rocket-crafting-account":17,"safir":1}]},{},[18]);
+},{"./layouts/heder":17,"./layouts/rocket-crafting-account":18,"safir":1}]},{},[19]);
