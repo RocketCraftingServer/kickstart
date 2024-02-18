@@ -7,10 +7,10 @@
 .slot {
   display: flex;
   place-items: center;
-  min-height: 4vh;
+  // min-height: 4vh;
   perspective: 500px;
   perspective-origin: 50% 50%;
-  margin: 1.25vw;
+  margin: 8px;
   width: inherit;
 }
 
@@ -40,7 +40,7 @@
 .panel7,
 .panel8,
 .panel9 {
-  font-size: 3vw !important;
+  // font-size: 3vw !important;
 
   @media only screen and (min-width: 780px) {
     font-size: 20px !important;

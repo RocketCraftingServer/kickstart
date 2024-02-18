@@ -141,10 +141,9 @@
 .slot {
   display: flex;
   place-items: center;
-  min-height: 4vh;
   perspective: 500px;
   perspective-origin: 50% 50%;
-  margin: 1.25vw;
+  margin: 8px;
   width: inherit;
 }
 
@@ -174,7 +173,6 @@
 .panel7,
 .panel8,
 .panel9 {
-  font-size: 3vw !important;
   position: absolute;
   transform: translate(-50%, -50%) rotateX(var(--angle)) translateZ(150.5px);
   border-bottom: 1px solid black;
@@ -407,9 +405,9 @@ body {
   background-color: rgb(3, 0, 49);
 }
 
-@media only screen and (min-width: 780px) {
+@media only screen and (max-width: 1024px) {
   body {
-    font-size: 22px;
+    font-size: 16px;
   }
 }
 a {
@@ -456,10 +454,10 @@ a:hover {
 .theme-blue h5:hover {
   background: rgba(0, 34, 255, 0.0784313725);
 }
-@media only screen and (min-width: 780px) {
+@media only screen and (max-width: 780px) {
   h2,
   h5 {
-    font-size: 20px;
+    font-size: 16px;
   }
 }
 
@@ -506,33 +504,29 @@ button {
   color: #ffe974;
   background-color: rgb(173, 31, 31);
   border: 1px solid rgb(181, 83, 0);
-  font-size: 3.5vw;
   border-radius: 5px;
 }
 .theme-dark button {
   color: rgb(214, 214, 214);
   background-color: rgba(83, 83, 83, 0.7);
   border: 1px solid #aaa;
-  font-size: 2vw;
   border-radius: 20px;
 }
 .theme-orange button {
   color: rgb(243, 79, 43);
   background-color: rgb(0, 0, 0);
   border: 1px solid rgb(255, 194, 40);
-  font-size: 2vw;
   border-radius: 20px;
 }
 .theme-blue button {
   color: rgb(43, 150, 243);
   background-color: rgb(3, 0, 49);
   border: 1px solid rgb(255, 194, 40);
-  font-size: 2vw;
   border-radius: 20px;
 }
 @media only screen and (min-width: 780px) {
   button {
-    font-size: 18px !important;
+    font-size: 16px !important;
   }
 }
 button:disabled {
@@ -572,7 +566,7 @@ input {
   color: #ffffff;
   background-color: rgba(255, 88, 88, 0.3);
   border: 1px solid #ff1919;
-  font-size: 3.5vw;
+  font-size: 1vw;
 }
 .theme-dark input {
   font-family: "Accuratist";
@@ -682,7 +676,7 @@ p {
 }
 
 .myScroll {
-  height: 85vh !important;
+  height: 94vh !important;
   overflow: scroll;
   overflow-x: hidden;
 }
@@ -776,7 +770,15 @@ p {
 
 #leaderBoardResponse {
   width: 99.5% !important;
-  padding: 50px;
+  padding: 15px;
+}
+@media screen and (min-width: 1024px) {
+  #leaderBoardResponse {
+    padding-left: 20vh;
+    padding-right: 20vh;
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
 }
 
 .overflowAuto {
@@ -810,6 +812,10 @@ p {
 
 .h5 {
   height: 3vh;
+}
+
+.w100px {
+  width: 100px;
 }
 
 .w30 {
@@ -917,10 +923,15 @@ p {
   display: flex;
 }
 
-.gameplayObj {
-  margin: 40px 10px 10px 10px;
-  display: flex;
+#gameplayDiv {
+  margin: unset;
   flex-direction: column;
+  height: 94vh;
+}
+@media screen and (min-width: 1024px) {
+  #gameplayDiv {
+    margin: 10px 10px 10px 10px;
+  }
 }
 
 .gameLists {
@@ -931,9 +942,15 @@ p {
 }
 
 .gameplay {
-  width: 90vw;
-  height: 50vh;
+  width: 100%;
+  height: 100%;
   flex-direction: row !important;
+}
+@media screen and (min-width: 1024px) {
+  .gameplay {
+    width: 90vw;
+    height: 100%;
+  }
 }
 
 .makeBottomABS {

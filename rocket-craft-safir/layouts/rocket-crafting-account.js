@@ -11,7 +11,7 @@ export default class RocketCraftingLayout extends BaseComponent {
   apiDomain = '';
   loginBtn = new SimpleBtn({label: 'loginBtn', id: 'loginBtn'}, 'w30 h5');
   registerBtn = new SimpleBtn({label: 'registerBtn', id: 'registerBtn'}, 'w30 h5');
-  signoutBtn = new SimpleBtn({text: 'Sign Out', id: 'signoutBtn'}, 'w30 h5');
+  signoutBtn = new SimpleBtn({text: 'Sign Out', id: 'signoutBtn'}, 'w100px h5');
   forgotBtn = new SimpleBtn({text: 'Forgot password', id: 'forgotBtn'}, 'w30 h5');
   forgotAskBtn = new SimpleBtn({text: 'Ask for new password', id: 'forgotAskBtn'}, 'w30 h5');
   setNewPassBtn = new SimpleBtn({text: 'Set new password', id: 'setNewPassBtn'}, 'w30 h5');
@@ -157,9 +157,9 @@ export default class RocketCraftingLayout extends BaseComponent {
     On('gotoAccount', () => {
       // Account
       console.log('goto account trigger - just run fetch for fresh data')
+      this.runApiFastLogin();
       this.render = this.accountRender;
       getComp(this.id).innerHTML = this.render();
-      this.runApiFastLogin();
     })
   }
 
@@ -379,14 +379,17 @@ export default class RocketCraftingLayout extends BaseComponent {
       return;
     }
 
-    if(this.testSafirSlot == null) {
-      // NOTE SAFIRSLOT NEED RENDER DOM IN MOMENT OF INSTANCING
-      this.testSafirSlot = new SafirBuildInPlugins.SafirSlot({id: 'userPoints', rootDom: 'userPoints'}, 'horCenter bg-transparent');
-    }
-
     // how to use sub rerender
     // simple override
     this.render = this.accountRender;
+
+    if(isLogged == true ) {
+      // NOTE SAFIRSLOT NEED RENDER DOM IN MOMENT OF INSTANCING
+      this.testSafirSlot = new SafirBuildInPlugins.SafirSlot({id: 'userPoints', rootDom: 'userPoints'}, 'horCenter bg-transparent');
+      console.log('construct safir slot')
+    } else {
+      // alert('this.testSafirSlot' + this.testSafirSlot )
+    }
     getComp(this.id).innerHTML = this.render();
     emit('app.trans.update', {f: 'f'});
     this.accountData(res);
@@ -445,10 +448,10 @@ export default class RocketCraftingLayout extends BaseComponent {
     <div class='midWrapper bg-transparent'>
       <div class='middle topHeader'>
         <h2>Welcome , <h2 id='nickname'> ${this.nickname} </h2> </h2>
-        <span style="margin:40px;">${this.testSafirSlot.renderId()}</span>
+        <span style="margin:5px;">${this.testSafirSlot.renderId()}</span>
         ${this.signoutBtn.renderId()}
       </div>
-      <span id="apiResponse" class="zzBg"></span>
+      <span id="apiResponse" class=" "></span>
       <div class='midWrapper bg-transparent makeBottomABS'>
       <small data-label="accountBottomText"></small>
       </div>

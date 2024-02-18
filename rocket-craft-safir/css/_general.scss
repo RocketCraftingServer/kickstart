@@ -31,9 +31,9 @@ body {
   }
 }
 
-@media only screen and (min-width: 780px) {
+@media only screen and (max-width: 1024px) {
   body {
-    font-size: 22px;
+    font-size: 16px;
   }
 }
 
@@ -50,15 +50,13 @@ h5 {
   @include themify($themes) {
     cursor: default;
     text-shadow: themed('textShadow');
-
     &:hover {
       color: themed('textHoverColor');
       background: themed('divShadowColor');
     }
   }
-
-  @media only screen and (min-width: 780px) {
-    font-size: 20px;
+  @media only screen and (max-width: 780px) {
+    font-size: 16px;
   }
 }
 
@@ -94,18 +92,15 @@ button {
     color: themed('buttonTextColor');
     background-color: themed('backgroundColor');
     border: themed('buttonBorder');
-    font-size: themed('fontSize');
     border-radius: themed('buttonRadius');
   }
-
   cursor:pointer;
-
   font-family: Accuratist;
   padding: 2px 2px 2px 2px;
   margin: 2px 2px 2px 2px;
 
   @media only screen and (min-width: 780px) {
-    font-size: 18px !important;
+    font-size: 16px !important;
   }
 
   &:disabled {
@@ -209,7 +204,7 @@ p {
 }
 
 .myScroll {
-  height: calc(85vh) !important;
+  height: calc(94vh) !important;
   overflow: scroll;
   overflow-x: hidden;
 }
@@ -274,7 +269,13 @@ p {
 
 #leaderBoardResponse {
   width: 99.5% !important;
-  padding: 50px;
+  padding: 15px;
+  @media screen and (min-width: 1024px) {
+    padding-left: 20vh;
+    padding-right: 20vh;
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
 }
 
 .overflowAuto {
@@ -308,6 +309,10 @@ p {
   height: 3vh;
 }
 
+.w100px {
+  width: 100px;
+}
+
 .w30 {
   width: 30vw;
   min-width: 200px;
@@ -319,32 +324,34 @@ p {
 }
 
 .cardBtn {
-  width:200px;
-  left:0;
-  margin:0;
-  height:unset;
+  width: 200px;
+  left: 0;
+  margin: 0;
+  height: unset;
+
   @media only screen and (max-width: 780px) {
-    width:250px;
+    width: 250px;
     height: auto;
   }
+
   button:hover {
     background-color: #f58843;
   }
 }
 
-.cardImg {
-
-}
+.cardImg {}
 
 .game-card {
   width: 200px;
   margin: 3px 3px 3px 3px;
   min-height: 135px;
-  height:unset;
+  height: unset;
+
   @media only screen and (max-width: 780px) {
-    width:250px;
+    width: 250px;
     height: 150px;
   }
+
   background: url(../assets/imgs/a.png);
 }
 
@@ -413,23 +420,36 @@ p {
   display: flex;
 }
 
-.gameplayObj {
-  margin: 40px 10px 10px 10px;
-  display: flex;
+#gameplayDiv {
+  margin: unset;
+  // display: flex;
   flex-direction: column;
+  height: 94vh;
+
+  @media screen and (min-width: 1024px) {
+    margin: 10px 10px 10px 10px;
+  }
 }
+
+.gameplayObj {}
 
 .gameLists {
   margin: 40px 10px 10px 10px;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+
 }
 
 .gameplay {
-  width: 90vw;
-  height: 50vh;
+  width: 100%;
+  height: 100%;
   flex-direction: row !important;
+
+  @media screen and (min-width: 1024px) {
+    width: 90vw;
+    height: 100%;
+  }
 }
 
 .makeBottomABS {

@@ -1451,9 +1451,8 @@ class Home extends _safir.BaseComponent {
     <div id="GameList" class="middle gameLists" style="display: flex;">
       ${this.btns.map(i => `${i.renderId()}`).join('')}
     </div>
-      <div id="gameplayDiv" class="middle gameplayObj" style="display: none;">
-        <h2>RocketCraftingServer Platform</h2>
-        <h3>Play Platformer [2d]</h3>
+      <div id="gameplayDiv" class="gameplayObj middle" style="display: none;">
+        <h2>RocketCraftingServer Platform Play Platformer [2d] </h2>
         <iframe id="gameplay" class="gameplay" src="${this.links[0]}" allow="camera; microphone" />
         <br>
         <button onclick="(${this.pointsPlus10})('pointsPlus10')" >TEST POINTS REST/API</button>
@@ -1727,7 +1726,7 @@ class RocketCraftingLayout extends _safir.BaseComponent {
   signoutBtn = new _simpleBtn.default({
     text: 'Sign Out',
     id: 'signoutBtn'
-  }, 'w30 h5');
+  }, 'w100px h5');
   forgotBtn = new _simpleBtn.default({
     text: 'Forgot password',
     id: 'forgotBtn'
@@ -1881,9 +1880,9 @@ class RocketCraftingLayout extends _safir.BaseComponent {
     (0, _safir.On)('gotoAccount', () => {
       // Account
       console.log('goto account trigger - just run fetch for fresh data');
+      this.runApiFastLogin();
       this.render = this.accountRender;
       (0, _safir.getComp)(this.id).innerHTML = this.render();
-      this.runApiFastLogin();
     });
   }
   async apiAccount(apiCallFlag) {
@@ -2095,17 +2094,20 @@ class RocketCraftingLayout extends _safir.BaseComponent {
     if (isLogged != true) {
       return;
     }
-    if (this.testSafirSlot == null) {
+
+    // how to use sub rerender
+    // simple override
+    this.render = this.accountRender;
+    if (isLogged == true) {
       // NOTE SAFIRSLOT NEED RENDER DOM IN MOMENT OF INSTANCING
       this.testSafirSlot = new _safir.SafirBuildInPlugins.SafirSlot({
         id: 'userPoints',
         rootDom: 'userPoints'
       }, 'horCenter bg-transparent');
+      console.log('construct safir slot');
+    } else {
+      // alert('this.testSafirSlot' + this.testSafirSlot )
     }
-
-    // how to use sub rerender
-    // simple override
-    this.render = this.accountRender;
     (0, _safir.getComp)(this.id).innerHTML = this.render();
     (0, _safir.emit)('app.trans.update', {
       f: 'f'
@@ -2166,10 +2168,10 @@ class RocketCraftingLayout extends _safir.BaseComponent {
     <div class='midWrapper bg-transparent'>
       <div class='middle topHeader'>
         <h2>Welcome , <h2 id='nickname'> ${this.nickname} </h2> </h2>
-        <span style="margin:40px;">${this.testSafirSlot.renderId()}</span>
+        <span style="margin:5px;">${this.testSafirSlot.renderId()}</span>
         ${this.signoutBtn.renderId()}
       </div>
-      <span id="apiResponse" class="zzBg"></span>
+      <span id="apiResponse" class=" "></span>
       <div class='midWrapper bg-transparent makeBottomABS'>
       <small data-label="accountBottomText"></small>
       </div>

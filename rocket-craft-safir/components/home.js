@@ -135,9 +135,8 @@ export default class Home extends BaseComponent {
     `${i.renderId()}`).join('')
     }
     </div>
-      <div id="gameplayDiv" class="middle gameplayObj" style="display: none;">
-        <h2>RocketCraftingServer Platform</h2>
-        <h3>Play Platformer [2d]</h3>
+      <div id="gameplayDiv" class="gameplayObj middle" style="display: none;">
+        <h2>RocketCraftingServer Platform Play Platformer [2d] </h2>
         <iframe id="gameplay" class="gameplay" src="${this.links[0]}" allow="camera; microphone" />
         <br>
         <button onclick="(${this.pointsPlus10})('pointsPlus10')" >TEST POINTS REST/API</button>
