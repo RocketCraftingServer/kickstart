@@ -294,7 +294,12 @@ export default class RocketCraftingLayout extends BaseComponent {
       if(typeof res[key] == 'object') {
         for(let key1 in res[key]) {
           color = 'color:indigo;text-shadow: 0px 0px 1px #52f2ff, 1px 1px 1px #11ffff;';
-          byID('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key][key1]} </div>`;
+          console.log("TEST ", key1)
+          if (key1 != 'token') {
+            byID('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key][key1]} </div>`;
+          } else {
+            console.log("ELSE  ", key1)
+          }
         }
       } else {
         if(key == 'message' && res[key] == 'Wrong Password') {
@@ -386,7 +391,11 @@ export default class RocketCraftingLayout extends BaseComponent {
     if(isLogged == true ) {
       // NOTE SAFIRSLOT NEED RENDER DOM IN MOMENT OF INSTANCING
       this.testSafirSlot = new SafirBuildInPlugins.SafirSlot({id: 'userPoints', rootDom: 'userPoints'}, 'horCenter bg-transparent');
-      console.log('construct safir slot')
+      console.log('construct safir slot...')
+      // limit decimals 9 max 
+      document.getElementById('userPoints').children[1].children[0].style.display = 'none';
+      document.getElementById('userPoints').children[1].children[1].style.display = 'none';
+
     } else {
       // alert('this.testSafirSlot' + this.testSafirSlot )
     }
@@ -418,8 +427,15 @@ export default class RocketCraftingLayout extends BaseComponent {
             byID('apiResponse').innerHTML += `<div style='${color}' >${key1} : ${res[key][key1]} </div>`;
             this.testSafirSlot.setByTime(parseFloat(res[key][key1]));
           } else {
+            console.log('MAYBE ')
             this.setPropById(key1, res[key][key1], 1);
-            byID('apiResponse').innerHTML += `<div style='${color}' >${key1} : ${res[key][key1]} </div>`;
+
+            if (key1 != 'token') {
+              byID('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key][key1]} </div>`;
+            } else {
+              console.log("ELSE 2 ", key1)
+            }
+            // byID('apiResponse').innerHTML += `<div style='${color}' >${key1} : ${res[key][key1]} </div>`;
           }
         }
       } else {

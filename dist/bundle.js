@@ -1413,7 +1413,12 @@ class Home extends _safir.BaseComponent {
       if (typeof res[key] == 'object') {
         for (let key1 in res[key]) {
           color = 'color:indigo;text-shadow: 0px 0px 1px #52f2ff, 1px 1px 1px #11ffff;';
-          (0, _safir.byID)('testResponse').innerHTML += `<div style='${color}' >${key} : ${res[key][key1]} </div>`;
+          console.log("TEST 2 ", key1);
+          if (key1 != 'token') {
+            (0, _safir.byID)('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key][key1]} </div>`;
+          } else {
+            console.log("ELSE 2 ", key1);
+          }
         }
       } else {
         if (key == 'message' && res[key] == 'Wrong Password') {
@@ -2005,7 +2010,12 @@ class RocketCraftingLayout extends _safir.BaseComponent {
       if (typeof res[key] == 'object') {
         for (let key1 in res[key]) {
           color = 'color:indigo;text-shadow: 0px 0px 1px #52f2ff, 1px 1px 1px #11ffff;';
-          (0, _safir.byID)('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key][key1]} </div>`;
+          console.log("TEST ", key1);
+          if (key1 != 'token') {
+            (0, _safir.byID)('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key][key1]} </div>`;
+          } else {
+            console.log("ELSE  ", key1);
+          }
         }
       } else {
         if (key == 'message' && res[key] == 'Wrong Password') {
@@ -2104,7 +2114,10 @@ class RocketCraftingLayout extends _safir.BaseComponent {
         id: 'userPoints',
         rootDom: 'userPoints'
       }, 'horCenter bg-transparent');
-      console.log('construct safir slot');
+      console.log('construct safir slot...');
+      // limit decimals 9 max 
+      document.getElementById('userPoints').children[1].children[0].style.display = 'none';
+      document.getElementById('userPoints').children[1].children[1].style.display = 'none';
     } else {
       // alert('this.testSafirSlot' + this.testSafirSlot )
     }
@@ -2141,8 +2154,14 @@ class RocketCraftingLayout extends _safir.BaseComponent {
             (0, _safir.byID)('apiResponse').innerHTML += `<div style='${color}' >${key1} : ${res[key][key1]} </div>`;
             this.testSafirSlot.setByTime(parseFloat(res[key][key1]));
           } else {
+            console.log('MAYBE ');
             this.setPropById(key1, res[key][key1], 1);
-            (0, _safir.byID)('apiResponse').innerHTML += `<div style='${color}' >${key1} : ${res[key][key1]} </div>`;
+            if (key1 != 'token') {
+              (0, _safir.byID)('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key][key1]} </div>`;
+            } else {
+              console.log("ELSE 2 ", key1);
+            }
+            // byID('apiResponse').innerHTML += `<div style='${color}' >${key1} : ${res[key][key1]} </div>`;
           }
         }
       } else {

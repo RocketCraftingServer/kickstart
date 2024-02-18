@@ -92,7 +92,12 @@ export default class Home extends BaseComponent {
       if(typeof res[key] == 'object') {
         for(let key1 in res[key]) {
           color = 'color:indigo;text-shadow: 0px 0px 1px #52f2ff, 1px 1px 1px #11ffff;';
-          byID('testResponse').innerHTML += `<div style='${color}' >${key} : ${res[key][key1]} </div>`;
+          console.log("TEST 2 ", key1)
+          if (key1 != 'token') {
+            byID('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key][key1]} </div>`;
+          } else {
+            console.log("ELSE 2 ", key1)
+          }
         }
       } else {
         if(key == 'message' && res[key] == 'Wrong Password') {
