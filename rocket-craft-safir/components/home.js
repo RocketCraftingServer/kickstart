@@ -59,6 +59,13 @@ export default class Home extends BaseComponent {
         poster: "./assets/imgs/ultimate-roulette.png",
         name: "Real Physics Roulette", link: 'https://roulette.maximumroulette.com'
       },
+      // 
+      {
+        description: "",
+        action: '3dJamb-6Dices',
+        poster: "./assets/imgs/hang3d-reborn.png",
+        name: "3d Jamb deluxe", link: 'https://maximumroulette.com/apps/webgpu/index.html'
+      },
       
     ];
 
@@ -141,7 +148,7 @@ export default class Home extends BaseComponent {
     }
     </div>
       <div id="gameplayDiv" class="gameplayObj middle" style="display: none;">
-        <h2>RocketCraftingServer Platform Play Platformer [2d] </h2>
+        <span>RocketCraftingServer Platform Play Free Games </span>
         <iframe id="gameplay" class="gameplay" src="${this.links[0]}" allow="camera; microphone" />
         <br>
         <button onclick="(${this.pointsPlus10})('pointsPlus10')" >TEST POINTS REST/API</button>

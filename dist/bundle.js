@@ -1453,6 +1453,14 @@ class Home extends _safir.BaseComponent {
       poster: "./assets/imgs/ultimate-roulette.png",
       name: "Real Physics Roulette",
       link: 'https://roulette.maximumroulette.com'
+    },
+    // 
+    {
+      description: "",
+      action: '3dJamb-6Dices',
+      poster: "./assets/imgs/hang3d-reborn.png",
+      name: "3d Jamb deluxe",
+      link: 'https://maximumroulette.com/apps/webgpu/index.html'
     }];
     (0, _safir.On)('pointsPlus10', () => {
       console.log('POINTS PLUS');
@@ -1525,7 +1533,7 @@ class Home extends _safir.BaseComponent {
       ${this.btns.map(i => `${i.renderId()}`).join('')}
     </div>
       <div id="gameplayDiv" class="gameplayObj middle" style="display: none;">
-        <h2>RocketCraftingServer Platform Play Platformer [2d] </h2>
+        <span>RocketCraftingServer Platform Play Free Games </span>
         <iframe id="gameplay" class="gameplay" src="${this.links[0]}" allow="camera; microphone" />
         <br>
         <button onclick="(${this.pointsPlus10})('pointsPlus10')" >TEST POINTS REST/API</button>
@@ -1689,9 +1697,14 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.Avatar = void 0;
-let Avatar = arg => `
-  <img class="avatarProfile" alt="${arg.key1}" src="${arg.apiDomain}/storage${arg.res[arg.key][arg.key1]}"/>
+let Avatar = arg => {
+  // alert(arg.res[arg.key][arg.key1])
+  let src = arg.res[arg.key][arg.key1].replace('public', '');
+  // arg.res[arg.key][arg.key1].replace('public', '');
+  return `
+  <img class="avatarProfile" alt="${arg.key1}" src="${arg.apiDomain}:2020/${src}"/>
 `;
+};
 exports.Avatar = Avatar;
 
 },{}],17:[function(require,module,exports){
