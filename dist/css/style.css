@@ -930,7 +930,7 @@ p {
 }
 @media screen and (min-width: 1024px) {
   #gameplayDiv {
-    margin: 6px 6px 6px 6px;
+    margin: 0px 4px 0px 4px;
   }
 }
 
@@ -977,4 +977,8 @@ p {
   display: flex;
   padding: 2px;
   border: solid #d6164f 1px;
+}
+
+center-text-game-card {
+  background-color: #002635;
 }/*# sourceMappingURL=style.css.map */

@@ -1379,7 +1379,7 @@ class GameCard extends _safir.BaseComponent {
       <button id="${this.id}-real" 
               style="" 
               class="cardBtn fill bg-transparent" onclick="(${this.onClick})('${this.id}')">
-        ${this.text}
+       <span class='center-text-game-card'> ${this.text} </span>
       </button>
     </div>
   `;
