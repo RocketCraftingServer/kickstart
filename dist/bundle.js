@@ -110,12 +110,80 @@ var _comp = require("./src/core/comp");
 var _modifier = require("./src/core/modifier");
 var _utils = require("./src/core/utils");
 var _safirSlot = require("./src/controls/safir-slot");
+var _safirNotify = require("./src/controls/safir-notify");
 let SafirBuildInPlugins = {
-  SafirSlot: _safirSlot.SafirSlot
+  SafirSlot: _safirSlot.SafirSlot,
+  notify: _safirNotify.notify
 };
 exports.SafirBuildInPlugins = SafirBuildInPlugins;
 
-},{"./src/controls/safir-slot":2,"./src/core/comp":3,"./src/core/modifier":5,"./src/core/root":6,"./src/core/utils":7}],2:[function(require,module,exports){
+},{"./src/controls/safir-notify":2,"./src/controls/safir-slot":3,"./src/core/comp":4,"./src/core/modifier":6,"./src/core/root":7,"./src/core/utils":8}],2:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.notify = void 0;
+var _utils = require("../core/utils");
+let notify = {
+  root: () => (0, _utils.byID)('msgBox'),
+  pContent: () => (0, _utils.byID)('not-content'),
+  copy: function () {
+    navigator.clipboard.writeText(notify.root().children[0].innerText);
+  },
+  c: 0,
+  ic: 0,
+  t: {},
+  setContent: function (content, t) {
+    var iMsg = document.createElement('div');
+    iMsg.innerHTML = content;
+    iMsg.id = `msgbox-loc-${notify.c}`;
+    notify.root().appendChild(iMsg);
+    iMsg.classList.add('animate1');
+    if (t == 'ok') {
+      iMsg.style = 'font-family: stormfaze;color:white;padding:7px;margin:2px';
+    } else {
+      iMsg.style = 'font-family: stormfaze;color:white;padding:7px;margin:2px';
+    }
+  },
+  kill: function () {
+    notify.root().remove();
+  },
+  show: function (content, t) {
+    notify.setContent(content, t);
+    notify.root().style.display = "block";
+    var loc2 = notify.c;
+    setTimeout(function () {
+      (0, _utils.byID)(`msgbox-loc-${loc2}`).classList.remove("fadeInDown");
+      (0, _utils.byID)(`msgbox-loc-${loc2}`).classList.add("fadeOut");
+      setTimeout(function () {
+        (0, _utils.byID)(`msgbox-loc-${loc2}`).style.display = "none";
+        (0, _utils.byID)(`msgbox-loc-${loc2}`).classList.remove("fadeOut");
+        (0, _utils.byID)(`msgbox-loc-${loc2}`).remove();
+        notify.ic++;
+        if (notify.c == notify.ic) {
+          notify.root().style.display = 'none';
+        }
+      }, 1000);
+    }, 3000);
+    notify.c++;
+  },
+  error: function (content) {
+    notify.root().classList.remove("success");
+    notify.root().classList.add("error");
+    notify.root().classList.add("fadeInDown");
+    notify.show(content, 'err');
+  },
+  success: function (content) {
+    notify.root().classList.remove("error");
+    notify.root().classList.add("success");
+    notify.root().classList.add("fadeInDown");
+    notify.show(content, 'ok');
+  }
+};
+exports.notify = notify;
+
+},{"../core/utils":8}],3:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -382,11 +450,11 @@ class SafirSlot extends _index.BaseComponent {
         } else if (test < 1) {
           this.setSum(this.getCurrentSum() + 0.10 * CO);
         } else if (test < 100) {
-          this.setSum(this.getCurrentSum() + 2.12 * CO);
+          this.setSum(this.getCurrentSum() + 1.12 * CO);
         } else if (test < 500) {
-          this.setSum(this.getCurrentSum() + 112.12 * CO);
+          this.setSum(this.getCurrentSum() + 50.12 * CO);
         } else {
-          this.setSum(this.getCurrentSum() + 212.12 * CO);
+          this.setSum(this.getCurrentSum() + 200.12 * CO);
         }
       } else {
         if (test > -0.5) {
@@ -428,7 +496,7 @@ class SafirSlot extends _index.BaseComponent {
 }
 exports.SafirSlot = SafirSlot;
 
-},{"../../index":1}],3:[function(require,module,exports){
+},{"../../index":1}],4:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -638,7 +706,7 @@ class BaseComponent {
 }
 exports.BaseComponent = BaseComponent;
 
-},{"./utils":7}],4:[function(require,module,exports){
+},{"./utils":8}],5:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -699,7 +767,7 @@ class Horizontal extends Base {
 }
 exports.Horizontal = Horizontal;
 
-},{"../style/base":8}],5:[function(require,module,exports){
+},{"../style/base":9}],6:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -716,7 +784,7 @@ exports.Off = Off;
 const GetAllEvents = window.GetAllEvents;
 exports.GetAllEvents = GetAllEvents;
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -858,7 +926,7 @@ class Safir extends BaseSafir {
 }
 exports.Safir = Safir;
 
-},{"./custom-com":4,"./modifier":5,"./utils":7}],7:[function(require,module,exports){
+},{"./custom-com":5,"./modifier":6,"./utils":8}],8:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1101,7 +1169,7 @@ const emit = (en, d) => {
 };
 exports.emit = emit;
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1127,7 +1195,7 @@ let horCenter = `
 `;
 exports.horCenter = horCenter;
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1278,7 +1346,7 @@ class ActiveGames extends _safir.BaseComponent {
 }
 exports.default = ActiveGames;
 
-},{"../direct-render/agl":14,"safir":1}],10:[function(require,module,exports){
+},{"../direct-render/agl":15,"safir":1}],11:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1318,7 +1386,7 @@ class GameCard extends _safir.BaseComponent {
 }
 exports.default = GameCard;
 
-},{"safir":1}],11:[function(require,module,exports){
+},{"safir":1}],12:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1439,7 +1507,7 @@ class Home extends _safir.BaseComponent {
       email: _safir.LocalSessionMemory.load('my-body-email'),
       token: _safir.LocalSessionMemory.load('my-body-token')
     };
-    alert(this.apiDomain);
+    console.log(this.apiDomain);
     const rawResponse = await fetch(route + '/rocket/point-plus10', {
       method: 'POST',
       headers: _safir.JSON_HEADER,
@@ -1468,7 +1536,7 @@ class Home extends _safir.BaseComponent {
 }
 exports.default = Home;
 
-},{"../components/gameCard":10,"safir":1}],12:[function(require,module,exports){
+},{"../components/gameCard":11,"safir":1}],13:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1559,7 +1627,7 @@ class LeaderBoard extends _safir.BaseComponent {
 }
 exports.default = LeaderBoard;
 
-},{"../direct-render/leaderboard":16,"safir":1}],13:[function(require,module,exports){
+},{"../direct-render/leaderboard":17,"safir":1}],14:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1595,7 +1663,7 @@ class SimpleBtn extends _safir.BaseComponent {
 }
 exports.default = SimpleBtn;
 
-},{"safir":1}],14:[function(require,module,exports){
+},{"safir":1}],15:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1614,7 +1682,7 @@ let activeGamesListRender = (arg, colorFlag) => `
 `;
 exports.activeGamesListRender = activeGamesListRender;
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1626,7 +1694,7 @@ let Avatar = arg => `
 `;
 exports.Avatar = Avatar;
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1644,7 +1712,7 @@ let LeaderBoardRender = (arg, colorFlag) => `
 `;
 exports.LeaderBoardRender = LeaderBoardRender;
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1703,7 +1771,7 @@ class MyHeader extends _safir.BaseComponent {
 }
 exports.default = MyHeader;
 
-},{"../components/simple-btn":13,"safir":1}],18:[function(require,module,exports){
+},{"../components/simple-btn":14,"safir":1}],19:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1749,7 +1817,7 @@ class RocketCraftingLayout extends _safir.BaseComponent {
   home = new _home.default({
     id: 'homepage'
   });
-  testSafirSlot = null;
+  testSafirSlot = null; // = new SafirBuildInPlugins.SafirSlot({id: 'userPoints', rootDom: 'userPoints'}, 'horCenter bg-transparent');
   nickname = null;
   email = null;
   token = null;
@@ -1882,10 +1950,25 @@ class RocketCraftingLayout extends _safir.BaseComponent {
         (0, _safir.getComp)(this.id).innerHTML = this.render();
       }
     });
-    (0, _safir.On)('gotoAccount', () => {
+    (0, _safir.On)('gotoAccount', arg => {
       // Account
-      console.log('goto account trigger - just run fetch for fresh data');
       this.runApiFastLogin();
+      if (this.testSafirSlot == null) this.testSafirSlot = new _safir.SafirBuildInPlugins.SafirSlot({
+        id: 'userPoints',
+        rootDom: 'userPoints'
+      }, 'horCenter bg-transparent');
+      console.log('goto account trigger - just run fetch for fresh data', arg);
+      this.render = this.accountRender;
+      (0, _safir.getComp)(this.id).innerHTML = this.render();
+    });
+    window.addEventListener('gotoAccountShow', arg => {
+      // Account
+      // this.runApiFastLogin();
+      if (this.testSafirSlot == null) this.testSafirSlot = new _safir.SafirBuildInPlugins.SafirSlot({
+        id: 'userPoints',
+        rootDom: 'userPoints'
+      }, 'horCenter bg-transparent');
+      console.log('SHOW   rigger - just run fetch for fresh data', arg);
       this.render = this.accountRender;
       (0, _safir.getComp)(this.id).innerHTML = this.render();
     });
@@ -1927,7 +2010,6 @@ class RocketCraftingLayout extends _safir.BaseComponent {
     }).then(r => {
       this.exploreResponse(r);
     }).catch(err => {
-      alert('ERR', err);
       setTimeout(() => {
         this.preventDBLOG = false;
         this.preventDBREG = false;
@@ -2040,6 +2122,11 @@ class RocketCraftingLayout extends _safir.BaseComponent {
             // signoutBtn
             this.apiAccount('logout');
           });
+          if (!(0, _safir.byID)('userPoint')) {
+            dispatchEvent(new CustomEvent('gotoAccountShow', {
+              detail: {}
+            }));
+          }
           isLogged = true;
         } else if (res[key] == 'Wrong confirmation code.') {
           (0, _safir.byID)('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]}</div>`;
@@ -2109,15 +2196,15 @@ class RocketCraftingLayout extends _safir.BaseComponent {
     // simple override
     this.render = this.accountRender;
     if (isLogged == true) {
-      // NOTE SAFIRSLOT NEED RENDER DOM IN MOMENT OF INSTANCING
-      this.testSafirSlot = new _safir.SafirBuildInPlugins.SafirSlot({
-        id: 'userPoints',
-        rootDom: 'userPoints'
-      }, 'horCenter bg-transparent');
-      console.log('construct safir slot...');
-      // limit decimals 9 max 
-      document.getElementById('userPoints').children[1].children[0].style.display = 'none';
-      document.getElementById('userPoints').children[1].children[1].style.display = 'none';
+      setTimeout(() => {
+        // NOTE SAFIRSLOT NEED RENDER DOM IN MOMENT OF INSTANCING
+        // this.testSafirSlot = new SafirBuildInPlugins.SafirSlot({id: 'userPoints', rootDom: 'userPoints'}, 'horCenter bg-transparent');
+        // console.log('construct safir slot...')
+        // limit decimals 9 max 
+        // document.getElementById('userPoints').children[1].children[0].style.display = 'none';
+        // document.getElementById('userPoints').children[1].children[1].style.display = 'none';
+        // this.testSafirSlot.setByTime(parseFloat(sessionStorage.getItem('my-body-points')));
+      }, 1200);
     } else {
       // alert('this.testSafirSlot' + this.testSafirSlot )
     }
@@ -2254,7 +2341,7 @@ class RocketCraftingLayout extends _safir.BaseComponent {
 }
 exports.default = RocketCraftingLayout;
 
-},{"../components/activegames":9,"../components/home":11,"../components/leaderboard":12,"../components/simple-btn":13,"../direct-render/imageProfile":15,"safir":1}],19:[function(require,module,exports){
+},{"../components/activegames":10,"../components/home":12,"../components/leaderboard":13,"../components/simple-btn":14,"../direct-render/imageProfile":16,"safir":1}],20:[function(require,module,exports){
 "use strict";
 
 var _safir = require("safir");
@@ -2289,4 +2376,4 @@ console.info('<listeners>', app.listeners);
 });
 window.app = app;
 
-},{"./layouts/heder":17,"./layouts/rocket-crafting-account":18,"safir":1}]},{},[19]);
+},{"./layouts/heder":18,"./layouts/rocket-crafting-account":19,"safir":1}]},{},[20]);

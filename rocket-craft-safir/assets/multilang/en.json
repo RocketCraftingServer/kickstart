@@ -6,7 +6,7 @@
   "destroyer": "Safir",
   "welcome": "Welcome",
   "textAlert": "No emit",
-  "userPointsSlotTitle": "POINTS",
+  "userPointsSlotTitle": "🌟POINTS: ",
   "beFirst": "Be first on board!",
   "beText": "Backend based on <a href='https://github.com/RocketCraftingServer/rocket-craft-server'>rocketCraftingServer</a>",
   "feText": "Frontend based on <a href='https://github.com/RocketCraftingServer/safir'>Safir mini virtual DOM</a>",

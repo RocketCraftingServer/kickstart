@@ -18,7 +18,7 @@ export default class RocketCraftingLayout extends BaseComponent {
   leaderBoard = null;
   activeGamesList = null;
   home = new Home({id: 'homepage'})
-  testSafirSlot = null;
+  testSafirSlot = null; // = new SafirBuildInPlugins.SafirSlot({id: 'userPoints', rootDom: 'userPoints'}, 'horCenter bg-transparent');
   nickname = null;
   email = null;
   token = null;
@@ -154,10 +154,20 @@ export default class RocketCraftingLayout extends BaseComponent {
       }
     })
 
-    On('gotoAccount', () => {
+    On('gotoAccount', (arg) => {
       // Account
-      console.log('goto account trigger - just run fetch for fresh data')
       this.runApiFastLogin();
+      if(this.testSafirSlot == null) this.testSafirSlot = new SafirBuildInPlugins.SafirSlot({id: 'userPoints', rootDom: 'userPoints'}, 'horCenter bg-transparent');
+      console.log('goto account trigger - just run fetch for fresh data', arg)
+      this.render = this.accountRender;
+      getComp(this.id).innerHTML = this.render();
+    })
+
+    window.addEventListener('gotoAccountShow', (arg) => {
+      // Account
+      // this.runApiFastLogin();
+      if(this.testSafirSlot == null) this.testSafirSlot = new SafirBuildInPlugins.SafirSlot({id: 'userPoints', rootDom: 'userPoints'}, 'horCenter bg-transparent');
+      console.log('SHOW   rigger - just run fetch for fresh data', arg)
       this.render = this.accountRender;
       getComp(this.id).innerHTML = this.render();
     })
@@ -190,7 +200,7 @@ export default class RocketCraftingLayout extends BaseComponent {
       console.log("TEST SETNEWPASW ", args)
     }
 
-    if (apiCallFlag == 'logout') {
+    if(apiCallFlag == 'logout') {
       args = {
         email: LocalSessionMemory.load('my-body-email'),
         token: LocalSessionMemory.load('my-body-token')
@@ -206,7 +216,6 @@ export default class RocketCraftingLayout extends BaseComponent {
     }).then((r) => {
       this.exploreResponse(r);
     }).catch((err) => {
-      alert('ERR', err)
       setTimeout(() => {
         this.preventDBLOG = false;
         this.preventDBREG = false;
@@ -295,7 +304,7 @@ export default class RocketCraftingLayout extends BaseComponent {
         for(let key1 in res[key]) {
           color = 'color:indigo;text-shadow: 0px 0px 1px #52f2ff, 1px 1px 1px #11ffff;';
           console.log("TEST ", key1)
-          if (key1 != 'token') {
+          if(key1 != 'token') {
             byID('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key][key1]} </div>`;
           } else {
             console.log("ELSE  ", key1)
@@ -322,7 +331,9 @@ export default class RocketCraftingLayout extends BaseComponent {
             // signoutBtn
             this.apiAccount('logout');
           })
+          if(!byID('userPoint')) {dispatchEvent(new CustomEvent('gotoAccountShow', {detail: {} }))}
           isLogged = true;
+
         } else if(res[key] == 'Wrong confirmation code.') {
           byID('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]}</div>`;
           setTimeout(() => {
@@ -370,10 +381,10 @@ export default class RocketCraftingLayout extends BaseComponent {
           byID('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key]}</div>`;
           byID('apiResponse').innerHTML += `<div style='${color}' > New password call succeed! App will be reloaded and then try new password.</div>`;
           setTimeout(() => {location.reload()}, 3000)
-        } else if (res[key] == 'USER_LOGOUT') {
+        } else if(res[key] == 'USER_LOGOUT') {
           console.log('USer logout!')
           sessionStorage.clear()
-          setTimeout(()=> {
+          setTimeout(() => {
             location.reload()
           }, 1000)
         }
@@ -388,13 +399,16 @@ export default class RocketCraftingLayout extends BaseComponent {
     // simple override
     this.render = this.accountRender;
 
-    if(isLogged == true ) {
-      // NOTE SAFIRSLOT NEED RENDER DOM IN MOMENT OF INSTANCING
-      this.testSafirSlot = new SafirBuildInPlugins.SafirSlot({id: 'userPoints', rootDom: 'userPoints'}, 'horCenter bg-transparent');
-      console.log('construct safir slot...')
-      // limit decimals 9 max 
-      document.getElementById('userPoints').children[1].children[0].style.display = 'none';
-      document.getElementById('userPoints').children[1].children[1].style.display = 'none';
+    if(isLogged == true) {
+      setTimeout(() => {
+        // NOTE SAFIRSLOT NEED RENDER DOM IN MOMENT OF INSTANCING
+        // this.testSafirSlot = new SafirBuildInPlugins.SafirSlot({id: 'userPoints', rootDom: 'userPoints'}, 'horCenter bg-transparent');
+        // console.log('construct safir slot...')
+        // limit decimals 9 max 
+        // document.getElementById('userPoints').children[1].children[0].style.display = 'none';
+        // document.getElementById('userPoints').children[1].children[1].style.display = 'none';
+        // this.testSafirSlot.setByTime(parseFloat(sessionStorage.getItem('my-body-points')));
+      }, 1200)
 
     } else {
       // alert('this.testSafirSlot' + this.testSafirSlot )
@@ -430,7 +444,7 @@ export default class RocketCraftingLayout extends BaseComponent {
             console.log('MAYBE ')
             this.setPropById(key1, res[key][key1], 1);
 
-            if (key1 != 'token') {
+            if(key1 != 'token') {
               byID('apiResponse').innerHTML += `<div style='${color}' >${key} : ${res[key][key1]} </div>`;
             } else {
               console.log("ELSE 2 ", key1)

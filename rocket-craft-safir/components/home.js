@@ -119,7 +119,7 @@ export default class Home extends BaseComponent {
       email: LocalSessionMemory.load('my-body-email'),
       token: LocalSessionMemory.load('my-body-token')
     }
-    alert(this.apiDomain)
+    console.log(this.apiDomain)
     const rawResponse = await fetch(route + '/rocket/point-plus10', {
       method: 'POST',
       headers: JSON_HEADER,
